@@ -1571,11 +1571,6 @@ Editor System 應遵循以下原則：
 
 應直接沿用 Editor System。
 
-
-# 12. Development Principles
-
-(To be completed)
-
 ---
 
 # 13. Future Expansion
