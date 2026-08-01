@@ -182,7 +182,80 @@ MagicBook 採分階段推廣策略。
 
 # 3. Core Design Philosophy
 
-(To be completed)
+## 3.1 Core Philosophy
+
+MagicBook 3.0 建立於「教材（Teaching Materials）」與「互動（Interaction）」完全分離的設計理念。
+
+教材永遠保持原樣。
+
+互動永遠建立於教材之上。
+
+任何新增功能，都不得修改教材本身。
+
+---
+
+## 3.2 Separation of Content and Interaction
+
+教材負責：
+
+- 教學內容
+- 教材版面
+- 教材呈現
+
+互動負責：
+
+- 單字互動
+- Popup
+- AI 功能
+- 作答
+- 標註
+- 畫線
+- 螢光筆
+- 未來所有互動功能
+
+教材與互動彼此獨立，可各自演進。
+
+---
+
+## 3.3 Long-term Architecture
+
+MagicBook 3.0 採重新架構（Re-Architecture）方式設計。
+
+不是在第一版功能上持續堆疊。
+
+而是建立可長期維護、可長期擴充、可商業化部署的產品架構。
+
+所有新功能皆建立於既有架構，不破壞既有設計。
+
+---
+
+## 3.4 SaaS First
+
+MagicBook 3.0 從第一天即以 SaaS 平台為目標設計。
+
+系統需支援：
+
+- 多 Workspace
+- 多使用者
+- 多教材
+- 多書籍
+- 多課程
+- 多 Page
+
+所有資料皆需具備可商業化部署能力。
+
+---
+
+## 3.5 Development Principles
+
+所有功能皆需遵守以下原則：
+
+- 架構優先於功能。
+- 教材優先於互動。
+- 不為單一功能破壞整體架構。
+- 新功能必須具備可擴充性。
+- 優先考慮長期維護成本。
+- 所有設計皆需符合商業 SaaS 架構。
 
 ---
 
