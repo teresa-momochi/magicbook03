@@ -257,7 +257,173 @@ MagicBook 3.0 從第一天即以 SaaS 平台為目標設計。
 - 優先考慮長期維護成本。
 - 所有設計皆需符合商業 SaaS 架構。
 
+
+-# Core Development Principles
+
+本章節適用於 MagicBook 3.0 所有模組。
+
+所有功能皆必須遵守以下共同開發原則。
+
 ---
+
+## 1. Performance First
+
+所有功能皆應優先考慮：
+
+- 執行效率
+- 使用體驗
+- 系統穩定性
+
+不得因新增功能而造成系統明顯變慢。
+
+---
+
+## 2. Automatic Optimization
+
+所有可最佳化的資料皆應由系統自動處理。
+
+例如：
+
+- 圖片壓縮
+- 圖片格式最佳化
+- 背景處理
+- Lazy Loading
+
+使用者不需手動操作。
+
+---
+
+## 3. Cache First
+
+所有可重複使用的資料皆應優先使用 Cache。
+
+例如：
+
+- 圖片
+- PDF
+- Background Image
+- Dictionary
+- AI 分析結果
+- 教材資料
+
+避免重複下載、重複運算與重複請求。
+
+---
+
+## 4. Background Processing
+
+所有耗時工作皆應優先採用背景處理。
+
+例如：
+
+- AI 分析
+- OCR
+- 圖片最佳化
+- PDF 處理
+- AI 建立 Hotspot
+
+背景完成後自動更新畫面。
+
+避免使用者等待。
+
+---
+
+## 5. Auto Save
+
+所有具有編輯功能的模組皆應支援：
+
+- Auto Save（自動儲存）
+- Manual Save（手動儲存）
+
+降低資料遺失風險。
+
+---
+
+## 6. Standard Editor Functions
+
+所有 Editor 第一版皆必須支援：
+
+- 新增（Create）
+- 修改（Edit）
+- 刪除（Delete）
+- 移動（Move）
+- 複製（Copy）
+- 貼上（Paste）
+- Undo（回到上一步）
+- Redo（恢復）
+- Auto Save
+- Manual Save
+
+---
+
+## 7. Delete Confirmation
+
+所有刪除操作皆必須再次確認。
+
+例如：
+
+- Book
+- Lesson
+- Page
+- Image
+- PDF
+- Hotspot
+- Popup
+- 教材內容
+
+若屬永久刪除，系統必須提示：
+
+「此操作無法復原，是否確定刪除？」
+
+---
+
+## 8. Unsaved Changes Protection
+
+當使用者尚未儲存變更時，
+
+若關閉頁面、切換頁面或離開編輯畫面，
+
+系統必須提醒：
+
+「您尚有未儲存的變更，是否確定離開？」
+
+---
+
+## 9. Reusable Components
+
+所有新功能應優先採用可重複使用的元件（Reusable Components）。
+
+避免重複開發相同功能。
+
+---
+
+## 10. Configuration First
+
+所有可設定的功能應以設定（Configuration）方式設計。
+
+避免將功能寫死於程式中。
+
+例如：
+
+- Hotspot 類型
+- Popup 樣式
+- AI Provider
+- Dictionary Provider
+- Theme
+
+皆應可由設定控制。
+
+---
+
+## 11. Multi-Tenant Ready
+
+所有功能皆需支援：
+
+- Multi-Workspace
+- Multi-User
+- Commercial SaaS
+
+不得因單一功能破壞整體架構。
 
 # 4. System Architecture
 
