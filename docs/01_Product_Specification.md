@@ -118,3 +118,81 @@ MagicBook 3.0 的產品定位如下：
 - LMS（Learning Management System）
 
 MagicBook 的定位，是讓任何教材都能快速具備互動能力，而不是取代教材本身。
+
+---
+
+# 2. Product Positioning
+
+(To be completed)
+
+---
+
+# 3. Core Design Philosophy
+
+(To be completed)
+
+---
+
+# 4. System Architecture
+
+(To be completed)
+
+---
+
+# 5. Workspace Architecture
+
+(To be completed)
+
+---
+
+# 6. Book / Lesson / Page
+
+(To be completed)
+
+---
+
+# 7. Image Area
+
+(To be completed)
+
+---
+
+# 8. Text Area
+
+(To be completed)
+
+---
+
+# 9. Interactive Image Area
+
+(To be completed)
+
+---
+
+# 10. HTML Overlay
+
+(To be completed)
+
+---
+
+# 11. Popup System
+
+(To be completed)
+
+---
+
+# 12. Development Principles
+
+(To be completed)
+
+---
+
+# 13. Future Expansion
+
+(To be completed)
+
+---
+
+# 14. Change Log
+
+(To be completed)
