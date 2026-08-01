@@ -356,7 +356,96 @@ Image Area 與 Text Area：
 
 # 5. Workspace Architecture
 
-(To be completed)
+## 5.1 SaaS Architecture
+
+MagicBook 3.0 採用 Multi-Tenant SaaS（多租戶）架構。
+
+每一個 Workspace 代表一個獨立的教學單位。
+
+例如：
+
+- 補習班
+- 學校
+- 個人老師（未來可支援）
+
+不同 Workspace 之間，資料完全隔離。
+
+---
+
+## 5.2 Workspace
+
+Workspace 為 MagicBook 3.0 的最高管理單位。
+
+每個 Workspace 擁有自己的：
+
+- 使用者（Users）
+- 書籍（Books）
+- Lessons
+- Pages
+- 教材
+- 教學資料
+
+所有資料皆屬於 Workspace，而非個人。
+
+---
+
+## 5.3 User Roles
+
+每個 Workspace 可建立不同角色：
+
+- Administrator（主任）
+- Teacher（老師）
+
+未來可擴充：
+
+- Student（學生）
+- Parent（家長）
+
+角色權限由 Workspace 管理。
+
+---
+
+## 5.4 Data Ownership
+
+教材所有權屬於 Workspace。
+
+即使老師在家備課、登入不同裝置：
+
+教材仍屬於原 Workspace。
+
+老師離開 Workspace 時：
+
+教材不會跟著老師離開。
+
+---
+
+## 5.5 Data Isolation
+
+不同 Workspace 之間：
+
+- 看不到彼此教材
+- 看不到彼此學生
+- 看不到彼此書籍
+- 看不到彼此資料
+
+所有查詢皆須以 Workspace 為基礎。
+
+---
+
+## 5.6 Design Principles
+
+Workspace 是所有資料的根。
+
+未來所有功能：
+
+- AI
+- 教材
+- 書籍
+- Lesson
+- Page
+- 教學紀錄
+
+皆需建立於 Workspace 架構之上。
 
 ---
 
