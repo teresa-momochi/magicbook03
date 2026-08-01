@@ -45,6 +45,9 @@ Last Update: 2026-08-01
 - [ ] 建立 GitHub 專案
 - [ ] 建立基本資料夾結構
 - [ ] 建立共用 Layout
+- [ ] 建立 Supabase Project
+- [ ] 完成 Supabase Authentication（登入）
+- [ ] 建立 GitHub Pages 部署
 
 ---
 
