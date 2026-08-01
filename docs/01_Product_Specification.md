@@ -1164,7 +1164,101 @@ Interactive Hotspot 僅作為互動入口（Interaction Entry）。
 
 # 10. HTML Overlay
 
-(To be completed)
+## 10.1 Module Position
+
+HTML Overlay 為 MagicBook 3.0 的文字互動模組（Interactive Text Layer）。
+
+HTML Overlay 負責建立所有可互動文字內容。
+
+HTML Overlay 不屬於 Image Area。
+
+HTML Overlay 亦不屬於 Interactive Hotspot。
+
+HTML Overlay 為獨立模組。
+
+所有 HTML Overlay 均可獨立建立、修改、刪除。
+
+任何 HTML Overlay 不得直接修改教材內容。
+
+教材內容與互動資料必須完全分離。
+
+## 10.2 Responsibilities
+
+HTML Overlay 負責：
+
+- 顯示文字內容
+- Rich Text 編輯
+- HTML 元件管理
+- Popup 建立
+- Dictionary 整合
+- AI 文字互動
+- Audio 互動
+- Video 互動
+- 文字格式管理
+
+HTML Overlay 不負責：
+
+- Image 管理
+- PDF 管理
+- Hotspot 建立
+- 教材結構管理
+
+上述功能皆由對應模組負責。
+
+## 10.3 Supported Content
+
+HTML Overlay 第一版應支援：
+
+- 單字
+- 句子
+- 段落
+- 任意文字區域
+
+支援內容包含：
+
+- 中文
+- 英文
+- 數字
+- Emoji
+- 特殊符號
+
+未來可擴充：
+
+- Markdown
+- HTML Components
+- AI Generated Content
+
+- ## 10.4 Interactive Content
+
+每個 HTML Overlay 可同時建立多個互動資料。
+
+例如：
+
+同一段文字可同時包含：
+
+- 中文解釋
+- KK 音標
+- 真人發音
+- Cambridge Dictionary
+- AI 解說
+- 教學影片
+- 圖片
+- 外部連結
+
+所有互動資料皆獨立儲存。
+
+新增或刪除互動資料不得直接修改教材內容。
+
+## 10.5 Design Principles
+
+HTML Overlay 應符合以下原則：
+
+- 教材內容與互動資料完全分離。
+- HTML Overlay 可獨立建立。
+- HTML Overlay 可獨立刪除。
+- HTML Overlay 可獨立複製。
+- HTML Overlay 可重複利用。
+- HTML Overlay 不依賴任何特定教材。
 
 ---
 
