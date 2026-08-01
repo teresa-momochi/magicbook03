@@ -61,6 +61,29 @@ MVP 的目標不是完成所有功能，而是建立完整且可操作的教材�
 # 3. Development Scope
 
 本階段開發重點如下：
+## MVP Technical Boundary
+
+本文件定義 MVP 的功能範圍（Functional Scope）與使用者流程（User Flow）。
+
+本文件不限制技術實作方式（Technical Implementation）。
+
+除非 Product Specification 有明確規定，下列技術細節由 Technical Lead 自行決定：
+
+- State Management
+- Local Storage Implementation
+- Project Folder Structure
+- Component Structure
+- Internal Code Organization
+- Third-party Library Selection
+
+技術實作必須符合以下原則：
+
+- 不改變產品功能
+- 不改變使用者操作流程
+- 不違反 Product Specification
+- 不超出 MVP Scope
+
+---
 
 ## Included
 
