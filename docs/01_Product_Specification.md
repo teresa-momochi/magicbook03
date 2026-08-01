@@ -1118,7 +1118,47 @@ HTML Overlay 可同時掛載多個互動功能。
 
 # 9. Interactive Hotspot
 
-(To be completed)
+## 9.1 Module Position
+Interactive Hotspot 為 MagicBook 3.0 的核心互動元件（Core Interactive Component）。
+
+Interactive Hotspot 本身不屬於 Image Area。
+
+也不屬於 Text Area。
+
+它是一個可被不同模組共用的互動物件。
+
+Interactive Hotspot 可由不同模組建立。
+
+例如：
+
+- Image Area
+- Text Area
+- HTML Overlay
+- AI 自動建立
+
+所有 Interactive Hotspot 均遵循相同的資料結構與互動規則。
+---
+## 9.2 Responsibilities
+Interactive Hotspot 負責：
+
+- 接收使用者互動事件（Events）
+- 管理 Hotspot Properties
+- 呼叫對應 Action
+- 將 Hotspot Properties 傳遞給 Action Module
+
+Interactive Hotspot 不負責：
+
+- 實作 Popup
+- 實作 Dictionary
+- 實作 AI
+- 實作 Audio
+- 實作 Video
+
+- 所有互動功能皆應由獨立的 Action Module 實作。
+
+Interactive Hotspot 僅作為互動入口（Interaction Entry）。
+
+不得直接實作任何功能。
 
 ---
 
