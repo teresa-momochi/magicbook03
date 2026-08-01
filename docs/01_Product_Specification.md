@@ -425,6 +425,25 @@ MagicBook 3.0 從第一天即以 SaaS 平台為目標設計。
 
 不得因單一功能破壞整體架構。
 
+---
+
+## 12. Modular Design
+
+所有功能皆應設計為獨立模組。
+
+每個模組應具備：
+
+- 明確職責（Single Responsibility）
+- 可獨立維護
+- 可獨立測試
+- 可獨立擴充
+
+避免模組之間高度耦合（High Coupling）。
+
+新增功能時，應優先考慮是否可重複利用既有模組，而非重新開發相似功能。
+
+所有模組皆應保持低耦合（Low Coupling）、高內聚（High Cohesion）的設計原則。
+
 # 4. System Architecture
 
 ## 4.1 Overall Architecture
