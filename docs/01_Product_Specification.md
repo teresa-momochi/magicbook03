@@ -1264,9 +1264,137 @@ HTML Overlay 應符合以下原則：
 
 # 11. Popup System
 
-(To be completed)
+## 11.1 Module Position
+
+Popup System 為 MagicBook 3.0 的互動視窗管理模組（Popup Manager）。
+
+所有 Popup 均由 Popup System 統一管理。
+
+Popup 不負責建立資料。
+
+Popup 僅負責顯示其他模組提供的內容。
+
+例如：
+
+- Dictionary
+- AI
+- Audio
+- Video
+- Image
+- HTML Overlay
+
+Popup 可由任何 Action Module 呼叫。
+
+所有 Popup 均遵循相同生命週期（Lifecycle）與管理機制。
 
 ---
+## 11.2 Responsibilities
+
+Popup System 負責：
+
+- Popup 建立
+- Popup 關閉
+- Popup Stack 管理
+- Popup Priority 管理
+- Popup Animation
+- Popup Position 管理
+- Popup Lifecycle 管理
+- Popup Theme 管理
+
+Popup System 不負責：
+
+- 實作 Dictionary
+- 實作 AI
+- 實作 Audio
+- 實作 Video
+- 實作 Image Viewer
+
+上述功能皆由對應 Module 提供。
+
+Popup System 僅負責：
+
+- 接收 Action Module 呼叫
+- 建立 Popup
+- 顯示 Popup
+- 關閉 Popup
+- 回收 Popup
+
+Popup System 不直接存取教材資料。
+
+所有資料皆由對應 Module 提供。
+
+Popup System 僅負責使用者介面（UI）與生命週期（Lifecycle）管理。
+
+## 11.3 Popup Types
+
+MagicBook 3.0 支援多種 Popup。
+
+第一版包含：
+
+- Dictionary Popup
+- AI Popup
+- Audio Popup
+- Video Popup
+- Image Popup
+- Information Popup
+
+所有 Popup 共用同一套 Popup Framework。
+
+不同 Popup 僅替換顯示內容（Content）。
+
+不得為每一種 Popup 重複開發新的 Popup 系統。
+
+未來新增任何 Popup Type，皆應沿用 Popup System。
+
+## 11.4 Popup Lifecycle
+
+所有 Popup 應遵循相同生命週期（Lifecycle）。
+
+流程如下：
+
+Action Trigger
+↓
+
+Create Popup
+
+↓
+
+Initialize Content
+
+↓
+
+Display Popup
+
+↓
+
+User Interaction
+
+↓
+
+Close Popup
+
+↓
+
+Destroy Popup
+
+Popup 關閉後應釋放所有暫存資源。
+
+不得保留無效 Popup Instance。
+
+## 11.5 Design Principles
+
+Popup System 應遵循以下原則：
+
+- 所有 Popup 使用相同 Framework。
+- Popup 可重複使用。
+- Popup 可獨立測試。
+- Popup 不直接修改教材資料。
+- Popup 不依賴特定 Module。
+- Popup 應保持輕量化。
+
+未來新增任何 Popup Type，不得修改 Popup Framework。
+
+
 # 12. Editor System
 
 
