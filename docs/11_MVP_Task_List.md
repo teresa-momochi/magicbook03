@@ -60,21 +60,21 @@ Last Update: 2026-08-01
 
 # Task 3 — Book Editor
 
-完成教材編輯畫面。
-
-- [ ] 左右雙工作區
-- [ ] Image Area
-- [ ] Text Area
-
 注意：
 
 Image Area 與 Text Area 同屬於同一個 Page。
 
 兩者共同組成一頁教材。
 
-第一版 MVP 僅建立 Page 架構。
+兩個工作區可各自獨立作業（Independent Operation）。
 
-不得自行建立任何互動邏輯（Interaction Logic）。
+彼此：
+
+- 功能獨立
+- 資料獨立
+- 操作獨立
+
+第一版 MVP 不建立任何互動邏輯（Interaction Logic）。
 
 不得自行假設：
 
@@ -87,9 +87,7 @@ Image Area 與 Text Area 同屬於同一個 Page。
 
 除共同隸屬於同一個 Page 外，
 
-Image Area 與 Text Area 應保持功能獨立。
-
----
+Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立運作。
 
 # Task 4 — Image Area
 
