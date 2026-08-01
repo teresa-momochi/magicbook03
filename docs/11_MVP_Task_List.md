@@ -63,6 +63,18 @@ Last Update: 2026-08-01
 
 # Task 3 — Book Editor
 
+完成教材編輯畫面。
+
+- [ ] 建立 Book Editor
+- [ ] 建立 Page Manager
+- [ ] Add Page
+- [ ] Delete Page
+- [ ] Reorder Page
+- [ ] Page Navigation
+- [ ] 左右雙工作區
+- [ ] Image Area
+- [ ] Text Area
+
 注意：
 
 Image Area 與 Text Area 同屬於同一個 Page。
@@ -91,14 +103,22 @@ Image Area 與 Text Area 同屬於同一個 Page。
 除共同隸屬於同一個 Page 外，
 
 Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立運作。
-
 # Task 4 — Image Area
 
 完成：
 
 - [ ] Add Image
-- [ ] Delete Image
-- [ ] Drag Sorting
+- [ ] Add PDF
+- [ ] Replace Image / PDF
+- [ ] Delete Image / PDF
+- [ ] Reorder Image / PDF
+
+第一版支援：
+
+- PNG
+- JPG
+- JPEG
+- PDF
 
 不要加入：
 
@@ -106,8 +126,8 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 - AI
 - Dictionary
 - Popup
-
----
+- Image Interaction
+- Reading Function
 
 # Task 5 — Text Area
 
@@ -143,14 +163,18 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 - [ ] Edit Book
 - [ ] Delete Book
 - [ ] Search Book
+- [ ] Recently Used
+- [ ] Open Book（Book Editor）
+- [ ] Open Reading（Reading Mode）
 
 不要加入：
 
 - Folder
 - Favorite
 - Tag
-
----
+- Workspace
+- Organization Mode
+- Multi-user Collaboration
 
 # Task 8 — Reading Mode
 
@@ -165,9 +189,17 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 
 # MVP Complete Checklist
 
-完成以下流程：
+完成以下完整流程：
+
+- [ ] Login
+
+↓
 
 - [ ] Home
+
+↓
+
+- [ ] Create Book
 
 ↓
 
@@ -175,7 +207,15 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 
 ↓
 
-- [ ] Add Image
+- [ ] Add Page
+
+↓
+
+- [ ] Add Image / PDF
+
+↓
+
+- [ ] Add Text
 
 ↓
 
@@ -187,18 +227,15 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 
 ↓
 
-- [ ] Open Book
+- [ ] Open Book（Book Editor）
 
 ↓
 
-- [ ] Reading Mode
+- [ ] Open Reading（Reading Mode）
 
 ↓
 
 - [ ] Back to Edit
-
----
-
 # Development Rules
 
 若規格未定義：
