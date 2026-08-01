@@ -981,11 +981,143 @@ Image Area 保留未來擴充能力。
 
 # 8. Text Area
 
-(To be completed)
+## 8.1 Module Position
 
----
+Text Area 為 MagicBook 3.0 的右側教材互動區（Interactive Text Area）。
 
-# 9. Interactive Image Area
+Text Area 與 Image Area 為平行架構。
+
+兩者共同隸屬於同一個 Page。
+
+彼此架構獨立、功能獨立、排版獨立。
+
+共同組成一頁完整教材。
+
+Text Area 專注於文字教材及文字互動。
+
+Image Area 專注於圖片教材及圖片互動。
+
+兩個模組可獨立運作，也可同時存在於同一個 Page。
+
+任何一方皆不得依賴另一方才能運作。
+
+--## 8.2 Responsibilities
+
+Text Area 負責：
+
+- HTML Overlay 管理
+- 文字教材管理
+- Rich Text 編輯
+- 文字樣式管理
+- Popup 顯示
+- Dictionary 整合
+- AI 文字互動
+- 文字教材互動
+
+Text Area 不負責：
+
+- 圖片管理
+- PDF 管理
+- Image Area 管理
+- Interactive Hotspot 建立
+- 圖片相關互動
+
+上述功能皆由 Image Area 負責。
+
+-## 8.3 Supported Content
+
+Text Area 第一版正式支援：
+
+- 純文字（Plain Text）
+- Rich Text
+- HTML Overlay
+
+文字內容可包含：
+
+- 英文
+- 中文
+- 數字
+- 標點符號
+- Emoji
+- 特殊符號
+
+文字內容可自由混合。
+
+系統需保留未來擴充更多文字格式的能力。
+
+例如：
+
+- Markdown
+- HTML Components
+- AI Generated Content
+
+- ## 8.4 HTML Overlay
+
+Text Area 採用 HTML Overlay 作為文字互動的核心技術。
+
+HTML Overlay 並非教材本身。
+
+而是覆蓋於教材之上的互動層（Overlay Layer）。
+
+教材保持原樣。
+
+所有文字互動皆建立於 HTML Overlay。
+
+HTML Overlay 第一版正式支援：
+
+- 單字
+- 句子
+- 段落
+- 任意文字區域
+
+每個 HTML Overlay 可依需求設定不同大小與範圍。
+
+HTML Overlay 可與教材完全分離。
+
+移除 HTML Overlay 不得影響教材內容。
+
+所有 HTML Overlay 均應儲存為獨立資料。
+
+不得直接修改教材本身。
+
+## 8.5 Interaction
+
+Text Area 的每個 HTML Overlay 均可建立互動能力。
+
+每個 HTML Overlay 可設定一種或多種互動功能。
+
+第一版正式支援：
+
+- 中文解釋
+- KK 音標
+- 發音
+- Cambridge Dictionary
+- AI 解說
+- AI 翻譯
+- AI 問答
+- 顯示圖片
+- 播放音效
+- 播放影片
+- 開啟練習題
+- 跳轉指定內容
+
+HTML Overlay 可同時掛載多個互動功能。
+
+例如：
+
+同一個英文單字可同時具有：
+
+- 中文解釋
+- KK 音標
+- 真人發音
+- Cambridge Dictionary
+- AI 解說
+
+所有互動資料皆應獨立儲存。
+
+不得直接修改教材內容。
+
+# 9. Interactive Hotspot
 
 (To be completed)
 
@@ -1018,3 +1150,5 @@ Image Area 保留未來擴充能力。
 # 14. Change Log
 
 (To be completed)
+
+
