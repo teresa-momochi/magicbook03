@@ -568,7 +568,210 @@ Image Area 與 Text Area：
 
 # 7. Image Area
 
-(To be completed)
+# 7. Image Area
+
+## 7.1 Module Position
+
+Image Area 為 MagicBook 3.0 的左側教材互動區（Interactive Image Area）。
+
+Image Area 與 Text Area 為平行架構。
+
+兩者共同隸屬於同一個 Page。
+
+彼此架構獨立、功能獨立、排版獨立。
+
+共同組成一頁完整教材。
+
+Image Area 專注於圖片教材及圖片互動。
+
+Text Area 專注於文字教材及文字互動。
+
+---
+
+## 7.2 Responsibilities
+
+Image Area 負責：
+
+- 教材圖片管理
+- PDF 管理
+- 圖片教材呈現
+- Interactive Hotspot 管理
+- 圖片教材互動
+
+Image Area 不負責：
+
+- 文字排版
+- HTML Overlay
+- Rich Text 編輯
+- 文字樣式管理
+
+上述功能皆由 Text Area 負責。
+
+---
+
+## 7.3 Supported Content
+
+Image Area 第一版正式支援：
+
+- PNG
+- JPG
+- JPEG
+- PDF
+
+Image Area 支援：
+
+- 一次匯入多張圖片
+- 一次匯入多頁 PDF
+- 混合圖片與 PDF
+
+系統應自動建立教材資料。
+
+不需逐頁建立。
+
+系統需保留未來擴充其他教材格式的能力。
+
+---
+
+## 7.4 Interactive Image Area
+
+Image Area 正式定位為：
+
+Interactive Image Area（互動圖片區）。
+
+Image Area 的目的不是顯示圖片。
+
+而是讓任何圖片教材皆可建立互動能力。
+
+教材保持原樣。
+
+互動建立於教材之上。
+
+兩者完全分離。
+
+---
+
+## 7.5 Interactive Hotspot
+
+Image Area 支援建立：
+
+Interactive Hotspot（互動熱點）。
+
+Interactive Hotspot 定義為：
+
+教材中的可互動區域（Interactive Region）。
+
+並非圖片上的一個點。
+
+每一個 Hotspot 都是一個獨立的互動物件（Interactive Object）。
+
+老師可自由調整：
+
+- 位置
+- 大小
+- 範圍
+
+第一版正式支援建立於：
+
+- 單字
+- 句子
+- 人物
+- 圖片
+- 按鈕
+- 任意教材區域
+
+Interactive Hotspot 為 MagicBook 3.0 第一版核心功能。
+
+---
+
+## 7.6 Hotspot Properties
+
+每一個 Interactive Hotspot 皆具有自己的屬性（Properties）。
+
+例如：
+
+- 名稱
+- 類型（Word／Sentence／Image／Custom）
+- 中文解釋
+- KK 音標
+- 發音
+- Cambridge Dictionary 網址
+- AI 解說
+- AI 翻譯
+- AI 問答
+- 備註
+
+系統可支援：
+
+- 自動取得（例如單字、KK、Cambridge）
+- 手動修改
+- 手動新增
+
+所有屬性皆可獨立編輯。
+
+---
+
+## 7.7 Hotspot Actions
+
+每一個 Interactive Hotspot 可指定一個或多個 Action（動作）。
+
+例如：
+
+- 顯示 Popup
+- 播放發音
+- 開啟 Cambridge Dictionary
+- 顯示 AI 解說
+- 顯示 AI 翻譯
+- 顯示 AI 問答
+- 播放音效
+- 播放影片
+- 顯示圖片
+- 開啟練習題
+- 跳轉指定教材
+- 開啟網址
+
+未來可持續新增新的 Action 類型。
+
+---
+
+## 7.8 Design Principles
+
+Image Area 的核心不是圖片。
+
+而是讓圖片教材具備互動能力。
+
+任何圖片教材皆可建立互動。
+
+教材永遠保持原樣。
+
+互動永遠建立於教材之上。
+
+Hotspot 為互動入口。
+
+Properties 為互動資料。
+
+Actions 為互動行為。
+
+三者彼此獨立，可持續擴充。
+
+---
+
+## 7.9 Future Expansion
+
+Image Area 保留未來擴充能力。
+
+例如：
+
+- Hotspot Editor
+- AI 自動建立 Hotspot
+- AI OCR
+- AI 圖片辨識
+- AI 自動產生教材互動
+- 更多教材格式
+- 更多 Hotspot 類型
+- 更多 Properties
+- 更多 Action 類型
+
+所有未來功能皆需遵守 MagicBook 3.0 核心架構，不得破壞既有設計。
 
 ---
 
