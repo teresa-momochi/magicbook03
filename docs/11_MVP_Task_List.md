@@ -41,6 +41,8 @@ Last Update: 2026-08-01
 
 # Task 1 — Project Setup
 
+完成專案初始化。
+
 - [ ] 建立 React + Vite 專案
 - [ ] 建立 GitHub 專案
 - [ ] 建立基本資料夾結構
@@ -55,6 +57,7 @@ Last Update: 2026-08-01
 
 完成首頁。
 
+- [ ] Login
 - [ ] MagicBook 首頁
 - [ ] Start Editing Button
 - [ ] 進入 Book Editor
@@ -103,6 +106,9 @@ Image Area 與 Text Area 同屬於同一個 Page。
 除共同隸屬於同一個 Page 外，
 
 Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立運作。
+
+---
+
 # Task 4 — Image Area
 
 完成：
@@ -129,12 +135,16 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 - Image Interaction
 - Reading Function
 
+---
+
 # Task 5 — Text Area
 
 完成：
 
-- [ ] 建立文字區
-- [ ] 基本文字輸入
+- [ ] Add Text
+- [ ] Edit Text
+- [ ] Delete Text
+- [ ] Basic Text Input
 
 不要加入：
 
@@ -150,7 +160,8 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 
 - [ ] Save Dialog
 - [ ] Book Name
-- [ ] Save
+- [ ] Save Book
+- [ ] Unsaved Changes Warning
 
 ---
 
@@ -175,6 +186,8 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 - Workspace
 - Organization Mode
 - Multi-user Collaboration
+
+---
 
 # Task 8 — Reading Mode
 
@@ -236,6 +249,9 @@ Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立�
 ↓
 
 - [ ] Back to Edit
+
+---
+
 # Development Rules
 
 若規格未定義：
