@@ -12,6 +12,25 @@ Technical Lead: 阿德
 
 Last Update: 2026-08-01
 
+# Table of Contents
+
+1. Product Vision
+2. Product Positioning
+3. Core Design Philosophy
+4. Core Development Principles
+5. System Architecture
+6. Workspace Architecture
+7. Book / Lesson / Page
+8. Image Area
+9. Text Area
+10. Interactive Hotspot
+11. Popup System
+12. AI Integration
+13. User Management
+14. Editor System
+15. Future Roadmap
+
+---
 ---
 
 # 1. Product Vision
