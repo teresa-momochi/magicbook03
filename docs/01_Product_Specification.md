@@ -123,8 +123,61 @@ MagicBook 的定位，是讓任何教材都能快速具備互動能力，而不�
 
 # 2. Product Positioning
 
-(To be completed)
+## 2.1 Product Type
 
+MagicBook 3.0 是一套互動教材平台（Interactive Teaching Platform）。
+
+產品定位為可商業化的 SaaS 平台，支援個人使用者、老師、補習班及學校。
+
+---
+
+## 2.2 Target Users
+
+MagicBook 3.0 的使用對象包含：
+
+- 個人學習者
+- 個人老師
+- 補習班
+- 學校
+
+---
+
+## 2.3 Product Rollout Strategy
+
+MagicBook 採分階段推廣策略。
+
+### Phase 1（MVP）
+
+主要使用者：
+
+- 個人學習者
+
+目的：
+
+- 快速取得使用回饋
+- 驗證產品設計
+- 累積真實教學案例
+- 持續優化產品
+
+### Phase 2
+
+擴展至：
+
+- 個人老師
+
+### Phase 3
+
+擴展至：
+
+- 補習班（Workspace）
+
+### Phase 4
+
+擴展至：
+
+- 學校
+
+雖然產品採分階段推廣，但系統架構從第一天即以多人 SaaS 平台為目標設計。
 ---
 
 # 3. Core Design Philosophy
