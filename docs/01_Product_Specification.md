@@ -16,19 +16,20 @@ Last Update: 2026-08-01
 
 1. Product Vision
 2. Product Positioning
-3. Core Design Philosophy
-4. Core Development Principles
-5. System Architecture
-6. Workspace Architecture
-7. Book / Lesson / Page
-8. Image Area
-9. Text Area
-10. Interactive Hotspot
-11. Popup System
-12. Editor System
-13. Development Principles
-14. Future Expansion
-15. Change Log
+3. Product Mode
+4. Core Design Philosophy
+5. Core Development Principles
+6. System Architecture
+7. Workspace Architecture
+8. Book / Lesson / Page
+9. Image Area
+10. Text Area
+11. Interactive Hotspot
+12. Popup System
+13. Editor System
+14. Development Principles
+15. Future Expansion
+16. Change Log
 ---
 ---
 
