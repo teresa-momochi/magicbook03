@@ -68,7 +68,26 @@ Last Update: 2026-08-01
 
 注意：
 
-Image Area 與 Text Area 不得建立任何關聯。
+Image Area 與 Text Area 同屬於同一個 Page。
+
+兩者共同組成一頁教材。
+
+第一版 MVP 僅建立 Page 架構。
+
+不得自行建立任何互動邏輯（Interaction Logic）。
+
+不得自行假設：
+
+- 一張圖片對應一段文字
+- 圖片控制文字
+- 文字控制圖片
+- 自動同步
+- 自動切換
+- 其他未定義流程
+
+除共同隸屬於同一個 Page 外，
+
+Image Area 與 Text Area 應保持功能獨立。
 
 ---
 
