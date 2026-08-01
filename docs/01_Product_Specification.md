@@ -25,11 +25,10 @@ Last Update: 2026-08-01
 9. Text Area
 10. Interactive Hotspot
 11. Popup System
-12. AI Integration
-13. User Management
-14. Editor System
-15. Future Roadmap
-
+12. Editor System
+13. Development Principles
+14. Future Expansion
+15. Change Log
 ---
 ---
 
@@ -1134,6 +1133,85 @@ HTML Overlay 可同時掛載多個互動功能。
 (To be completed)
 
 ---
+# 12. Editor System
+
+
+## 12.1 Floating Toolbar
+MagicBook 所有 Editor 共用同一套 Floating Toolbar（浮動工具列）。
+
+Floating Toolbar 為可移動式工具列。
+
+使用者可依個人操作習慣自由放置於：
+
+- 上方
+- 下方
+- 左側
+- 右側
+- 畫面任意位置（拖曳）
+
+Toolbar 不應固定於單一位置。
+
+使用者可自由調整位置。
+
+### Toolbar Visibility
+
+使用者完成操作後，
+
+可點擊 Hide 將 Toolbar 隱藏。
+
+需要時可立即再次展開。
+
+Toolbar 不應長時間遮蔽教材內容。
+
+Toolbar 的顯示與隱藏，不得影響目前的編輯狀態。
+
+### Auto Hide
+
+Toolbar 應支援 Auto Hide（自動隱藏）模式。
+
+當使用者停止操作數秒後，
+
+Toolbar 可自動縮小、半透明或隱藏。
+
+滑鼠移入 Toolbar 區域時，
+
+應立即恢復正常顯示。
+
+Auto Hide 可於系統設定中開啟或關閉。
+
+Auto Hide 不得影響任何編輯功能。
+
+### Remember Position
+
+系統應記錄使用者最後一次 Toolbar 的位置。
+
+下次開啟任何 Editor 時，
+
+應自動恢復至上次使用的位置。
+
+若使用者重新拖曳 Toolbar，
+
+系統應自動更新並儲存新的位置。
+
+所有 Editor 應共用相同的 Toolbar 位置設定。
+
+### Shared Toolbar
+
+MagicBook 所有 Editor 應共用同一套 Toolbar。
+
+包含但不限於：
+
+- Image Area Editor
+- Text Area Editor
+- HTML Overlay Editor
+- Interactive Hotspot Editor
+- Popup Editor
+
+Toolbar 應依不同 Editor 自動切換可用工具。
+
+操作方式應保持一致。
+
+避免使用者重新學習不同 Editor 的操作方式。
 
 # 12. Development Principles
 
