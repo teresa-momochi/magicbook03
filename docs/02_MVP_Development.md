@@ -366,7 +366,7 @@ Text Area（文字區）
 - HTML Overlay
 - Google Search
 - Learning Analytics
-- Data Synchronization
+-- Real-time Data Synchronization（多裝置即時同步）
 - Workspace Management
 - Multi-user Collaboration
 - Organization Mode
@@ -388,6 +388,8 @@ Text Area（文字區）
 - 返回編輯模式
 
 整體流程可完整操作，且無需依賴 AI、資料庫或其他進階功能。
+
+使用 Supabase 作為雲端資料儲存（Cloud Storage）與使用者驗證（Authentication）。
 
 ---
 
