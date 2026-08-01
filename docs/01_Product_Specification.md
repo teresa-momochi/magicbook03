@@ -451,7 +451,118 @@ Workspace 是所有資料的根。
 
 # 6. Book / Lesson / Page
 
-(To be completed)
+## 6.1 Core Hierarchy
+
+MagicBook 3.0 採用階層式教材管理架構。
+
+教材組織如下：
+
+Workspace
+↓
+Book
+↓
+Lesson
+↓
+Page
+
+Page 為教材的核心管理單位。
+
+---
+
+## 6.2 Book
+
+Book 代表一本教材。
+
+例如：
+
+- G3 High Water
+- Phonics Book 1
+- Grammar Book
+
+一本 Book 可包含多個 Lesson。
+
+---
+
+## 6.3 Lesson
+
+Lesson 代表教材章節。
+
+例如：
+
+- Lesson 1
+- Lesson 2
+- Lesson 3
+
+一個 Lesson 可包含多個 Page。
+
+---
+
+## 6.4 Page
+
+Page 為教材管理的最小單位。
+
+每個 Page 同時包含：
+
+- Image Area
+- Text Area
+
+兩者屬於同一個 Page。
+
+共同組成完整教材。
+
+---
+
+## 6.5 Image Area
+
+Image Area 為教材圖片互動區。
+
+支援：
+
+- PNG
+- JPG
+- PDF
+- Interactive Hotspot
+
+Image Area 專注於圖片教材與圖片互動。
+
+---
+
+## 6.6 Text Area
+
+Text Area 為教材文字互動區。
+
+採用：
+
+Background Image
+
++
+
+HTML Overlay
+
++
+
+Popup
+
+三層架構。
+
+Text Area 專注於教材文字互動。
+
+---
+
+## 6.7 Page Principles
+
+Page 為 MagicBook 的核心管理單位。
+
+Image Area 與 Text Area：
+
+- 同屬於同一個 Page
+- 架構獨立
+- 排版獨立
+- 功能獨立
+
+但共同呈現同一頁教材。
+
+未來所有教材功能皆建立於 Page 架構之上。
 
 ---
 
