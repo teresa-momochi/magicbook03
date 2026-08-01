@@ -261,7 +261,96 @@ MagicBook 3.0 從第一天即以 SaaS 平台為目標設計。
 
 # 4. System Architecture
 
-(To be completed)
+## 4.1 Overall Architecture
+
+MagicBook 3.0 採模組化（Modular Architecture）設計。
+
+各模組皆可獨立開發、獨立維護、獨立擴充。
+
+任何模組皆不得直接依賴其他模組的內部實作。
+
+---
+
+## 4.2 Core Structure
+
+MagicBook 3.0 的核心架構如下：
+
+Workspace
+↓
+Book
+↓
+Lesson
+↓
+Page
+├── Image Area
+└── Text Area
+
+Page 為教材的核心管理單位。
+
+Image Area 與 Text Area 為平行架構，同屬於同一個 Page。
+
+兩者彼此獨立，但共同組成一頁教材。
+
+---
+
+## 4.3 Image Area
+
+Image Area 負責：
+
+- 圖片
+- PDF
+- Interactive Hotspot
+- 圖片相關互動
+
+Image Area 不負責文字排版。
+
+---
+
+## 4.4 Text Area
+
+Text Area 負責：
+
+- Background Image
+- HTML Overlay
+- Popup
+- 文字相關互動
+
+Text Area 不負責圖片管理。
+
+---
+
+## 4.5 Core Principles
+
+Image Area 與 Text Area：
+
+- 架構獨立
+- 功能獨立
+- 排版獨立
+
+但：
+
+- 同屬於同一個 Page
+- 共同組成完整教材
+
+---
+
+## 4.6 Future Expansion
+
+所有未來功能：
+
+- AI
+- 語音
+- OCR
+- 翻譯
+- 作答
+- 標註
+- 畫線
+- 螢光筆
+- 其他互動
+
+皆建立於既有架構。
+
+不得破壞核心架構設計。
 
 ---
 
