@@ -138,6 +138,28 @@ MVP 的目標不是完成所有功能，而是建立完整且可操作的教材�
 - 進入閱讀模式
 
 ---
+---
+
+### Lesson Handling（Lesson 處理）
+
+為保持與 Product Specification 一致的系統架構，
+
+MVP 第一版保留：
+
+Book → Lesson → Page
+
+資料結構。
+
+但 Lesson 不提供使用者操作介面（UI）。
+
+系統於建立新 Book 時，
+
+自動建立一個預設 Lesson。
+
+第一版所有 Page 均建立於此預設 Lesson 內。
+
+後續版本再開放 Lesson 管理功能。
+
 
 ### Book Library（教材櫃）
 
