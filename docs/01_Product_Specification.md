@@ -1475,6 +1475,103 @@ Toolbar 應依不同 Editor 自動切換可用工具。
 
 避免使用者重新學習不同 Editor 的操作方式。
 
+## 12.2 Selection
+
+Editor 採用 Selection First 設計。
+
+使用者必須先選取物件。
+
+再進行任何編輯操作。
+
+未選取任何物件時，
+
+Editor 不應顯示物件相關工具。
+
+不同 Editor 可有不同 Selection 類型。
+
+例如：
+
+- Image Selection
+- Text Selection
+- HTML Overlay Selection
+- Interactive Hotspot Selection
+
+所有 Selection 均遵循相同操作流程。
+
+## 12.3 Editor State
+Editor 應維護目前編輯狀態（Editor State）。
+
+Editor State 包含：
+
+- Nothing Selected
+- Single Selection
+- Multiple Selection
+- Editing
+- Dragging
+- Resizing
+
+不同 State 可決定：
+
+- Toolbar 顯示內容
+- 可使用功能
+- 滑鼠操作方式
+- 快捷鍵
+
+Editor 不得同時存在互相衝突的 State。
+
+任何時刻僅允許一個主要 State 生效。
+
+## 12.4 Common Operations
+
+所有 Editor 應支援共用操作。
+
+包含：
+
+- Select
+- Move
+- Copy
+- Paste
+- Delete
+- Undo
+- Redo
+
+不同 Editor 可依需求新增專屬操作。
+
+例如：
+
+Image Area：
+- Resize
+- Rotate
+
+Text Area：
+- Rich Text Formatting
+
+Interactive Hotspot：
+- Edit Properties
+
+HTML Overlay：
+- Edit HTML
+
+所有 Editor 應保持一致的操作體驗（User Experience）。
+
+12.5 Design Principles
+Editor System 應遵循以下原則：
+
+- 所有 Editor 共用同一套操作模式。
+- 所有 Editor 共用 Floating Toolbar。
+- 所有 Editor 使用相同 Selection 機制。
+- 所有 Editor 使用相同 State 管理。
+- 所有 Editor 支援共用操作（Copy、Paste、Delete、Undo、Redo）。
+- Editor 應保持一致的使用者體驗（User Experience）。
+- 不同 Editor 僅實作各自專屬功能。
+
+新增任何 Editor 時，
+
+不得重新設計 Editor Framework。
+
+應直接沿用 Editor System。
+
+
 # 12. Development Principles
 
 (To be completed)
