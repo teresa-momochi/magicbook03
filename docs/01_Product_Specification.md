@@ -715,11 +715,18 @@ Image Area 與 Text Area 為平行架構。
 
 ## 8.2 Responsibilities
 
-Image Area 負責：
+## 8.2 Responsibilities
+
+Image Area 負責圖片教材的管理與呈現。
+
+MVP（第一版）負責：
 
 - 圖片管理
 - PDF 管理
 - 教材圖片呈現
+
+後續版本負責：
+
 - Interactive Hotspot 管理
 - 圖片互動
 
@@ -729,7 +736,6 @@ Image Area 不負責：
 - HTML Overlay
 - Popup
 - Dictionary
-
 ---
 
 ## 8.3 Supported Content
@@ -879,11 +885,9 @@ Text Area 不負責：
 
 ## 9.3 Supported Content
 
-第一版支援：
+第一版（MVP）支援：
 
 - Plain Text（純文字）
-- Rich Text（富文字）
-- HTML Overlay（HTML 覆蓋層）
 
 支援內容：
 
@@ -893,12 +897,13 @@ Text Area 不負責：
 - 標點符號
 - Emoji
 
-保留未來支援：
+後續版本支援：
 
+- Rich Text（富文字）
+- HTML Overlay（HTML 覆蓋層）
 - Markdown
 - HTML Components
 - AI Generated Content
-
 ---
 
 ## 9.4 HTML Overlay
