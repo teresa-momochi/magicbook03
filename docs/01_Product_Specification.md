@@ -734,12 +734,19 @@ Image Area 不負責：
 
 ## 8.3 Supported Content
 
-第一版支援：
+第一版支援格式：
 
 - PNG
 - JPG
 - JPEG
 - PDF
+
+第一版提供：
+
+- Add Image（新增圖片）
+- Replace Image（取代圖片）
+- Delete Image（刪除圖片）
+- Reorder Image（拖曳排序）
 
 系統支援：
 
