@@ -715,8 +715,6 @@ Image Area 與 Text Area 為平行架構。
 
 ## 8.2 Responsibilities
 
-## 8.2 Responsibilities
-
 Image Area 負責圖片教材的管理與呈現。
 
 MVP（第一版）負責：
@@ -865,7 +863,9 @@ Text Area 專注於文字教材及文字互動。
 
 ## 9.2 Responsibilities
 
-Text Area 負責：
+Text Area 負責文字教材管理。
+
+主要職責包括：
 
 - 文字內容管理（Text Content）
 - Rich Text 編輯（Rich Text Editing）
