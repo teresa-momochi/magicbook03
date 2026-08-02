@@ -250,7 +250,6 @@ Back to Edit
 - 點擊後進入教材編輯畫面
 
 ---
-
 ## Screen 02 — Book Editor
 
 畫面固定分為兩個工作區：
@@ -263,15 +262,32 @@ Image Area（圖片區）
 
 Text Area（文字區）
 
-兩個工作區：
+Image Area 與 Text Area 同屬於同一個 Page。
 
-- 完全獨立
-- 不建立資料關聯
-- 不同步內容
-- 不假設一對一關係
+兩者共同組成一頁教材。
 
-任何圖片與文字之間的對應方式，待後續版本定義。
+兩個工作區可各自獨立作業（Independent Operation）。
 
+彼此：
+
+- 功能獨立
+- 資料獨立
+- 操作獨立
+
+第一版 MVP 不建立任何互動邏輯（Interaction Logic）。
+
+不得自行假設：
+
+- 一張圖片對應一段文字
+- 圖片控制文字
+- 文字控制圖片
+- 自動同步
+- 自動切換
+- 其他未定義流程
+
+除共同隸屬於同一個 Page 外，
+
+Image Area 與 Text Area 應保持互不干擾，可各自獨立開發與獨立運作。
 ---
 
 ## Screen 03 — Save Dialog
@@ -387,10 +403,24 @@ Text Area（文字區）
 - 進入閱讀模式
 - 返回編輯模式
 
-整體流程可完整操作，且無需依賴 AI、資料庫或其他進階功能。
+整體流程可完整操作。
 
-使用 Supabase 作為雲端資料儲存（Cloud Storage）與使用者驗證（Authentication）。
+MVP 不依賴以下進階功能：
 
+- AI
+- TTS
+- Hotspot
+- Dictionary
+- Popup
+- HTML Overlay
+- Real-time Data Synchronization（多裝置即時同步）
+
+MVP 使用 Supabase 作為：
+
+- 雲端資料儲存（Cloud Storage）
+- 使用者驗證（Authentication）
+
+使用者應可於不同裝置登入同一帳號，存取自己的教材。
 ---
 
 # 9. Development Sequence
