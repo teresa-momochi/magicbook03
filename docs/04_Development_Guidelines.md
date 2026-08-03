@@ -367,7 +367,7 @@ MagicBook 第一版建立以下核心模組：
 - Audio
 - Reading Mode
 - Global Search
-
+- Context Toolbar
 所有核心模組皆須完成基本資料架構。
 
 ---
@@ -856,7 +856,7 @@ HTML Overlay
 
 ↓
 
-Hotspot
+Interactive Object
 
 ↓
 
