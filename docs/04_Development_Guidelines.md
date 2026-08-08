@@ -1,6 +1,6 @@
 # MagicBook 3.0 Development Guidelines
 
-Version: 3.0
+Version: 4.0
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-02
+Last Update: 2026-08-08
 
 ---
 
@@ -49,9 +49,11 @@ Last Update: 2026-08-02
 
 MagicBook 採 Complete Product Architecture（完整產品架構）。
 
-MVP（Minimum Viable Product）為所有開發文件的唯一標準（Single Source of Truth）。
+MVP（Minimum Viable Product）為目前第一版開發範圍的主要依據。
 
-所有設計文件皆須與 MVP 保持一致。
+所有設計文件皆須與已確認的 MVP 規格保持一致。
+
+任何需求變更皆須先確認，再同步更新相關文件。
 
 ---
 
@@ -70,6 +72,8 @@ MagicBook 提供互動工具，
 不提供教材內容。
 
 任何功能皆不得修改教材原始內容。
+
+教材內容與互動資料應保持分離。
 
 ---
 
@@ -96,6 +100,10 @@ MagicBook 提供互動工具，
 
 不得因新增功能重新設計產品架構。
 
+若需求需要新增能力，
+
+應優先以模組擴充方式處理。
+
 ---
 
 ## 2.4 Modular Architecture
@@ -109,6 +117,8 @@ MagicBook 提供互動工具，
 - 可獨立維護
 - 可持續擴充
 
+模組之間應保持低耦合（Low Coupling）。
+
 ---
 
 ## 2.5 Replaceable Service
@@ -120,6 +130,7 @@ MagicBook 不綁定任何第三方服務。
 - AI Provider
 - Dictionary Provider
 - Audio Provider
+- Video Provider
 
 所有第三方服務皆可自由替換。
 
@@ -143,6 +154,7 @@ MagicBook 不綁定任何第三方服務。
 - Popup
 - CRUD
 - Selection
+- Navigation
 
 新增功能不得建立另一套操作模式。
 
@@ -150,13 +162,19 @@ MagicBook 不綁定任何第三方服務。
 
 ## 2.7 Specification Consistency
 
-MVP 為所有設計文件共同依據。
+MVP 為第一版開發範圍的主要依據。
 
 任何需求變更後，
 
-必須同步更新相關文件。
+必須同步更新受到影響的相關文件。
 
-不得讓文件內容彼此矛盾。
+不得讓正式文件內容彼此矛盾。
+
+文件應依各自職責同步，
+
+不得將所有文件內容簡單複製成完全相同的內容。
+
+---
 
 # 3. Architecture Principles
 
@@ -172,7 +190,7 @@ MagicBook 採統一產品架構（Unified Product Architecture）。
 
 ## 3.2 Core Architecture
 
-MagicBook 採固定資料架構：
+MagicBook 採以下核心資料架構：
 
 Workspace
 
@@ -182,7 +200,7 @@ Book Library
 
 ↓
 
-Folder
+Folder（Optional）
 
 ↓
 
@@ -200,9 +218,11 @@ Page
 
 Image Area
 
++
+
 Text Area
 
-↓
++
 
 HTML Overlay
 
@@ -216,11 +236,18 @@ Popup
 
 ↓
 
-Dictionary / AI / Audio
+Dictionary / AI / Audio / Video / Navigation
 
-所有功能皆建立於上述架構。
+Folder 為 Book Library 的分類工具。
 
-不得改變資料層級。
+Book 可以：
+
+- 直接存在於 Book Library 根目錄
+- 放入 Folder
+
+使用者可自行決定是否使用 Folder。
+
+Folder 不得被視為 Book 存在的必要條件。
 
 ---
 
@@ -242,6 +269,8 @@ Dictionary / AI / Audio
 - Dictionary
 - AI
 - Audio
+- Video
+- Navigation
 
 任何互動功能皆不得修改教材原始內容。
 
@@ -285,11 +314,14 @@ HTML Overlay 為獨立互動層（Interaction Layer）。
 
 所有第三方服務皆應建立抽象介面（Interface）。
 
-不得直接綁定：
+包括：
 
 - AI
 - Dictionary
 - Audio
+- Video
+
+不得直接綁定特定 Provider。
 
 未來更換 Provider 時，
 
@@ -324,6 +356,7 @@ Book Module
 - AI
 - Dictionary
 - Audio
+- Video
 
 保持模組職責單純。
 
@@ -342,7 +375,7 @@ Book Module
 - 可獨立維護
 - 可持續擴充
 
-不得依賴其他模組才能正常運作。
+模組不得因依賴另一個模組的內部實作而失去獨立性。
 
 ---
 
@@ -365,9 +398,15 @@ MagicBook 第一版建立以下核心模組：
 - Dictionary
 - AI
 - Audio
+- Video
+- Navigation
 - Reading Mode
 - Global Search
 - Context Toolbar
+- Save
+- Background Processing
+- Brand Loading Animation
+
 所有核心模組皆須完成基本資料架構。
 
 ---
@@ -381,6 +420,8 @@ MagicBook 第一版建立以下核心模組：
 - Context Toolbar
 - Popup
 - Search Toolbar
+- Search Icon
+- Loading Animation
 
 不得建立不同操作方式。
 
@@ -396,6 +437,7 @@ MagicBook 第一版建立以下核心模組：
 - Global Search Service
 - Save Service
 - Background Processing Service
+- Loading Animation Service
 
 所有模組共用相同 Service。
 
@@ -417,17 +459,18 @@ MagicBook 第一版建立以下核心模組：
 
 新增模組時，
 
-不得修改既有架構。
+不得修改既有核心架構。
 
 應以擴充（Extension）方式加入。
 
 例如：
 
-新增 Dictionary Provider、
+新增：
 
-新增 AI Provider、
-
-新增 Audio Provider，
+- Dictionary Provider
+- AI Provider
+- Audio Provider
+- Video Provider
 
 皆應建立於既有模組。
 
@@ -442,11 +485,23 @@ MagicBook 第一版建立以下核心模組：
 例如：
 
 - Workspace Module
+- Book Library Module
+- Folder Module
 - Book Module
 - Lesson Module
+- Page Module
 - Image Area Module
+- Text Area Module
 - HTML Overlay Module
 - Hotspot Module
+- Popup Module
+- Dictionary Module
+- AI Module
+- Audio Module
+- Video Module
+- Navigation Module
+- Reading Module
+- Global Search Module
 
 避免使用不同命名方式造成混淆。
 
@@ -468,7 +523,13 @@ MagicBook 第一版建立以下核心模組：
 
 Hotspot 仍可正常運作。
 
+移除 Video，
+
+教材其他核心功能仍應正常運作。
+
 模組之間應保持獨立性。
+
+---
 
 # 5. UI Development Guidelines
 
@@ -499,6 +560,7 @@ Hotspot 仍可正常運作。
 - Save
 - Delete
 - Search
+- Navigation
 
 不同模組不得使用不同操作方式完成相同工作。
 
@@ -533,11 +595,11 @@ Global Search 為全系統共用搜尋介面。
 
 畫面右上角固定顯示 Search Icon（放大鏡）。
 
-Search Icon 為搜尋入口，
+Search Icon 為搜尋入口。
 
-不得隱藏，
+Search Icon 不得隱藏。
 
-方便使用者快速辨識搜尋功能位置。
+使用者不需要猜測搜尋功能的位置。
 
 點擊 Search Icon 後，
 
@@ -558,6 +620,15 @@ Floating Search Toolbar 可整合系統常用導覽功能。
 - Recent Search
 - Search Result Navigation
 
+其中：
+
+- Home
+- Back
+
+屬於 Navigation（導覽）功能，
+
+不是 Search 功能。
+
 Search Scope：
 
 - All
@@ -573,6 +644,12 @@ Search Scope：
 
 搜尋結果可直接開啟對應教材或內容。
 
+搜尋可從使用者目前所在畫面開始。
+
+搜尋結果可導向實際相關內容。
+
+不限制使用者只能看到單一資料層級的結果。
+
 點擊 Close（✕）後，
 
 僅收合 Floating Search Toolbar。
@@ -581,9 +658,9 @@ Search Icon（放大鏡）仍固定顯示於畫面右上角。
 
 Toolbar 每次皆由 Search Icon 展開。
 
-所有畫面皆共用相同搜尋介面與操作流程，
+不記錄 Toolbar 上次位置。
 
-保持一致的使用者體驗。
+所有畫面皆共用相同搜尋介面與操作流程。
 
 ---
 
@@ -624,7 +701,7 @@ Popup 應採一致設計。
 
 支援雙指縮放（Pinch Zoom）。
 
-系統應依不同裝置提供最佳操作方式。
+系統應依不同裝置提供適當操作方式。
 
 ---
 
@@ -650,13 +727,14 @@ Popup 應採一致設計。
 
 例如：
 
-- Search Icon 固定顯示於畫面右上角。
-- 主要功能應於適當位置提供明確入口。
-- 不得將常用功能隱藏於多層選單。
+- Search Icon 固定顯示於畫面右上角
+- 主要功能應於適當位置提供明確入口
+- 常用功能不得被完全隱藏而無明確入口
 
-降低使用者學習成本，
+降低使用者學習成本。
 
 提升操作效率。
+
 ---
 
 # 6. Performance Guidelines
@@ -683,6 +761,7 @@ Popup 應採一致設計。
 - 儲存教材
 - AI 處理
 - 搜尋
+- 其他耗時工作
 
 不得阻塞使用者介面。
 
@@ -738,11 +817,22 @@ Loading Animation：
 - 約佔畫面 15%
 - 工作完成後自動消失
 
-品牌角色可依版本更新替換。
+品牌角色可依工作內容播放不同動畫。
 
-動畫僅提供工作狀態回饋。
+例如：
 
-不得影響系統功能。
+- 小松鼠奔跑
+- 小狐狸奔跑
+- 小企鵝搬教材
+- 貓頭鷹飛行
+
+品牌角色可依節日、活動或版本更新替換。
+
+可採 Random Character（隨機角色）機制。
+
+品牌角色以動作呈現系統工作狀態。
+
+不得以大量文字取代動畫。
 
 ---
 
@@ -756,6 +846,8 @@ Loading Animation：
 - Stable Performance
 
 不得因新增功能降低整體系統效能。
+
+---
 
 # 7. Data Management Guidelines
 
@@ -783,7 +875,13 @@ Workspace 分為：
 - Personal Workspace
 - Organization Workspace
 
-教材所有權不得因登入裝置或登入地點而改變。
+教材所有權不得因：
+
+- 登入裝置
+- 登入地點
+- 使用者更換
+
+而改變。
 
 ---
 
@@ -800,6 +898,7 @@ Book Module
 - AI Data
 - Dictionary Data
 - Audio Data
+- Video Data
 
 模組之間應透過公開介面交換資料。
 
@@ -817,7 +916,38 @@ Book Module
 
 ---
 
-## 7.5 Data Expansion
+## 7.5 Folder and Book Data
+
+Folder 為 Book Library 的分類資料。
+
+Folder 可包含：
+
+- Folder
+- Book
+
+Folder 支援：
+
+- Create
+- Rename
+- Delete
+- Move
+- Reorder
+
+Book 可：
+
+- 存在於 Book Library 根目錄
+- 放入 Folder
+- 在 Folder 之間移動
+
+Folder 不儲存教材內容。
+
+Book 儲存教材本身。
+
+Folder 僅負責分類與管理。
+
+---
+
+## 7.6 Data Expansion
 
 所有新增資料皆應建立於既有資料架構。
 
@@ -837,6 +967,8 @@ Book Module
 - Complete Product Architecture
 - Modular Architecture
 - Replaceable Service
+- Consistent User Experience
+- Performance
 
 不得破壞既有架構。
 
@@ -864,7 +996,7 @@ Popup
 
 ↓
 
-Dictionary / AI / Audio
+Dictionary / AI / Audio / Video / Navigation
 
 不得建立第二套互動流程。
 
@@ -881,6 +1013,7 @@ Dictionary / AI / Audio
 - Context Toolbar
 - Popup
 - Search Toolbar
+- Search Icon
 
 不得重複開發。
 
@@ -898,18 +1031,72 @@ Dictionary / AI / Audio
 - Save
 - Global Search
 - Background Processing
+- Loading Animation
 
 避免重複實作。
 
 ---
 
-## 8.5 Future Features
+## 8.5 Search Integration
+
+所有需要搜尋能力的模組，
+
+應使用 Global Search。
+
+不得建立另一套獨立搜尋介面。
+
+搜尋入口統一使用：
+
+Search Icon
+
+↓
+
+Floating Search Toolbar
+
+Search Icon 固定位於畫面右上方。
+
+關閉 Toolbar 後，
+
+Search Icon 仍保持顯示。
+
+---
+
+## 8.6 Navigation Integration
+
+Home、Back 等系統導覽功能屬於 Navigation。
+
+若與 Global Search 共用同一個 Toolbar，
+
+不得將 Home、Back 定義為 Search 功能。
+
+共用 Toolbar 不代表功能職責相同。
+
+---
+
+## 8.7 Teaching Material Protection
+
+新增互動功能：
+
+不得直接修改：
+
+- Image Area
+- Text Area
+- PDF
+- Camera 原始教材內容
+
+應建立於 HTML Overlay 或既有互動架構。
+
+---
+
+## 8.8 Future Features
 
 新增功能應採擴充（Extension）方式加入。
 
 不得修改產品核心架構。
 
 保持向下相容（Backward Compatibility）。
+
+未經確認的新功能不得直接加入 MVP。
 
 ---
 
@@ -951,6 +1138,7 @@ Dictionary / AI / Audio
 - AI Provider
 - Dictionary Provider
 - Audio Provider
+- Video Provider
 
 不得直接寫死於程式。
 
@@ -966,6 +1154,15 @@ Dictionary / AI / Audio
 
 不得因錯誤造成教材遺失。
 
+若發生：
+
+- Upload Failure
+- Save Failure
+- Network Failure
+- Processing Failure
+
+系統應盡可能保留目前使用者操作內容。
+
 ---
 
 ## 9.5 Code Review
@@ -978,7 +1175,7 @@ Dictionary / AI / Audio
 - Functional Testing
 - Specification Consistency Review
 
-確認程式與規格一致。
+確認程式與正式規格一致。
 
 ---
 
@@ -1010,7 +1207,9 @@ Dictionary / AI / Audio
 
 任何需求變更後，
 
-應同步更新：
+應同步更新受到影響的正式文件。
+
+包括視需求涉及：
 
 - Product Specification
 - MVP Development
@@ -1021,7 +1220,15 @@ Dictionary / AI / Audio
 - Editor Design
 - UI Design
 
-所有文件皆須保持一致。
+尚未進入實際設計或開發階段的文件，
+
+不需要為了同步而提前建立完整技術規格。
+
+尤其 Database Design（資料庫設計）與 API Design（API 設計），
+
+應依 MVP 實際開發進度建立。
+
+所有已建立文件皆須保持一致。
 
 ---
 
@@ -1038,7 +1245,7 @@ Specification Consistency Review。
 - MVP
 - Product Specification
 - Development Guidelines
-- 其他設計文件
+- 其他已建立設計文件
 
 內容一致。
 
@@ -1046,17 +1253,168 @@ Specification Consistency Review。
 
 ---
 
+## 10.5 GitHub as Official Source
+
+GitHub Repository 為 MagicBook 3.0 正式文件來源。
+
+正式開發文件以：
+
+main branch
+
+上的最新版本為準。
+
+聊天室中的舊版本、舊檔案或先前傳送的文件，
+
+不得作為正式開發依據。
+
+若工程師發現文件版本不一致，
+
+應：
+
+1. 停止依自己的推測修改規格。
+2. 指出文件名稱。
+3. 指出章節。
+4. 提供衝突內容。
+5. 等待 Product Manager 確認。
+
+確認後再繼續開發。
+
+---
+
+## 10.6 Document Version
+
+每次正式文件重大更新皆應更新：
+
+- Version
+- Last Update
+- Change Log
+
+避免工程師無法判斷目前使用版本。
+
+---
+
 # 11. Change Log
 
 | Version | Date | Description |
 |----------|------------|------------------------------------------------|
-| 3.0 Draft | 2026-08-02 | Rebuilt Development Guidelines based on MVP 3.0 |
-| | | Added Complete Product Architecture principles |
-| | | Added Teaching Material First |
-| | | Added Replaceable Service architecture |
-| | | Added Performance Guidelines |
-| | | Added Global Search development rules |
-| | | Added Context Toolbar development rules |
-| | | Added Background Processing guidelines |
-| | | Added Brand Loading Animation guidelines |
-| | | Added Specification Consistency Review workflow |
+
+| 4.0 Draft | 2026-08-08 | Synchronized Development Guidelines with MVP 2.1 and Product Specification 3.1 |
+
+### Core Modules
+
+正式納入：
+
+- Video
+- Navigation
+- Save
+- Background Processing
+- Brand Loading Animation
+
+---
+
+### Folder / Book Library
+
+確認：
+
+- Folder 為 Book Library 正式分類功能
+- Folder 支援 Create
+- Folder 支援 Rename
+- Folder 支援 Delete
+- Folder 支援 Move
+- Folder 支援 Reorder
+- Folder 支援 Nested Folder
+- Folder 支援 Drag & Drop Sorting
+
+確認：
+
+Book 可以直接存在於 Book Library 根目錄。
+
+Book 也可以放入 Folder。
+
+使用者可自行決定是否使用 Folder。
+
+---
+
+### Global Search
+
+重新確認：
+
+- Search Icon 固定於畫面右上方
+- Search Icon 不隱藏
+- 點擊 Search Icon 展開 Floating Search Toolbar
+- Close 後 Search Icon 仍保留
+- Home、Back 屬於 Navigation
+- Home、Back 不是 Search 功能
+- Search Scope 包含 All、Folder、Book、Lesson、Page、Text、Image、PDF、Hotspot、Dictionary
+- 搜尋結果可導向實際相關內容
+- 不記錄 Toolbar 上次位置
+
+---
+
+### Performance
+
+確認：
+
+- Background Processing
+- Non-blocking UI
+- Image Optimization
+- Image Compression
+- Large File Handling
+
+為共同開發要求。
+
+---
+
+### Brand Loading Animation
+
+確認：
+
+- 顯示於畫面中央
+- 約佔畫面 15%
+- 採持續動作動畫
+- 工作完成後自動消失
+- 不使用傳統 Loading Bar
+- 可使用品牌動物角色
+- 可依工作內容、節日或版本更新替換
+
+---
+
+### Exercise
+
+Exercise 不屬於 MagicBook 3.0 MVP。
+
+Development Guidelines 不建立：
+
+- Exercise Module
+- Exercise CRUD
+- Exercise Popup
+- Exercise Rendering
+- Exercise User Flow
+
+MagicBook 3.0 定位為：
+
+Interactive Teaching Material Tool（互動教材工具）。
+
+不包含：
+
+Exercise / Exam Authoring System（練習／考卷製作系統）。
+
+---
+
+### Documentation Synchronization
+
+正式規格變更後，
+
+應進行 Specification Consistency Review。
+
+GitHub main branch 上的最新正式文件，
+
+為工程師開發依據。
+
+聊天室中的舊文件不得作為正式開發依據。
+
+Database Design、API Design 等技術文件，
+
+依 MVP 實際開發進度建立，
+
+不提前為了文件同步而建立。
