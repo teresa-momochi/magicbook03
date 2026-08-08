@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.1
+Version: 2.2
 
 Status: Draft
 
@@ -3158,7 +3158,557 @@ Optimization
 
 ---
 
-# 13. Change Log
+# 13. AI Automation — Technical Validation（Benchmark Stage）
+
+> **文件定位：Technical Evidence（技術證據），不是正式產品規格。**
+>
+> 本節記錄 Image Quality Check、Auto Correction、OCR / AI 與 End-to-End Pipeline 的實測結果，供後續 PM Decision（產品決策）與工程實作參考。
+>
+> **在 PM 尚未正式核定 Threshold（門檻）與 OCR / AI 技術方案前，不得將本節數值直接視為 Production Rule（正式產品規則），不得進入正式 Production Implementation（正式產品實作）。**
+>
+> 本節不修改 DB Schema（資料庫結構），不指定正式 OCR / AI Provider（供應商），不寫死正式 Threshold。
+
+---
+
+## 13.1 Benchmark Status
+
+本次已完成三條完整 Pipeline（流程）：
+
+### Pipeline A — Baseline
+
+```text
+Original Image
+    ↓
+OCR
+    ↓
+Hotspot Generator
+```
+
+### Pipeline B — Quality Check Only
+
+```text
+Original Image
+    ↓
+Image Quality Check
+    ↓
+OCR
+    ↓
+Hotspot Generator
+```
+
+### Pipeline C — Full Pipeline
+
+```text
+Original Image
+    ↓
+Image Quality Check
+    ↓
+Auto Correction
+    ↓
+Re-Quality Check
+    ↓
+OCR
+    ↓
+Hotspot Generator
+```
+
+共測試：
+
+**15 種代表性情境。**
+
+---
+
+## 13.2 End-to-End Benchmark Result
+
+| Pipeline | SUCCESS | PARTIAL | FAIL |
+| --- | ---: | ---: | ---: |
+| A：Baseline | 40.0% | 33.3% | 26.7% |
+| B：Quality Check Only | 33.3% | 26.7% | 40.0% |
+| C：Full Pipeline | **73.3%** | 13.3% | 13.3% |
+
+### Technical Finding
+
+單獨加入 Quality Check 並不能改善整體結果。
+
+Pipeline B 反而從 40.0% SUCCESS 下降至 33.3%。
+
+原因：
+
+Quality Check 只能拒絕，不能修正。
+
+因此會把原本可以透過 Auto Correction（自動修正）救回的照片直接擋掉。
+
+### Engineering Conclusion
+
+Quality Check 不應單獨形成：
+
+```text
+Image
+↓
+Quality Check
+↓
+品質不好
+↓
+要求老師重拍
+```
+
+的主要自動化流程。
+
+目前 Benchmark 支持的方向為：
+
+```text
+Image
+↓
+Quality Check
+↓
+判斷是否需要修正
+↓
+Auto Correction
+↓
+Re-Quality Check
+↓
+OCR
+↓
+Hotspot Generator
+```
+
+Quality Check 與 Auto Correction 應視為同一套自動化 Pipeline 的不同階段。
+
+---
+
+## 13.3 Deskew（去歪斜）實測
+
+| 傾斜角度 | 修正前辨識率 | 修正後辨識率 |
+| --- | ---: | ---: |
+| 6° | 88.9% | **100%** |
+| 8° | 88.9% | **100%** |
+| 10° | 0% | **100%** |
+| 12° | 0% | **100%** |
+| 15° | 0% | **100%** |
+
+Deskew 已證實能救回原本因傾斜而失敗的案例。
+
+5 次使用中救回 4 次：
+
+**Recovery Rate：80%。**
+
+Deskew 應保留於正式技術架構。
+
+正式 Skew Threshold（傾斜門檻）尚未由 PM 核定。
+
+---
+
+## 13.4 Denoise（去噪）實測
+
+| 情境 | 原始辨識率 | Denoise 後 |
+| --- | ---: | ---: |
+| 亮度 55% + 雜訊 15 | 0% | **100%** |
+| 亮度 40% + 雜訊 15 | 0% | **100%** |
+
+Denoise 是目前測試中低光源 + 雜訊情境最有效的救援技術。
+
+單次處理約：
+
+**1360ms / 張。**
+
+正式使用時必須支援：
+
+**Background Processing（背景處理）。**
+
+不得要求使用者同步等待 Denoise 完成。
+
+本次端到端測試中 Denoise 使用 1 次並救回 1 次：
+
+**Recovery Rate：100%。**
+
+---
+
+## 13.5 Sharpen（銳化）實測
+
+| 模糊程度 | 修正前辨識率 | Sharpen 後 |
+| --- | ---: | ---: |
+| 3px | 77.8% | **100%** |
+| 4px | 66.7% | 77.8% |
+| 5px | 55.6% | 55.6% |
+| 6px | 22.2% | 33.3% |
+| 8px | 0% | 0% |
+
+Sharpen：
+
+- 可改善輕微模糊
+- 無法恢復嚴重模糊已遺失的影像資訊
+- 約 16ms
+- 運算成本低
+
+目前不能宣稱 Sharpen 對 End-to-End Success 有明確提升。
+
+可以保留為候選 Auto Correction 技術，但不得視為嚴重模糊的解決方案。
+
+---
+
+## 13.6 CLAHE / Contrast Enhancement 實測
+
+CLAHE（對比度增強）對本次低光源 + 雜訊情境沒有實質改善。
+
+因此目前不列入主要 Auto Correction Pipeline。
+
+不要因單純亮度不足而強制執行 CLAHE。
+
+---
+
+## 13.7 尚未解決的情境
+
+### 嚴重模糊
+
+影像資訊已遺失。
+
+Sharpen 無法真正恢復遺失資訊。
+
+目前視為不可救援情境。
+
+### 中英混合
+
+目前為 PARTIAL。
+
+主要問題不是 Image Quality（圖片品質），而是 OCR / Layout Understanding（版面理解）問題。
+
+不能單純以 Image Quality Check 解決。
+
+### 表格 + 文字
+
+目前為 PARTIAL。
+
+主要問題為文字順序與版面結構。
+
+不是單純 Blur / Brightness / Contrast 問題。
+
+### 陰影遮擋
+
+目前為 FAIL。
+
+現有 Auto Correction 無法可靠救援。
+
+本次曾出現 Deskew 誤觸發，因此目前不要嘗試使用現有 Skew Detection（傾斜偵測）處理陰影遮擋。
+
+---
+
+## 13.8 Auto Correction Trigger Logic — 已發現的工程問題
+
+「中度模糊」與「密集小字」原本 Pipeline A 已經 SUCCESS，Pipeline B 也 SUCCESS，但 Pipeline C 仍觸發：
+
+- Denoise
+- Sharpen
+
+造成額外處理時間。
+
+這不是正確性問題，而是：
+
+**Processing Efficiency（處理效率）問題。**
+
+因此正式實作前必須改善：
+
+**Auto Correction Trigger Logic（自動修正觸發邏輯）。**
+
+不得對已可可靠進入 OCR 的照片進行不必要的修正。
+
+---
+
+## 13.9 Threshold — PM Decision Required
+
+目前以下數值僅為 Benchmark Evidence（實測證據），不得直接寫死：
+
+- Blur Threshold
+- Contrast Threshold
+- Skew Threshold
+- Auto Correction Trigger Condition
+
+阿德不得自行根據 Benchmark 結果將上述數值直接定義為正式 Production Threshold。
+
+正式 Threshold 必須由 PM Decision（產品決策）核定。
+
+---
+
+## 13.10 Processing Time
+
+| Pipeline | Average | P95 | Maximum |
+| --- | ---: | ---: | ---: |
+| Baseline | 866ms | 2243ms | 2243ms |
+| Quality Check | 805ms | 1471ms | 1471ms |
+| Full Pipeline | **1878ms** | **3290ms** | **3290ms** |
+
+Full Pipeline 平均耗時為 Baseline 約 2.2 倍。
+
+最慢案例達 3290ms。
+
+Denoise 約 1360ms / 張。
+
+因此 Denoise 等較長時間的 Auto Correction 必須使用 Background Processing（背景處理）。
+
+Background Processing 不得造成 UI 凍結。
+
+---
+
+## 13.11 OCR Cost Benchmark
+
+目前僅使用：
+
+**$0.0015 / OCR Call**
+
+作為成本模型假設。
+
+此數字不是正式供應商價格。
+
+| Pipeline | OCR 呼叫比例 | 1,000 張 OCR Calls | 假設成本 |
+| --- | ---: | ---: | ---: |
+| Baseline | 100% | 1000 | $1.50 |
+| Quality Check Only | 60% | 600 | $0.90 |
+| Full Pipeline | 93.3% | 933 | $1.40 |
+
+Quality Check 的主要價值不應定義為「節省 OCR API 成本」。
+
+真正需要避免的是：
+
+```text
+低品質照片
+↓
+OCR
+↓
+錯誤文字
+↓
+錯誤 Bounding Box
+↓
+錯誤 Hotspot
+↓
+老師人工清理
+```
+
+因此更重要的產品 KPI（關鍵績效指標）是：
+
+> 降低老師人工修正教材的時間。
+
+---
+
+## 13.12 Error Handling / Wrong Hotspot Principle
+
+本次 15 個測試案例中，沒有發現：
+
+「系統產生錯誤 Hotspot，但卻宣稱 SUCCESS」
+
+的案例。
+
+中英混合、表格、陰影等無法可靠處理的情境，目前會以：
+
+- PARTIAL
+- FAIL
+
+回報。
+
+正式工程原則：
+
+> 如果系統不能可靠建立互動內容，不得標記 SUCCESS。
+
+應標記 PARTIAL 或 FAIL。
+
+不得把不可靠的文字座標直接視為正確 Hotspot。
+
+---
+
+## 13.13 Original Image Protection
+
+原始照片是教材資產。
+
+Auto Correction 不得覆寫 Original Image（原始圖片）。
+
+概念：
+
+```text
+Original Image
+      +
+Processed Image
+```
+
+Processed Image（處理後圖片）僅供：
+
+- OCR
+- AI
+- Hotspot Generator
+
+使用。
+
+原始教材必須保持不變。
+
+---
+
+## 13.14 Current Technical Architecture
+
+```text
+Image Area
+    │
+    ▼
+Image Quality Check
+    │
+    ├── 明顯不可救
+    │       ↓
+    │     Reject
+    │
+    ├── 可修正
+    │       ↓
+    │   Auto Correction
+    │       ↓
+    │   Re-Quality Check
+    │
+    └── 品質正常
+            ↓
+           OCR
+            ↓
+    Text + Bounding Box
+            ↓
+    Hotspot Generator
+            ↓
+      HTML Overlay
+            ↓
+         Hotspot
+```
+
+此架構為 Technical Validation 結果，不代表所有 Threshold 與 Provider 已正式核定。
+
+---
+
+## 13.15 UX Technical Validation
+
+若照片品質不足，使用者不需要知道：
+
+- AI
+- OCR
+- Confidence
+- Quality Check
+- Model
+
+目前驗證之 UX 方向：
+
+> ⚠️ 照片品質不足  
+> 請重新拍攝清晰、光線充足的照片  
+> [知道了]
+
+若照片品質足夠，但自動建立互動內容失敗：
+
+> ⚠️ 無法自動建立互動內容  
+> 你可以重新拍攝，或直接手動建立互動內容  
+> [重新拍攝] [手動建立]
+
+照片本身仍保留。
+
+OCR 失敗不代表教材資產失敗。
+
+---
+
+## 13.16 OCR / AI 技術方案狀態
+
+目前尚未正式選定：
+
+- Local OCR（本地 OCR）
+- Cloud OCR（雲端 OCR）
+- Vision AI
+- Hybrid Architecture（混合架構）
+- 正式 OCR / AI Provider
+
+因此不得在本階段：
+
+- 串接正式 OCR / AI Provider
+- 將特定 Provider 寫死於正式產品架構
+- 將 Benchmark 使用工具視為正式服務選型
+
+OCR / AI 仍維持：
+
+**Replaceable Service Architecture（可替換服務架構）。**
+
+---
+
+## 13.17 Benchmark Evidence Files
+
+End-to-End Benchmark 完整原始資料：
+
+`end_to_end_results.json`
+
+Image Quality / Auto Correction Benchmark 原始資料：
+
+`correction_results.json`
+
+上述資料屬於：
+
+**Technical Evidence（技術證據）**
+
+不是正式 Product Specification（產品規格）。
+
+---
+
+## 13.18 PM Decision Required Before Production
+
+正式進入 Production Implementation 前，至少仍需 PM 核定：
+
+1. Blur Threshold
+2. Contrast Threshold
+3. Skew Threshold
+4. Auto Correction Trigger Logic
+5. OCR / AI 技術方案
+6. OCR / AI Provider
+
+在上述項目完成 PM Decision 前：
+
+**不得進入正式 Production Implementation。**
+
+---
+
+# 14. Change Log
+
+本文件記錄 MagicBook 3.0 MVP Development 之重大版本更新。
+
+所有需求變更皆應先更新本文件，
+
+再同步更新相關設計文件。
+
+---
+
+## Version 2.2
+
+### AI Automation — Technical Validation
+
+新增第 13 節：
+
+**AI Automation — Technical Validation（Benchmark Stage）**
+
+本次新增內容包含：
+
+- Image Quality Check
+- Auto Correction
+- Deskew
+- Denoise
+- Sharpen
+- Re-Quality Check
+- OCR / AI
+- Hotspot Generator
+- HTML Overlay
+- Background Processing
+- Error Handling
+- Original Image Protection
+- End-to-End Benchmark
+
+本節定位為：
+
+**Technical Evidence（技術證據）**
+
+不是正式產品規格。
+
+本次未：
+
+- 修改 DB Schema
+- 串接正式 OCR / AI Provider
+- 寫入正式 Threshold
+- 進入 Phase 4 Production Implementation
+
+---
+
+
 
 本文件記錄 MagicBook 3.0 MVP Development 之重大版本更新。
 
