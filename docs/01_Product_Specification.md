@@ -1,6 +1,6 @@
 # MagicBook 3.0 Product Specification
 
-Version: 3.0
+Version: 3.1
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-02
+Last Update: 2026-08-08
 
 ---
 
@@ -43,7 +43,7 @@ MagicBook 不提供教材內容（Teaching Content）。
 
 教材內容永遠由使用者自行建立或匯入。
 
-MagicBook 提供的是一套完整的互動工具（Interactive Tools），讓既有教材快速轉換為可閱讀、可互動、可持續使用的數位教材。
+MagicBook 提供的是一套完整的互動工具（Interactive Tools），讓使用者可以直接利用自己的教材，快速建立可閱讀、可互動、可持續使用的數位教材。
 
 MagicBook 並非：
 
@@ -51,8 +51,9 @@ MagicBook 並非：
 - E-book（電子書）
 - Presentation Software（簡報軟體）
 - LMS（Learning Management System）
+- Exercise / Exam Authoring System（練習／考卷製作系統）
 
-MagicBook 的核心價值，在於讓教材保持原貌（Teaching Material First），並建立互動能力（Interactive Capability）。
+MagicBook 的核心價值，在於讓使用者保留自己的教材，並利用工具增加互動能力。
 
 ---
 
@@ -64,7 +65,9 @@ MagicBook 的使命（Mission）：
 
 而不是重新製作教材。
 
-任何教材皆可在保持原貌的前提下，
+使用者可以將自己的教材匯入 MagicBook，
+
+在保持教材原貌的前提下，
 
 加入互動能力，
 
@@ -80,11 +83,9 @@ MagicBook 的使命（Mission）：
 
 ## 1.3 Product Position
 
-MagicBook 不綁定任何教材格式。
+MagicBook 不綁定單一教材格式。
 
-使用者可直接使用自己的教材。
-
-例如：
+第一版支援：
 
 - PNG
 - JPG
@@ -92,9 +93,11 @@ MagicBook 不綁定任何教材格式。
 - PDF
 - Camera（拍照）
 
-教材保持原貌。
+教材內容保持原貌。
 
 所有互動皆建立於教材之上。
+
+MagicBook 提供的是工具，而不是教材內容。
 
 ---
 
@@ -104,14 +107,15 @@ MagicBook 3.0 第一版產品目標為：
 
 建立完整產品架構（Complete Product Architecture）。
 
-第一版即完成：
+第一版即建立：
 
 - 完整核心模組（Core Modules）
 - 完整資料架構（Data Model）
 - 完整使用者介面（User Interface）
 - 完整操作流程（User Flow）
+- 完整核心 CRUD（Create / Read / Update / Delete）
 
-第三方服務（Third-party Services）可逐步完善，
+第三方服務（Third-party Services）可以逐步完善，
 
 但不得影響產品架構。
 
@@ -125,11 +129,12 @@ MagicBook 所有產品設計皆遵循：
 - Architecture First（架構優先）
 - Modular Architecture（模組化架構）
 - Replaceable Service（服務可替換）
-- Long-term Evolution（長期演進）
+- Consistent User Experience（一致使用者體驗）
+- Performance（效能）
 
 所有新功能皆建立於既有產品架構。
 
-不得破壞核心設計。
+不得因新增功能而建立另一套產品架構。
 
 ---
 
@@ -137,22 +142,23 @@ MagicBook 所有產品設計皆遵循：
 
 ## 2.1 Product Positioning
 
-MagicBook 3.0 為 SaaS（Software as a Service）互動教材平台。
+MagicBook 3.0 為 SaaS（Software as a Service）互動教材工具。
 
-系統提供兩種使用模式：
+系統提供兩種 Workspace（工作空間）：
 
-- Personal Workspace（個人）
-- Organization Workspace（機構）
+- Personal Workspace（個人工作空間）
+- Organization Workspace（機構工作空間）
 
-兩種模式共用相同產品架構。
+兩種 Workspace 共用相同產品架構。
 
-差異僅在於：
+主要差異為：
 
 - Workspace
 - Data Ownership（資料歸屬）
 - Permission（權限管理）
+- User Management（使用者管理）
 
-教材建立、教材編輯、教材閱讀與互動流程皆保持一致。
+教材建立、教材編輯、教材閱讀與互動流程保持一致。
 
 ---
 
@@ -172,10 +178,9 @@ MagicBook 3.0 適用於：
 
 MagicBook 採 Complete Product Architecture（完整產品架構）。
 
-第一版即建立所有核心模組。
+核心架構包括：
 
-包括：
-
+- Authentication
 - Workspace
 - Book Library
 - Folder
@@ -190,16 +195,21 @@ MagicBook 採 Complete Product Architecture（完整產品架構）。
 - Dictionary
 - AI
 - Audio
+- Video
+- Navigation
 - Reading Mode
 - Global Search
+- Context Toolbar
+- Save
+- Background Processing
+- Brand Loading Animation
 
-所有模組皆可獨立開發、
+所有核心模組皆應：
 
-獨立測試、
-
-獨立維護、
-
-持續擴充。
+- 獨立開發（Independent Development）
+- 獨立測試（Independent Testing）
+- 獨立維護（Independent Maintenance）
+- 持續擴充（Scalable）
 
 ---
 
@@ -213,6 +223,8 @@ MagicBook 所有產品功能皆遵循：
 - Replaceable Service（服務可替換）
 - Global Search（全域搜尋）
 - Context Toolbar（共用浮動工具列）
+- Performance（效能）
+- Background Processing（背景處理）
 
 所有產品皆採統一操作邏輯。
 
@@ -222,34 +234,43 @@ MagicBook 所有產品功能皆遵循：
 
 ## 2.5 Replaceable Service
 
-MagicBook 不綁定任何第三方服務。
+MagicBook 不綁定任何特定第三方服務。
 
-所有服務皆應可自由替換。
+所有第三方服務皆應可替換。
 
 包括：
 
 - AI Provider
 - Dictionary Provider
 - Audio Provider
+- Video Provider
 - Future Third-party Services
 
 產品核心永遠是教材（Teaching Material）。
 
-第三方服務僅提供輔助能力，
+第三方服務僅提供輔助能力。
 
-不得影響教材資料與產品架構。
+更換服務不得影響：
+
+- 教材資料
+- 使用者資料
+- Workspace
+- 產品架構
+- 使用者操作流程
+
+---
 
 # 3. Core Design Philosophy
 
-## 3.1 Core Philosophy
+## 3.1 Complete Product Architecture
 
-MagicBook 3.0 採完整產品架構（Complete Product Architecture）設計。
+MagicBook 3.0 採完整產品架構（Complete Product Architecture）。
 
-第一版即建立所有核心模組（Core Modules）。
+第一版建立所有核心模組。
 
 各模組可獨立開發、獨立測試、獨立維護，並可持續擴充。
 
-所有新增功能皆建立於既有產品架構，
+所有新增功能皆建立於既有產品架構。
 
 不得重新建立另一套架構。
 
@@ -289,6 +310,8 @@ MagicBook 提供互動能力。
 - Dictionary
 - AI
 - Audio
+- Video
+- Navigation
 
 教材內容保持原貌。
 
@@ -302,7 +325,7 @@ MagicBook 採模組化架構（Modular Architecture）。
 
 所有功能皆應建立為獨立模組。
 
-例如：
+包括：
 
 - Workspace
 - Book Library
@@ -318,7 +341,12 @@ MagicBook 採模組化架構（Modular Architecture）。
 - Dictionary
 - AI
 - Audio
+- Video
+- Navigation
+- Reading
 - Global Search
+- Context Toolbar
+- Save
 
 各模組之間採低耦合（Low Coupling）設計。
 
@@ -335,10 +363,9 @@ MagicBook 不綁定任何第三方服務。
 - AI Provider
 - Dictionary Provider
 - Audio Provider
+- Video Provider
 
-未來新增之第三方服務，
-
-亦應遵循相同原則。
+未來新增之第三方服務亦應遵循相同原則。
 
 更換服務不得影響：
 
@@ -360,6 +387,8 @@ MagicBook 不綁定任何第三方服務。
 - Popup
 - CRUD
 - Selection
+- Navigation
+- Save
 
 新增功能不得建立不同操作模式。
 
@@ -367,23 +396,19 @@ MagicBook 不綁定任何第三方服務。
 
 ---
 
-## 3.7 Long-term Evolution
+## 3.7 Performance First
 
-MagicBook 採長期演進（Long-term Evolution）策略。
+MagicBook 將 Performance（效能）視為產品基本要求。
 
-第一版完成產品架構。
+耗時工作應使用 Background Processing（背景處理）。
 
-後續版本逐步完善：
+背景工作不得造成：
 
-- 功能
-- 服務
-- AI
-- Dictionary
-- Audio
+- UI 凍結
+- 操作中斷
+- 使用者誤認系統停止
 
-產品架構保持穩定。
-
-不得因新增功能而重新設計架構。
+需要等待時，應提供 Brand Loading Animation（品牌載入動畫）。
 
 ---
 
@@ -434,9 +459,11 @@ Page
 
 Image Area
 
++
+
 Text Area
 
-↓
++
 
 HTML Overlay
 
@@ -450,7 +477,7 @@ Popup
 
 ↓
 
-Dictionary / AI / Audio
+Dictionary / AI / Audio / Video / Navigation
 
 所有互動皆建立於教材之上。
 
@@ -488,9 +515,13 @@ Page 為教材最小管理單位。
 - Text Area
 - HTML Overlay
 
-三者彼此獨立，
+三者彼此獨立。
 
 共同完成教材編輯。
+
+Image Area 與 Text Area 不互相依賴。
+
+HTML Overlay 負責教材互動層。
 
 ---
 
@@ -507,10 +538,12 @@ HTML Overlay 為互動層（Interaction Layer）。
 - Dictionary
 - AI
 - Audio
+- Video
+- Navigation
 
 教材內容保持原貌。
 
-互動資料獨立儲存。
+互動資料獨立於教材內容。
 
 ---
 
@@ -524,6 +557,8 @@ MagicBook 提供共用系統服務。
 - Global Search
 - Save
 - Authentication
+- Background Processing
+- Loading Animation
 
 所有模組共用同一套服務。
 
@@ -596,8 +631,11 @@ MagicBook 系統架構遵循：
 - Scalability（可持續擴充）
 - Maintainability（可維護）
 - Reusability（可重複利用）
+- Performance（效能）
 
 所有新增功能皆須符合上述原則。
+
+---
 
 # 5. Data Ownership
 
@@ -610,8 +648,8 @@ Data Ownership（資料歸屬）定義 MagicBook 3.0 中所有資料的擁有者
 - 保護教材資料
 - 保護使用者資料
 - 保護機構教材
-- 支援商業授權
-- 支援多 Workspace 架構
+- 支援 Workspace 架構
+- 支援權限管理
 
 所有資料皆須具有明確 Owner。
 
@@ -625,7 +663,13 @@ MagicBook 採 Workspace Ownership（工作區資料歸屬）。
 
 Workspace 為資料管理單位。
 
-資料不得因登入裝置、登入地點或使用者更換而改變所有權。
+資料不得因：
+
+- 登入裝置
+- 登入地點
+- 使用者更換
+
+而改變所有權。
 
 ---
 
@@ -633,10 +677,10 @@ Workspace 為資料管理單位。
 
 Personal Workspace 適用於：
 
-- Individual Learner（個人學習者）
-- Individual Teacher（個人教師）
+- Individual Learner
+- Individual Teacher
 
-所有教材皆由使用者本人建立與管理。
+所有教材由使用者本人建立與管理。
 
 教材所有權屬於 Personal Workspace。
 
@@ -646,9 +690,9 @@ Personal Workspace 適用於：
 
 Organization Workspace 適用於：
 
-- Cram School（補習班）
-- School（學校）
-- Educational Organization（教育機構）
+- Cram School
+- School
+- Educational Organization
 
 所有教材皆建立於 Organization Workspace。
 
@@ -674,7 +718,7 @@ Organization Workspace 由管理者建立教師帳號。
 
 ## 5.6 Data Isolation
 
-MagicBook 採 Multi-Tenant SaaS Architecture。
+MagicBook 採 Multi-Tenant SaaS Architecture（多租戶 SaaS 架構）。
 
 每個 Workspace 為獨立資料空間。
 
@@ -777,7 +821,7 @@ Organization Workspace 提供：
 
 登入成功後，
 
-自動進入對應 Workspace。
+進入對應 Workspace。
 
 Workspace Authentication 應先於教材存取。
 
@@ -816,8 +860,6 @@ Workspace 應提供基本設定。
 
 第一版僅提供基本設定。
 
-後續版本可持續擴充。
-
 ---
 
 ## 6.8 Design Principles
@@ -834,6 +876,8 @@ Workspace 應遵循：
 - Replaceable Service（服務可替換）
 
 不得因新增功能而改變 Workspace 架構。
+
+---
 
 # 7. Book Library Architecture
 
@@ -883,7 +927,7 @@ Lesson
 
 Page
 
-Folder 僅負責教材分類。
+Folder 負責教材分類。
 
 Book 為教材管理單位。
 
@@ -913,7 +957,9 @@ Folder 支援：
 
 Folder 不儲存教材內容。
 
-僅負責教材分類。
+僅負責教材分類與管理。
+
+使用者可以選擇是否使用 Folder。
 
 ---
 
@@ -929,7 +975,13 @@ Book 支援：
 - Delete
 - Open
 
-Book 可移動至不同 Folder。
+Book 可以：
+
+- 直接存在於 Book Library 根目錄
+- 放入 Folder
+- 移動至不同 Folder
+
+Folder 是可使用的分類工具，但不是 Book 存在的必要條件。
 
 Book 為教材生命週期管理單位。
 
@@ -937,23 +989,30 @@ Book 為教材生命週期管理單位。
 
 ## 7.5 Search
 
-Book Library 提供全域搜尋（Global Search）。
+Book Library 提供 Global Search（全域搜尋）。
 
-搜尋採 Floating Toolbar。
+搜尋採 Floating Search Toolbar（浮動搜尋工具列）。
 
-平時隱藏。
+畫面右上方固定顯示 Search Icon（搜尋圖示）。
 
-需要時展開。
+平時只顯示 Search Icon。
 
-提供 Search Scope：
+點擊 Search Icon 後展開 Search Toolbar。
+
+Search Scope（搜尋範圍）包括：
 
 - All
 - Folder
 - Book
 - Lesson
 - Page
+- Text
+- Image
+- PDF
+- Hotspot
+- Dictionary
 
-搜尋結果可直接開啟教材。
+搜尋結果可導向對應教材或內容。
 
 ---
 
@@ -961,7 +1020,7 @@ Book Library 提供全域搜尋（Global Search）。
 
 Book Library 應提供：
 
-Recently Used Books。
+Recently Used Books（最近使用教材）。
 
 方便快速開啟最近使用教材。
 
@@ -1015,6 +1074,8 @@ Page
 
 Page 為教材最小管理單位。
 
+Book 可以位於 Book Library 根目錄，也可以位於 Folder。
+
 ---
 
 ## 8.2 Book
@@ -1043,7 +1104,7 @@ Lesson 為教材章節管理單位。
 
 系統自動建立 Default Lesson。
 
-Lesson 僅負責教材組織。
+Lesson 負責教材組織。
 
 ---
 
@@ -1063,7 +1124,7 @@ Page 為教材最小管理單位。
 
 ## 8.5 Image Area
 
-Image Area 負責教材圖片。
+Image Area 負責教材視覺內容。
 
 支援：
 
@@ -1072,6 +1133,13 @@ Image Area 負責教材圖片。
 - JPEG
 - PDF
 - Camera（拍照）
+
+系統提供：
+
+- Image Optimization（圖片最佳化）
+- Image Compression（圖片壓縮）
+- Background Processing（背景處理）
+- Large File Warning（大檔提示）
 
 教材保持原貌。
 
@@ -1084,6 +1152,8 @@ Text Area 負責教材文字。
 每個 Page 可建立不限數量 Text Block。
 
 Text Area 專注文字內容。
+
+Text Area 不負責教材互動。
 
 ---
 
@@ -1135,7 +1205,13 @@ Book Structure 採固定階層。
 
 所有互動建立於 HTML Overlay。
 
-不得因新增功能改變教材架構。
+Folder 為教材分類工具。
+
+Book 可以直接位於根目錄。
+
+不得因新增功能改變教材核心架構。
+
+---
 
 # 9. Core Modules
 
@@ -1152,7 +1228,7 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 
 各模組透過統一資料架構協同運作。
 
-不得直接依賴其他模組。
+不得直接建立第二套產品流程。
 
 ---
 
@@ -1166,6 +1242,8 @@ Image Area 為教材圖片工作區。
 - PDF 管理
 - Camera 拍照
 - 圖片呈現
+- 圖片最佳化
+- 圖片壓縮
 
 支援：
 
@@ -1175,12 +1253,12 @@ Image Area 為教材圖片工作區。
 - PDF
 - Camera
 
-系統自動：
+系統自動執行：
 
-- 圖片最佳化（Image Optimization）
-- 圖片壓縮（Image Compression）
-- 背景處理（Background Processing）
-- 大檔提示（Large File Warning）
+- Image Optimization
+- Image Compression
+- Background Processing
+- Large File Warning
 
 教材內容保持原貌。
 
@@ -1224,6 +1302,8 @@ HTML Overlay 負責：
 - Interactive Object
 - Position
 - Resize
+- Object Rendering
+- Object Selection
 
 教材保持原貌。
 
@@ -1246,7 +1326,7 @@ Hotspot 為互動物件（Interactive Object）。
 
 Hotspot 建立於 HTML Overlay。
 
-每個 Hotspot 皆具有：
+每個 Hotspot 具有：
 
 - Position
 - Properties
@@ -1342,23 +1422,68 @@ Audio 不影響教材資料。
 
 ---
 
-## 9.10 Global Search Module
+## 9.10 Video Module
+
+Video 提供：
+
+- Video Player
+- Video Source
+- Video Settings
+
+Video Provider 可自由替換。
+
+Video 不影響教材資料。
+
+---
+
+## 9.11 Navigation Module
+
+Navigation 為共用導覽功能。
+
+負責：
+
+- Home
+- Back
+- Page Navigation
+- Book Navigation
+- Lesson Navigation
+
+Navigation 可與其他共用工具列整合。
+
+---
+
+## 9.12 Global Search Module
 
 Global Search 為全系統共用搜尋服務。
 
-搜尋採 Floating Toolbar。
+搜尋採 Floating Search Toolbar。
 
-平時隱藏。
+畫面右上方固定顯示 Search Icon。
 
-點擊後展開。
+平時只顯示 Search Icon。
 
-提供：
+點擊 Search Icon 後展開 Search Toolbar。
 
+Toolbar 可包含：
+
+- Home
+- Back
 - Keyword Search
-- Instant Search
-- Search Suggestions
-- Recent Search
-- Search Result Navigation
+- Search Scope
+- Close
+
+其中：
+
+- Home
+- Back
+
+屬於 Navigation（導覽）功能，
+
+不是 Search 功能。
+
+關閉 Search Toolbar 後，
+
+Search Icon 必須繼續顯示於畫面右上方。
 
 Search Scope：
 
@@ -1373,11 +1498,31 @@ Search Scope：
 - Hotspot
 - Dictionary
 
-各畫面可設定不同預設搜尋範圍。
+提供：
+
+- Keyword Search（關鍵字搜尋）
+- Instant Search（即時搜尋）
+- Search Suggestions（搜尋建議）
+- Recent Search（最近搜尋）
+- Search Result Navigation（搜尋結果導覽）
+
+搜尋可從使用者目前所在畫面開始。
+
+搜尋結果可導向實際相關內容。
+
+搜尋不限制使用者只能看到單一資料層級的結果。
+
+Global Search 不直接管理資料。
+
+僅負責：
+
+- Search
+- Index
+- Search Result Navigation
 
 ---
 
-## 9.11 Context Toolbar Module
+## 9.13 Context Toolbar Module
 
 Context Toolbar 為全系統共用工具列。
 
@@ -1403,15 +1548,13 @@ Toolbar 提供：
 - 左側
 - 右側
 
-Toolbar 不得遮蔽教材內容。
+Toolbar 不得遮蔽教材主要內容。
 
 ---
 
-## 9.12 Reading Module
+## 9.14 Reading Module
 
-Reading Mode 與 Editor Mode
-
-共用同一份教材資料。
+Reading Mode 與 Editor Mode 共用同一份教材資料。
 
 Reading Mode 提供：
 
@@ -1420,6 +1563,7 @@ Reading Mode 提供：
 - Dictionary
 - AI
 - Audio
+- Video
 - Navigation
 
 Reading Mode 僅提供閱讀與互動。
@@ -1428,20 +1572,68 @@ Reading Mode 僅提供閱讀與互動。
 
 ---
 
-## 9.13 Module Principles
+## 9.15 Save Module
 
-所有核心模組皆應遵循：
+Save 為全系統共用儲存功能。
 
-- Teaching Material First（教材優先）
-- Complete Product Architecture（完整產品架構）
-- Modular Architecture（模組化架構）
-- Replaceable Service（服務可替換）
-- Low Coupling（低耦合）
-- High Cohesion（高內聚）
+負責：
 
-所有新增功能皆須建立於既有模組。
+- Save
+- Auto Validation
+- Save Status
+- Cloud Storage
 
-不得重新建立新的產品架構。
+所有教材皆使用相同儲存流程。
+
+---
+
+## 9.16 Background Processing Module
+
+Background Processing（背景處理）負責耗時工作。
+
+適用於：
+
+- 匯入圖片
+- 匯入 PDF
+- Camera 拍照
+- 圖片最佳化
+- 圖片壓縮
+- AI 處理
+- 儲存教材
+- 搜尋
+- 其他耗時工作
+
+背景處理不得造成 UI 凍結。
+
+---
+
+## 9.17 Brand Loading Animation Module
+
+MagicBook 使用 Brand Loading Animation（品牌載入動畫）。
+
+不使用傳統 Loading Bar。
+
+Loading Animation：
+
+- 顯示於畫面中央
+- 採持續動作動畫
+- 約佔畫面 15%
+- 工作完成後自動消失
+
+品牌角色可以包含：
+
+- 小松鼠奔跑
+- 小狐狸奔跑
+- 小企鵝搬教材
+- 貓頭鷹飛行
+
+品牌角色可依節日或版本更新替換。
+
+可採 Random Character（隨機角色）機制。
+
+品牌角色以動作呈現系統工作狀態。
+
+不得以大量文字取代動畫。
 
 ---
 
@@ -1489,13 +1681,13 @@ Book Editor 固定包含：
 
 支援雙指縮放（Pinch Zoom）。
 
-依裝置自動調整最佳操作方式。
+依裝置調整操作方式。
 
 ---
 
 ## 10.4 Selection First
 
-Editor 採 Selection First 操作模式。
+Editor 採 Selection First（先選取，再操作）模式。
 
 先選取物件。
 
@@ -1545,7 +1737,7 @@ Editor 可編輯：
 
 ## 10.7 Common Operations
 
-所有 Editor 共用：
+Editor 共用：
 
 - Select
 - Move
@@ -1569,10 +1761,13 @@ Editor System 應遵循：
 - Context Toolbar（共用工具列）
 - Teaching Material First（教材優先）
 - Consistent User Experience（一致操作體驗）
+- Performance（效能）
 
 所有新增功能皆不得建立新的操作模式。
 
 應延續既有 Editor 架構。
+
+---
 
 # 11. Reading System
 
@@ -1580,9 +1775,7 @@ Editor System 應遵循：
 
 Reading System 為 MagicBook 的教材閱讀模式（Reading Mode）。
 
-Reading Mode 與 Editor Mode
-
-共用同一份教材資料。
+Reading Mode 與 Editor Mode 共用同一份教材資料。
 
 Reading Mode 專注於教材閱讀與互動。
 
@@ -1624,6 +1817,8 @@ AI
 
 Audio
 
+Video
+
 ↓
 
 Continue Reading
@@ -1646,7 +1841,7 @@ Continue Reading
 - KK
 - Pronunciation
 
-提供最快速的教材閱讀體驗。
+提供快速教材閱讀體驗。
 
 ---
 
@@ -1659,6 +1854,10 @@ Continue Reading
 - Dictionary
 - AI
 - Audio
+- Video
+- Image
+- URL
+- Navigation
 
 Toolbar：
 
@@ -1716,7 +1915,17 @@ Audio Provider 可自由替換。
 
 ---
 
-## 11.8 Navigation
+## 11.8 Video
+
+Video 提供教材相關影片內容。
+
+Video Provider 可自由替換。
+
+影片來源不應影響教材資料。
+
+---
+
+## 11.9 Navigation
 
 Reading Mode 提供：
 
@@ -1730,7 +1939,7 @@ Reading Mode 提供：
 
 ---
 
-## 11.9 Design Principles
+## 11.10 Design Principles
 
 Reading Mode 專注：
 
@@ -1778,9 +1987,9 @@ Global Search 為全系統共用搜尋服務。
 
 畫面右上角固定顯示 Search Icon（放大鏡）。
 
-Search Icon 為搜尋入口，
+Search Icon 為搜尋入口。
 
-不得隱藏，
+不得隱藏。
 
 方便使用者快速辨識搜尋功能位置。
 
@@ -1794,9 +2003,16 @@ Toolbar 提供：
 - Back（上一頁）
 - Keyword Search
 - Search Scope
-- Search Suggestions
-- Recent Search
-- Search Result Navigation
+- Close（關閉）
+
+其中：
+
+- Home
+- Back
+
+屬於 Navigation（導覽）功能，
+
+不是 Search 功能。
 
 Search Scope：
 
@@ -1811,21 +2027,27 @@ Search Scope：
 - Hotspot
 - Dictionary
 
+提供：
+
+- Keyword Search
+- Instant Search
+- Search Suggestions
+- Recent Search
+- Search Result Navigation
+
 搜尋結果可直接開啟對應教材或內容。
 
 點擊 Close（✕）後，
 
 僅收合 Floating Search Toolbar。
 
-Search Icon（放大鏡）仍固定顯示於畫面右上角。
+Search Icon 仍固定顯示於畫面右上角。
 
 Toolbar 每次皆由 Search Icon 展開。
 
 不記錄上次位置。
 
-所有畫面皆共用相同搜尋介面與操作流程，
-
-保持一致的使用者體驗。
+所有畫面皆共用相同搜尋介面與操作流程。
 
 ---
 
@@ -1836,7 +2058,7 @@ Toolbar 每次皆由 Search Icon 展開。
 - Save
 - Auto Validation
 - Save Status
-- Cloud Storage（Supabase）
+- Cloud Storage
 
 所有教材皆使用相同儲存流程。
 
@@ -1857,7 +2079,11 @@ Toolbar 每次皆由 Search Icon 展開。
 - 儲存教材
 - 搜尋
 
-不得造成系統凍結。
+背景工作不得造成：
+
+- UI 凍結
+- 操作中斷
+- 資料遺失
 
 ---
 
@@ -1891,7 +2117,32 @@ Loading Animation：
 
 ---
 
-## 12.7 Design Principles
+## 12.7 Performance Service
+
+Performance（效能）為全系統共同要求。
+
+系統應：
+
+- 避免 UI 凍結
+- 將耗時工作放入 Background Processing
+- 在等待期間顯示 Brand Loading Animation
+- 在工作完成後自動恢復正常操作
+
+適用於：
+
+- 大型 PDF
+- 大型圖片
+- 圖片最佳化
+- 圖片壓縮
+- 儲存
+- 搜尋
+- AI 處理
+
+效能處理不得改變教材內容。
+
+---
+
+## 12.8 Design Principles
 
 所有共用服務皆應遵循：
 
@@ -1900,6 +2151,8 @@ Loading Animation：
 - Consistent User Experience
 - Low Coupling
 - High Cohesion
+- Performance
+- Background Processing
 
 所有模組共用同一套服務。
 
@@ -1921,35 +2174,149 @@ MagicBook 採長期演進（Long-term Evolution）策略。
 - Complete Product Architecture
 - Modular Architecture
 - Replaceable Service
+- Consistent User Experience
+- Performance
 
 未來版本可持續增加新的模組與服務，
 
-但不得影響既有教材資料、使用者操作流程與產品架構。
+但不得影響：
+
+- 既有教材資料
+- 使用者操作流程
+- Workspace 架構
+- 核心產品架構
+
+Future Expansion 不代表 MVP 自動包含未確認功能。
+
+任何新功能在進入正式開發前，
+
+皆須先完成需求確認。
 
 ---
 
 # 14. Change Log
 
-## Version 3.0 Draft
+## Version 3.1
 
-重新建立 MagicBook 3.0 Product Specification。
+### Synchronization with MVP 2.1
 
-同步 02_MVP_Development.md。
+本版本依據：
 
-完成：
+02_MVP_Development.md
 
-- Complete Product Architecture
-- Workspace Architecture
-- Book Library Architecture
-- Folder Architecture
-- Core Modules
-- Editor System
-- Reading System
-- Global Services
-- Replaceable Service Architecture
+Version 2.1
+
+Last Update: 2026-08-08
+
+進行產品規格同步。
+
+---
+
+### Core Modules
+
+新增並正式確認：
+
+- Video Module
+- Navigation Module
+- Save Module
+- Background Processing
 - Brand Loading Animation
-- Global Search
-- Context Toolbar
 
-作為 MagicBook 3.0 後續開發與所有設計文件之共同規格基礎。
+---
 
+### Folder / Book Library
+
+確認 Folder 為 Book Library 的正式分類功能。
+
+Folder 支援：
+
+- Create Folder
+- Rename Folder
+- Delete Folder
+- Move Folder
+- Reorder Folder
+- Nested Folder
+- Drag & Drop Sorting
+
+確認：
+
+Book 可以直接存在於 Book Library 根目錄。
+
+Book 也可以放入 Folder。
+
+使用者可自行決定是否使用 Folder。
+
+---
+
+### Global Search
+
+重新確認 Global Search 設計：
+
+- Search Icon 固定於畫面右上方
+- Search Icon 不隱藏
+- 點擊後展開 Floating Search Toolbar
+- Close 後 Search Icon 仍保留
+- Home、Back 屬於 Navigation
+- Home、Back 不是 Search 功能
+- Search Scope 提供完整搜尋範圍
+- 搜尋結果可導向實際相關內容
+- 不記錄 Toolbar 上次位置
+
+---
+
+### Reading Mode
+
+Reading Mode 正式支援：
+
+- Hotspot
+- Popup
+- Dictionary
+- AI
+- Audio
+- Video
+- Navigation
+
+Reading Mode 不得修改教材內容。
+
+---
+
+### Performance
+
+確認 Performance（效能）為產品共同要求。
+
+耗時工作採：
+
+Background Processing（背景處理）。
+
+背景處理不得造成 UI 凍結。
+
+---
+
+### Brand Loading Animation
+
+確認 Loading Animation：
+
+- 顯示於畫面中央
+- 約佔畫面 15%
+- 採持續動作動畫
+- 工作完成後自動消失
+- 不使用傳統 Loading Bar
+- 不使用大量文字取代動畫
+
+品牌角色可採不同動物角色動畫。
+
+---
+
+### Exercise
+
+Exercise 不屬於 MagicBook 3.0。
+
+MagicBook 3.0 定位為：
+
+Interactive Teaching Material Tool（互動教材工具）。
+
+不包含：
+
+Exercise / Exam Authoring System（練習／考卷製作系統）。
+
+本產品規格不得建立 Exercise Module。
