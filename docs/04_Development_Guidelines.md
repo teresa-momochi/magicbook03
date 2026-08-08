@@ -1,6 +1,6 @@
 # MagicBook 3.0 Development Guidelines
 
-Version: 4.0
+Version: 4.1
 
 Status: Draft
 
@@ -173,6 +173,114 @@ MVP 為第一版開發範圍的主要依據。
 文件應依各自職責同步，
 
 不得將所有文件內容簡單複製成完全相同的內容。
+
+---
+
+## 2.8 Reuse Before Reinvent
+
+MagicBook 3.0 所有功能開發皆應遵循：
+
+**Reuse Before Reinvent（先利用，再重新發明）**
+
+在開發任何新功能之前，
+
+必須先確認是否已有成熟且可直接使用的技術能力。
+
+優先評估順序：
+
+1. Operating System（作業系統）既有能力
+2. Browser（瀏覽器）既有能力
+3. HTML / CSS / JavaScript 原生能力
+4. Mature Open Source Library（成熟開源函式庫）
+5. Mature Third-party Tool / Service（成熟第三方工具／服務）
+6. 以上皆無法滿足需求時，才評估 Custom Development（自行開發）
+
+### Engineering Rule
+
+不要因為「可以自己做」，
+
+就直接自行建立新的系統。
+
+在提出 Custom Development（自行開發）之前，
+
+必須先確認：
+
+> 「這個功能是否已經有現成技術可以直接使用？」
+
+如果已有成熟方案：
+
+→ 優先 Reuse / Integration（重用／整合）
+
+只有在現有技術確實無法滿足 MagicBook 的產品需求時：
+
+→ 才進入 Custom Development（自行開發）評估。
+
+### Example — Camera
+
+Camera（相機）是本原則的代表案例。
+
+MagicBook 不建立自己的 Camera System（相機系統）。
+
+老師使用裝置原生相機取得照片，
+
+MagicBook 只負責：
+
+Image Import（圖片匯入）
+
+MagicBook 不因為需要照片，
+
+而自行建立：
+
+- Camera System
+- Camera Preview
+- Exposure Control
+- Focus Control
+- ImageCapture
+- getUserMedia
+
+MagicBook 應優先使用裝置、作業系統與瀏覽器已提供的能力。
+
+### Applicability
+
+Reuse Before Reinvent 不只適用於 Camera。
+
+所有新功能皆適用。
+
+例如：
+
+- Camera → 使用裝置原生相機
+- File Import → 使用瀏覽器原生檔案選擇
+- Image Editing → 優先使用成熟影像處理能力
+- Image Processing → 優先使用成熟函式庫
+- PDF Processing → 優先使用成熟 PDF 工具
+- AI / OCR → 採 Replaceable Service Architecture（可替換服務架構）
+- Browser Features → 優先使用瀏覽器既有能力
+
+MagicBook 的責任不是重新發明已經存在的工具，
+
+而是把成熟技術組合成：
+
+簡單、穩定、容易使用的教師工具。
+
+### Product Principle
+
+MagicBook 應將複雜度藏在系統內部。
+
+使用者不需要理解：
+
+- Operating System
+- Browser
+- API
+- Camera
+- OCR
+- AI
+- Image Processing
+
+使用者只需要完成自己的工作。
+
+因此：
+
+> **先使用世界已經發明好的東西，再決定 MagicBook 真正需要自己發明什麼。**
 
 ---
 
@@ -968,6 +1076,7 @@ Folder 僅負責分類與管理。
 - Modular Architecture
 - Replaceable Service
 - Consistent User Experience
+- Reuse Before Reinvent
 - Performance
 
 不得破壞既有架構。
@@ -1418,3 +1527,32 @@ Database Design、API Design 等技術文件，
 依 MVP 實際開發進度建立，
 
 不提前為了文件同步而建立。
+
+---
+
+### Reuse Before Reinvent
+
+新增：
+
+**Reuse Before Reinvent（先利用，再重新發明）**
+
+正式成為 MagicBook 3.0 Core Development Principles（核心開發原則）。
+
+確認：
+
+- 優先使用 Operating System（作業系統）既有能力
+- 優先使用 Browser（瀏覽器）既有能力
+- 優先使用 HTML / CSS / JavaScript 原生能力
+- 優先使用成熟 Open Source Library（開源函式庫）
+- 優先使用成熟 Third-party Tool / Service（第三方工具／服務）
+- 以上皆無法滿足需求時，才評估 Custom Development（自行開發）
+
+Camera（相機）案例確認：
+
+MagicBook 不建立自己的 Camera System（相機系統）。
+
+使用者使用裝置原生相機取得照片。
+
+MagicBook 負責 Image Import（圖片匯入）。
+
+此原則適用於所有新功能，不限於 Camera。
