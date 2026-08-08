@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.0
+Version: 2.1
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-02
+Last Update: 2026-08-08
 
 ---
 
@@ -26,7 +26,7 @@ Last Update: 2026-08-02
 7. User Flow
 8. Screen Specifications
 9. Functional Modules
-10. Out of Scope
+10. Development Boundary
 11. Acceptance Criteria
 12. Development Sequence
 13. Change Log
@@ -113,6 +113,14 @@ Workspace
 
 ↓
 
+Book Library
+
+↓
+
+Folder
+
+↓
+
 Book
 
 ↓
@@ -130,6 +138,14 @@ Image Area
 Text Area
 
 HTML Overlay
+
+Folder 為 Book Library 的教材分類工具。
+
+使用者可建立、重新命名、刪除及管理 Folder。
+
+Folder 可包含子資料夾（Nested Folder）及 Book。
+
+Book 也可以直接存在於 Book Library 根目錄。
 
 此資料架構於所有版本保持一致。
 
@@ -157,6 +173,8 @@ MagicBook 2 已完成產品驗證，因此 MagicBook 3.0 MVP 的目的為：
 - 完整使用者操作流程（User Flow）
 
 第三方服務可逐步完善，但所有核心模組必須於 MVP 階段建立完成。
+
+---
 
 # 3. Development Philosophy
 
@@ -189,10 +207,11 @@ MagicBook 3.0 採用以下開發哲學。
 - Popup
 - Audio
 - Video
-- Exercise
 - Navigation
+- Global Search
+- Context Toolbar
 
-MVP 不因功能簡化而移除核心模組。
+MVP 不因功能簡化而移除已確認之核心模組。
 
 ---
 
@@ -338,9 +357,7 @@ Reading Mode：
 
 ## 4.3 Context Toolbar
 
-MagicBook 全系統共用：
-
-Context Toolbar。
+MagicBook 全系統共用 Context Toolbar。
 
 Toolbar：
 
@@ -374,15 +391,12 @@ Advanced on Demand
 
 若需更多功能，
 
-再透過 Context Toolbar
-
-開啟：
+再透過 Context Toolbar 開啟：
 
 - Dictionary
 - AI
 - Audio
 - Video
-- Exercise
 - Image
 - URL
 - Navigation
@@ -421,6 +435,8 @@ Image Area 並不限於圖片。
 須提示使用者，
 
 不得直接造成系統失敗。
+
+---
 
 # 5. Development Scope
 
@@ -466,7 +482,9 @@ Image Area 並不限於圖片。
 
 ---
 
-## 5.3 Book
+## 5.3 Book Library
+
+Book Library 為教材管理中心。
 
 完成：
 
@@ -477,7 +495,17 @@ Image Area 並不限於圖片。
 - Search Book
 - Recently Used
 
-Book 為教材管理單位。
+Book Library 支援：
+
+- Folder
+- Nested Folder
+- Folder CRUD
+- Folder Navigation
+- Drag & Drop Sorting
+
+使用者可選擇是否使用 Folder 分類教材。
+
+Book 可以直接存在於 Book Library 根目錄，也可以放入 Folder。
 
 ---
 
@@ -698,20 +726,37 @@ Audio 可由正式 API 或 Placeholder 提供。
 
 ---
 
-## 5.14 Exercise
+## 5.14 Video
 
-建立 Exercise Module。
+建立 Video Module。
 
 完成：
 
-- Exercise CRUD
-- Exercise Popup
+- Video Player
+- Video Source
+- Video Settings
 
-保留後續擴充更多題型。
+Video 可由正式來源或 Placeholder 提供。
 
 ---
 
-## 5.15 Reading Mode
+## 5.15 Navigation
+
+建立 Navigation Module。
+
+負責：
+
+- Home
+- Back
+- Page Navigation
+- Book Navigation
+- Lesson Navigation
+
+Navigation 可與 Context Toolbar 整合。
+
+---
+
+## 5.16 Reading Mode
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
@@ -721,10 +766,12 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Dictionary
 - AI
 - Audio
-- Exercise
+- Video
 - Navigation
 
 Reading Mode 不可修改教材內容。
+
+---
 
 # 6. Core Modules
 
@@ -759,7 +806,47 @@ Workspace 為所有教材之最高資料歸屬。
 
 ---
 
-## 6.3 Book Module
+## 6.3 Book Library Module
+
+負責：
+
+- Folder Navigation
+- Book Navigation
+- Search
+- Recently Used
+- Book Management
+
+---
+
+## 6.4 Folder Module
+
+Folder 為 Book Library 的教材分類工具。
+
+負責：
+
+- Create Folder
+- Rename Folder
+- Delete Folder
+- Move Folder
+- Reorder Folder
+
+支援：
+
+- Nested Folder（子資料夾）
+- Drag & Drop Sorting（拖曳排序）
+
+Folder 可包含：
+
+- Folder
+- Book
+
+Folder 不儲存教材內容。
+
+Folder 僅負責教材分類與管理。
+
+---
+
+## 6.5 Book Module
 
 負責：
 
@@ -770,7 +857,7 @@ Workspace 為所有教材之最高資料歸屬。
 
 ---
 
-## 6.4 Lesson Module
+## 6.6 Lesson Module
 
 負責：
 
@@ -784,7 +871,7 @@ Workspace 為所有教材之最高資料歸屬。
 
 ---
 
-## 6.5 Page Module
+## 6.7 Page Module
 
 負責：
 
@@ -796,7 +883,7 @@ Page 為教材最小管理單位。
 
 ---
 
-## 6.6 Image Area Module
+## 6.8 Image Area Module
 
 負責：
 
@@ -812,7 +899,7 @@ Image Area 不負責互動。
 
 ---
 
-## 6.7 Text Area Module
+## 6.9 Text Area Module
 
 負責：
 
@@ -824,7 +911,7 @@ Image Area 不負責互動。
 
 ---
 
-## 6.8 HTML Overlay Module
+## 6.10 HTML Overlay Module
 
 HTML Overlay 為教材互動層（Interaction Layer）。
 
@@ -841,7 +928,7 @@ HTML Overlay 不修改教材內容。
 
 ---
 
-## 6.9 Hotspot Module
+## 6.11 Hotspot Module
 
 Hotspot 為獨立互動物件（Interactive Object）。
 
@@ -856,7 +943,31 @@ Hotspot 建立於 HTML Overlay。
 
 ---
 
-## 6.10 Popup Module
+## 6.12 Context Toolbar Module
+
+Context Toolbar 為全系統共用工具列。
+
+負責：
+
+- Tool Switching
+- Floating Toolbar
+- Auto Show
+- Auto Hide
+- Dragging
+- Docking
+
+所有可編輯物件共用同一套 Toolbar。
+
+包括：
+
+- Image
+- Text
+- HTML Overlay
+- Hotspot
+
+---
+
+## 6.13 Popup Module
 
 Popup 為互動資訊容器（Interaction Container）。
 
@@ -870,7 +981,7 @@ Popup 由 Context Toolbar 開啟。
 
 ---
 
-## 6.11 Dictionary Module
+## 6.14 Dictionary Module
 
 Dictionary 為 Lookup Tool。
 
@@ -888,7 +999,7 @@ Dictionary 為查閱工具。
 
 ---
 
-## 6.12 AI Module
+## 6.15 AI Module
 
 AI 為產品工具（Tool）。
 
@@ -905,7 +1016,7 @@ AI Provider 可替換。
 
 ---
 
-## 6.13 Audio Module
+## 6.16 Audio Module
 
 負責：
 
@@ -917,19 +1028,132 @@ Audio Provider 可後續替換。
 
 ---
 
-## 6.14 Exercise Module
+## 6.17 Video Module
 
 負責：
 
-- Exercise CRUD
-- Exercise Rendering
-- Exercise Popup
+- Video Player
+- Video Source
+- Video Settings
 
-保留未來增加更多題型。
+Video Provider 可後續替換。
 
 ---
 
-## 6.15 Reading Module
+## 6.18 Navigation Module
+
+負責：
+
+- Home
+- Back
+- Page Navigation
+- Book Navigation
+- Lesson Navigation
+
+Navigation 為共用導覽功能。
+
+---
+
+## 6.19 Global Search Module
+
+Global Search 為全系統共用搜尋模組（Shared Service）。
+
+搜尋介面採 Floating Toolbar 模式。
+
+平時只顯示 Search Icon（搜尋圖示）。
+
+Search Icon 固定顯示於畫面右上方。
+
+使用者不需要猜測搜尋功能的位置。
+
+點擊 Search Icon 後，
+
+展開 Search Toolbar。
+
+Toolbar 可包含：
+
+- Home
+- Back
+- Keyword Search
+- Search Scope
+- Close
+
+其中：
+
+- Home
+- Back
+
+屬於 Navigation（導覽）功能，
+
+不是 Search 功能。
+
+關閉 Search Toolbar 後，
+
+Search Icon 必須繼續顯示於畫面右上方。
+
+Search Toolbar 提供搜尋範圍（Search Scope）：
+
+- All
+- Folder
+- Book
+- Lesson
+- Page
+- Text
+- Image
+- PDF
+- Hotspot
+- Dictionary
+
+提供：
+
+- Keyword Search（關鍵字搜尋）
+- Instant Search（即時搜尋）
+- Search Suggestions（搜尋建議）
+- Recent Search（最近搜尋）
+- Search Result Navigation（搜尋結果導覽）
+
+Global Search 可從使用者目前所在畫面開始搜尋。
+
+搜尋結果可導向實際對應的：
+
+- Folder
+- Book
+- Lesson
+- Page
+- Text
+- Image
+- PDF
+- Hotspot
+- Dictionary
+
+搜尋不限制使用者只能看到單一層級的結果。
+
+搜尋結果應協助使用者快速返回實際相關內容。
+
+Global Search 不直接管理資料。
+
+僅負責：
+
+- Search
+- Index
+- Search Result Navigation
+
+---
+
+## 6.20 Save Module
+
+負責：
+
+- Save Dialog
+- Auto Validation
+- Save Status
+- Cloud Storage
+
+---
+
+## 6.21 Reading Module
+
+Reading Mode 與 Editor Mode 共用同一份教材資料。
 
 負責：
 
@@ -939,11 +1163,14 @@ Audio Provider 可後續替換。
 - Dictionary
 - AI
 - Audio
-- Exercise
+- Video
+- Navigation
 
-Reading Mode 與 Editor Mode 共用相同教材資料。
+Reading Mode 僅提供閱讀與互動。
 
-不得建立第二份教材資料。
+不得修改教材內容。
+
+---
 
 # 7. User Flow
 
@@ -1062,7 +1289,7 @@ Popup
 
 ↓
 
-Dictionary / AI / Audio / Exercise
+Dictionary / AI / Audio / Video
 
 ↓
 
@@ -1088,6 +1315,7 @@ Book Library 為教材管理中心。
 - Duplicate Book
 - Delete Book
 - Recently Used
+- Folder Management
 
 操作流程：
 
@@ -1095,11 +1323,11 @@ Book Library
 
 ↓
 
-Search Book（可選）
+Search
 
 ↓
 
-Select Book
+Select Result
 
 ↓
 
@@ -1110,6 +1338,7 @@ Select Book
 - Rename Book
 - Duplicate Book
 - Delete Book
+- Move to Folder
 
 ---
 
@@ -1147,7 +1376,7 @@ AI
 
 Audio
 
-Exercise
+Video
 
 ↓
 
@@ -1184,7 +1413,7 @@ Reading Mode 不可修改教材內容。
 - Dictionary Lookup
 - AI Assistance
 - Audio
-- Exercise
+- Video
 - Navigation
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
@@ -1256,7 +1485,9 @@ Book Library
 - 不得直接關閉編輯畫面
 - 不得遺失使用者目前編輯內容
 
-- # 8. Screen Specifications
+---
+
+# 8. Screen Specifications
 
 MagicBook 3.0 所有畫面皆遵循一致設計原則：
 
@@ -1350,6 +1581,7 @@ Book Library 為教材管理中心。
 提供：
 
 - Book List
+- Folder
 - Recently Used
 - Search
 - Create Book
@@ -1359,18 +1591,35 @@ Book Library 為教材管理中心。
 - Open Book（Book Editor）
 - Open Reading（Reading Mode）
 
+Folder 支援：
+
+- Create Folder
+- Rename Folder
+- Delete Folder
+- Move Folder
+- Reorder Folder
+- Nested Folder
+
+Book 可以：
+
+- 直接存在於 Book Library 根目錄
+- 放入 Folder
+- 在 Folder 之間移動
+
+Search Icon 固定顯示於畫面右上方。
+
+點擊後展開 Floating Search Toolbar。
+
+關閉搜尋後，
+
+Search Icon 仍保留於畫面右上方。
+
 教材可依：
 
 - Recently Used
 - Create Time
 
 排序。
-
-未來版本可增加：
-
-- Folder
-- Favorite
-- Tag
 
 ---
 
@@ -1580,7 +1829,7 @@ Popup 為互動資訊視窗。
 - Dictionary
 - AI
 - Audio
-- Exercise
+- Video
 - Image
 - URL
 - Navigation
@@ -1626,7 +1875,7 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Dictionary
 - AI
 - Audio
-- Exercise
+- Video
 - Navigation
 
 Reading Mode 僅提供閱讀與互動。
@@ -1658,6 +1907,8 @@ Reading Mode 僅提供閱讀與互動。
 所有第三方服務皆採 Replaceable Service Architecture。
 
 不得綁定任何特定 AI、Dictionary、TTS 或其他第三方服務。
+
+---
 
 # 9. Functional Modules
 
@@ -1924,12 +2175,8 @@ Context Toolbar 為全系統共用工具列。
 - Floating Toolbar
 - Auto Show
 - Auto Hide
-
-Toolbar 支援：
-
-- 自由拖曳
-- 停靠於畫面上下左右
-- 不遮蔽教材內容
+- Dragging
+- Docking
 
 所有可編輯物件共用同一套 Toolbar。
 
@@ -2024,27 +2271,68 @@ Audio Provider 可自由替換。
 
 ---
 
-## 9.17 Global Search Module
+## 9.17 Video Module
+
+負責：
+
+- Video Player
+- Video Source
+- Video Settings
+
+Video Provider 可自由替換。
+
+---
+
+## 9.18 Navigation Module
+
+負責：
+
+- Home
+- Back
+- Page Navigation
+- Book Navigation
+- Lesson Navigation
+
+Navigation 為共用導覽功能。
+
+---
+
+## 9.19 Global Search Module
 
 Global Search 為全系統共用搜尋模組（Shared Service）。
 
-提供：
-
-- Keyword Search（關鍵字搜尋）
-- Instant Search（即時搜尋）
-- Search Suggestions（搜尋建議）
-- Search Result Navigation（搜尋結果導覽）
-- Recent Search（最近搜尋）
-
 搜尋採 Floating Toolbar 模式。
 
-平時隱藏。
+平時只顯示 Search Icon。
 
-點擊 Search 後展開。
+Search Icon 固定顯示於畫面右上方。
+
+點擊 Search Icon 後展開 Search Toolbar。
+
+Search Toolbar 可包含：
+
+- Home
+- Back
+- Keyword Search
+- Search Scope
+- Close
+
+其中：
+
+- Home
+- Back
+
+屬於 Navigation（導覽）功能，
+
+不是 Search 功能。
+
+關閉 Search Toolbar 後，
+
+Search Icon 必須繼續顯示於畫面右上方。
 
 提供搜尋範圍（Search Scope）：
 
-- All（全部）
+- All
 - Folder
 - Book
 - Lesson
@@ -2055,17 +2343,29 @@ Global Search 為全系統共用搜尋模組（Shared Service）。
 - Hotspot
 - Dictionary
 
-各畫面可依需求設定預設搜尋範圍。
+提供：
 
-搜尋介面保持一致。
+- Keyword Search（關鍵字搜尋）
+- Instant Search（即時搜尋）
+- Search Suggestions（搜尋建議）
+- Recent Search（最近搜尋）
+- Search Result Navigation（搜尋結果導覽）
+
+搜尋可從使用者目前所在畫面開始。
+
+搜尋結果可導向實際相關內容。
 
 Global Search 不直接管理資料。
 
-僅負責搜尋、索引與搜尋結果導覽。
+僅負責：
+
+- Search
+- Index
+- Search Result Navigation
 
 ---
 
-## 9.18 Save Module
+## 9.20 Save Module
 
 負責：
 
@@ -2074,11 +2374,9 @@ Global Search 不直接管理資料。
 - Save Status
 - Cloud Storage
 
-教材儲存完成後返回 Book Library。
-
 ---
 
-## 9.19 Reading Module
+## 9.21 Reading Module
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
@@ -2090,11 +2388,14 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Dictionary
 - AI
 - Audio
+- Video
 - Navigation
 
 Reading Mode 僅提供閱讀與互動。
 
 不得修改教材內容。
+
+---
 
 # 10. Development Boundary
 
@@ -2131,6 +2432,8 @@ MagicBook 3.0 第一階段建立完整產品架構（Complete Product Architectu
 - Context Toolbar（共用浮動工具列）
 
 不得建立獨立且不一致的操作流程。
+
+---
 
 # 11. Acceptance Criteria
 
@@ -2222,13 +2525,14 @@ Book 應可：
 
 - 拖曳至 Folder
 - 移動至其他 Folder
+- 保留於 Book Library 根目錄
 
 Folder 應可：
 
-- 拖曳建立子資料夾
+- 建立子資料夾
 - 拖曳返回根目錄
 
-不得跨越資料層級拖曳。
+不得跨越不允許的資料層級拖曳。
 
 ---
 
@@ -2368,6 +2672,9 @@ Hotspot 建立於 HTML Overlay。
 點擊 Hotspot：
 
 立即顯示 Default Popup。
+
+---
+
 ## 11.11 Context Toolbar
 
 Context Toolbar 為全系統共用工具列。
@@ -2492,15 +2799,57 @@ Audio 不得影響教材資料。
 
 ---
 
-## 11.16 Global Search
+## 11.16 Video
+
+Video 應提供：
+
+- Video Player
+- Video Source
+- Video Settings
+
+Video Provider 可自由替換。
+
+Video 不得影響教材資料。
+
+---
+
+## 11.17 Navigation
+
+Navigation 應提供：
+
+- Home
+- Back
+- Page Navigation
+- Book Navigation
+- Lesson Navigation
+
+Navigation 為共用導覽功能。
+
+---
+
+## 11.18 Global Search
 
 Global Search 為全系統共用搜尋模組。
 
-搜尋採 Floating Toolbar 模式。
+Search Icon 應固定顯示於畫面右上方。
 
-平時隱藏。
+平時僅顯示 Search Icon。
 
-點擊 Search 後展開。
+點擊 Search Icon 後展開 Floating Search Toolbar。
+
+Toolbar 可包含：
+
+- Home
+- Back
+- Keyword Search
+- Search Scope
+- Close
+
+其中 Home、Back 屬於 Navigation 功能。
+
+關閉 Search Toolbar 後，
+
+Search Icon 必須繼續顯示。
 
 提供：
 
@@ -2523,17 +2872,17 @@ Global Search 為全系統共用搜尋模組。
 - Hotspot
 - Dictionary
 
-各畫面可依需求設定預設搜尋範圍。
+搜尋結果可導向使用者實際相關內容。
 
-搜尋介面保持一致。
+搜尋不限制使用者只能看到單一資料層級的結果。
 
-Global Search 不直接管理資料。
+Global Search 不直接修改資料。
 
 僅負責搜尋、索引與搜尋結果導覽。
 
 ---
 
-## 11.17 Save
+## 11.19 Save
 
 使用者應可：
 
@@ -2548,7 +2897,7 @@ Global Search 不直接管理資料。
 
 ---
 
-## 11.18 Reading Mode
+## 11.20 Reading Mode
 
 Reading Mode 與 Editor Mode
 
@@ -2561,6 +2910,7 @@ Reading Mode 提供：
 - Dictionary
 - AI
 - Audio
+- Video
 - Navigation
 
 Reading Mode 僅提供閱讀與互動。
@@ -2569,7 +2919,7 @@ Reading Mode 僅提供閱讀與互動。
 
 ---
 
-## 11.19 System Performance
+## 11.21 System Performance
 
 MagicBook 執行背景工作（Background Processing）時，
 
@@ -2652,7 +3002,7 @@ Loading Animation 適用於：
 
 ---
 
-## 11.20 Architecture
+## 11.22 Architecture
 
 MagicBook 3.0 MVP 驗收標準為：
 
@@ -2674,9 +3024,11 @@ MagicBook 3.0 MVP 驗收標準為：
 
 Replaceable Service（服務可替換）原則。
 
-不得因更換 AI、Dictionary、Audio 或其他第三方服務，
+不得因更換 AI、Dictionary、Audio、Video 或其他第三方服務，
 
 影響教材資料、產品架構或使用者操作流程（User Flow）。
+
+---
 
 # 12. Development Sequence
 
@@ -2739,6 +3091,8 @@ Interaction
 - Popup
 - Dictionary
 - Audio
+- Video
+- Navigation
 
 建立教材互動能力。
 
@@ -2802,6 +3156,8 @@ Optimization
 
 完成第一版 MVP。
 
+---
+
 # 13. Change Log
 
 本文件記錄 MagicBook 3.0 MVP Development 之重大版本更新。
@@ -2812,312 +3168,93 @@ Optimization
 
 ---
 
-## Version 3.0 MVP
+## Version 2.1
 
-### Product Positioning
+### Exercise Removed
 
-重新定義 MagicBook 3.0 MVP：
+確認 Exercise 不屬於 MagicBook 3.0 MVP。
 
-由傳統 Minimum Viable Product
+移除所有 Exercise 相關規格，包括：
 
-改為：
+- Exercise Module
+- Exercise CRUD
+- Exercise Popup
+- Exercise Rendering
+- Exercise User Flow
+- Exercise Reading Mode
+- Exercise Context Toolbar Option
 
-Complete Product Architecture（完整產品架構）。
+MagicBook 3.0 定位為互動教材工具（Interactive Teaching Material Tool），
 
-第一版即建立：
-
-- 完整核心模組
-- 完整資料模型
-- 完整 UI
-- 完整 CRUD
-- 完整 User Flow
-
-第三方服務可後續正式串接。
-
----
-
-### Workspace
-
-新增：
-
-- Personal Workspace
-- Organization Workspace
-
-建立 Workspace 為系統最高管理單位。
-
-所有教材皆依 Workspace 管理。
-
-Organization Workspace：
-
-由管理者建立教師帳號。
-
-教師使用 Workspace 提供之帳號登入。
+不包含考卷或題目製作系統（Exercise / Exam Authoring System）。
 
 ---
 
 ### Book Library
 
-新增：
-
-Folder Module。
+確認 Folder 為 Book Library 的固定功能。
 
 Folder 支援：
 
-- Nested Folder（子資料夾）
-- Drag & Drop
-- Folder CRUD
-
-Book Library 成為教材管理中心。
-
----
-
-### Book Structure
-
-正式建立：
-
-Workspace
-
-↓
-
-Book Library
-
-↓
-
-Folder
-
-↓
-
-Book
-
-↓
-
-Lesson
-
-↓
-
-Page
-
-↓
-
-Image Area
-
-Text Area
-
-HTML Overlay
-
----
-
-### HTML Overlay
-
-重新定義：
-
-HTML Overlay 為教材互動層（Interaction Layer）。
-
-教材保持原貌。
-
-所有互動建立於 HTML Overlay。
-
----
-
-### Hotspot
-
-建立完整 Hotspot Module。
-
-完成：
-
-- CRUD
-- Move
-- Resize
-- Save
-
----
-
-### Popup
-
-重新定義：
-
-點擊 Hotspot：
-
-立即顯示：
-
-- Chinese
-- KK
-- Pronunciation
-
-其他功能：
-
-由 Context Toolbar 開啟。
-
----
-
-### Context Toolbar
-
-建立共用 Context Toolbar。
-
-支援：
-
-- Floating
-- Auto Show
-- Auto Hide
-- Draggable
-- Dockable
-
-所有可編輯物件共用。
-
-不得遮蔽教材內容。
-
----
-
-### Dictionary
-
-重新定位：
-
-Dictionary 為 Lookup Tool。
-
-提供：
-
-- Word
-- Chinese
-- KK
-- Pronunciation
-- Example
-- AI Assistance
-
-不提供收藏功能。
-
----
-
-### AI
-
-重新定位：
-
-AI 為 Tool。
-
-不是產品核心。
-
-建立：
-
-- AI Panel
-- Prompt Manager
-- Conversation
-- History
-- AI Settings
-- AI Provider Interface
-
-採 Replaceable Provider Architecture。
-
-支援：
-
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future Providers
-
-不得綁定特定 AI。
-
----
-
-### Image Area
-
-重新定義：
-
-Image Area 支援：
-
-- PNG
-- JPG
-- JPEG
-- PDF
-- Camera
-
-系統自動：
-
-- Image Optimization
-- Image Compression
-- Background Processing
-
-教材內容保持原貌。
-
----
-
-### Reading Mode
-
-Reading Mode
-
-與
-
-Editor Mode
-
-共用同一份教材資料。
-
-Reading Mode
-
-不得修改教材。
+- Create Folder
+- Rename Folder
+- Delete Folder
+- Move Folder
+- Reorder Folder
+- Nested Folder
+- Drag & Drop Sorting
+
+使用者可自行決定是否使用 Folder。
+
+Book 可直接存在於 Book Library 根目錄，
+
+也可放入 Folder。
 
 ---
 
 ### Global Search
 
-新增：
+重新確認 Global Search 採 Floating Search Toolbar。
 
-Global Search。
+平時固定顯示 Search Icon。
 
-採：
+Search Icon 位於畫面右上方。
 
-Floating Toolbar。
+點擊後展開 Search Toolbar。
 
-提供：
+Toolbar 可整合：
 
+- Home
+- Back
 - Keyword Search
 - Search Scope
-- Search Suggestions
-- Recent Search
+- Close
 
-Search Scope：
+Home、Back 屬於 Navigation 功能。
 
-- All
-- Folder
-- Book
-- Lesson
-- Page
-- Text
-- Image
-- PDF
-- Hotspot
-- Dictionary
+關閉搜尋後，
 
-搜尋介面保持一致。
+Search Icon 必須繼續顯示。
 
 ---
 
-### Loading Animation
+### System Performance
 
-新增：
+確認 Performance（效能）為 MVP 驗收標準之一。
 
-Brand Loading Animation。
+背景處理（Background Processing）不得造成 UI 凍結。
 
-系統背景工作期間：
+Loading Animation：
 
-使用品牌角色動畫。
-
-不使用傳統 Loading Bar。
-
-品牌角色：
-
-- 持續動作動畫
 - 顯示於畫面中央
 - 約佔畫面 15%
-- 工作完成後自動消失
-
-可採：
-
-Random Character（隨機角色）。
+- 採品牌角色動作動畫
+- 持續播放至工作完成
+- 工作完成後自動關閉
 
 ---
 
 ### Development Philosophy
-
-正式建立：
 
 MagicBook 3.0
 
