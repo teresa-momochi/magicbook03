@@ -200,7 +200,7 @@ Book Library
 
 ↓
 
-Folder（Optional）
+Folder
 
 ↓
 
