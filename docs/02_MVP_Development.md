@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.2
+Version: 2.5
 
 Status: Draft
 
@@ -29,7 +29,8 @@ Last Update: 2026-08-08
 10. Development Boundary
 11. Acceptance Criteria
 12. Development Sequence
-13. Change Log
+13. AI Automation — Technical Validation & PM Decision 01
+14. Change Log
 
 ---
 
@@ -306,6 +307,51 @@ MagicBook 文件允許重要規格重複出現。
 
 ---
 
+## 3.8 Reuse Before Reinvent
+
+MagicBook 3.0 全部工程開發皆應遵循：
+
+> Reuse Before Reinvent（先利用，再重新發明）
+
+當產品需要某項技術能力時，工程應優先確認是否已有成熟技術可以直接使用或整合。
+
+評估順序：
+
+1. OS（作業系統）既有能力
+2. Browser（瀏覽器）既有能力
+3. HTML / CSS / JavaScript 原生能力
+4. 成熟 Open Source Library（開源函式庫）
+5. 成熟 Third-party Tool（第三方工具）
+6. 最後才評估自行開發
+
+例如：
+
+Camera（相機）、圖片調整、圖片處理、圖片壓縮、影像辨識等能力，不應預設由 MagicBook 自行重新發明。
+
+MagicBook 的責任是：
+
+- 選擇適合的現有技術
+- 整合現有技術
+- 建立產品流程
+- 驗證結果
+- 在必要時提供產品層級的操作介面
+
+而不是重新建立已經存在的基礎技術。
+
+此原則適用於所有後續功能，不只適用於圖片或 Camera。
+
+如果工程認為必須自行開發新的技術能力，
+
+應先向 PM 說明：
+
+- 現有技術為何無法使用
+- 現有技術的限制
+- 自行開發的必要性
+
+未經確認，不得因工程方便或習慣而自行建立新的技術系統。
+
+---
+
 # 4. Architecture Principles
 
 ## 4.1 One Data Model
@@ -419,8 +465,20 @@ Image Area 並不限於圖片。
 - JPG
 - JPEG
 - PDF
-- Camera（拍照）
+- Image Import（圖片輸入）
 - Video（影片）
+
+Image Import 可包含：
+
+- 使用者已拍攝的照片
+- 截圖
+- 從裝置選取的圖片檔案
+
+MagicBook 不建立專用 Camera System（相機系統）。
+
+使用者拍照由裝置本身負責。
+
+MagicBook 僅接收使用者已取得的圖片。
 
 未來可持續擴充更多媒體格式。
 
@@ -559,7 +617,19 @@ Image Area 負責教材視覺內容管理。
 - JPG
 - JPEG
 - PDF
-- Camera（拍照）
+- Image Import（圖片輸入）
+
+Image Import 包含：
+
+- 使用者已拍攝之照片
+- 截圖
+- 從裝置選取之圖片檔案
+
+MagicBook 不建立專用 Camera System。
+
+使用者拍照由裝置原生功能負責。
+
+MagicBook 只接收已取得的圖片。
 
 系統需具備：
 
@@ -571,8 +641,6 @@ Image Area 負責教材視覺內容管理。
 若檔案超過系統限制，
 
 系統應提示使用者重新調整或壓縮後再上傳。
-
-未來版本可持續支援更多教材格式。
 
 ---
 
@@ -601,7 +669,6 @@ HTML Overlay 為教材互動層（Interaction Layer）。
 
 - Image
 - PDF
-- Camera
 
 教材內容保持原貌。
 
@@ -892,6 +959,15 @@ Page 為教材最小管理單位。
 - Image Rendering
 - Image Optimization
 - Image Compression
+- Image Import
+
+Image Import 負責接收：
+
+- 使用者已拍攝的照片
+- 截圖
+- 從裝置選取的圖片檔案
+
+MagicBook 不建立專用 Camera System。
 
 Image Area 不負責互動。
 
@@ -1170,8 +1246,6 @@ Reading Mode 僅提供閱讀與互動。
 
 不得修改教材內容。
 
----
-
 # 7. User Flow
 
 MagicBook 3.0 提供兩種使用模式：
@@ -1261,7 +1335,7 @@ Image Area
 
 ↓
 
-Import Image / PDF / Camera
+Image Import
 
 ↓
 
@@ -1298,6 +1372,20 @@ Save Book
 ↓
 
 Book Library
+
+### Image Import
+
+Image Import 可接收：
+
+- 使用者已拍攝的照片
+- 截圖
+- 從裝置選取的圖片檔案
+
+MagicBook 不建立專用 Camera System（相機系統）。
+
+使用者拍照由裝置本身負責。
+
+MagicBook 僅接收使用者已取得的圖片。
 
 ---
 
@@ -1701,7 +1789,19 @@ Image Area 為教材圖片工作區。
 - JPG
 - JPEG
 - PDF
-- Camera（拍照）
+- Image Import（圖片輸入）
+
+Image Import 包含：
+
+- 使用者已拍攝之照片
+- 截圖
+- 從裝置選取之圖片檔案
+
+MagicBook 不建立專用 Camera System。
+
+使用者拍照由裝置原生功能負責。
+
+MagicBook 只接收已取得的圖片。
 
 系統自動：
 
@@ -1712,8 +1812,6 @@ Image Area 為教材圖片工作區。
 若檔案超過系統限制，
 
 應提示使用者重新調整後再上傳。
-
-教材內容保持原貌。
 
 ---
 
@@ -1744,7 +1842,6 @@ HTML Overlay 為教材互動層（Interaction Layer）。
 
 - Image
 - PDF
-- Camera
 
 教材內容保持原貌。
 
@@ -1926,6 +2023,7 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 - Teaching Material First（教材優先）
 - Low Coupling（低耦合）
 - Replaceable Service（服務可替換）
+- Reuse Before Reinvent（先利用，再重新發明）
 
 各模組透過統一資料架構協同運作。
 
@@ -2078,6 +2176,9 @@ Image Area 為教材圖片工作區。
 - Replace Image
 - Delete Image
 - Reorder Image
+- Image Import
+- Image Optimization
+- Image Compression
 
 支援：
 
@@ -2085,7 +2186,19 @@ Image Area 為教材圖片工作區。
 - JPG
 - JPEG
 - PDF
-- Camera（拍照）
+- Image Import（圖片輸入）
+
+Image Import 包含：
+
+- 使用者已拍攝的照片
+- 截圖
+- 從裝置選取的圖片檔案
+
+MagicBook 不建立專用 Camera System。
+
+使用者拍照由裝置原生功能負責。
+
+MagicBook 只接收已取得的圖片。
 
 系統自動：
 
@@ -2134,7 +2247,6 @@ HTML Overlay 可覆蓋於：
 
 - Image
 - PDF
-- Camera
 
 教材內容保持原貌。
 
@@ -2411,6 +2523,7 @@ MagicBook 3.0 第一階段建立完整產品架構（Complete Product Architectu
 - 不刪除已確認功能（Confirmed Features）
 - 不新增未確認功能（Undefined Features）
 - 不因技術限制修改使用者操作流程（User Flow）
+- Reuse Before Reinvent（先利用，再重新發明）
 
 若需新增功能或修改需求，
 
@@ -2430,6 +2543,7 @@ MagicBook 3.0 第一階段建立完整產品架構（Complete Product Architectu
 - Replaceable Service（服務可替換）
 - Global Search（全域搜尋）
 - Context Toolbar（共用浮動工具列）
+- Reuse Before Reinvent（先利用，再重新發明）
 
 不得建立獨立且不一致的操作流程。
 
@@ -2600,7 +2714,19 @@ Image Area 與 Text Area：
 - 匯入 JPG
 - 匯入 JPEG
 - 匯入 PDF
-- Camera 拍照
+- Image Import（圖片輸入）
+
+Image Import 可包含：
+
+- 使用者已拍攝的照片
+- 截圖
+- 從裝置選取的圖片檔案
+
+MagicBook 不建立專用 Camera System。
+
+使用者拍照由裝置原生功能負責。
+
+MagicBook 只接收已取得的圖片。
 
 系統應：
 
@@ -2644,7 +2770,6 @@ HTML Overlay 可覆蓋：
 
 - Image
 - PDF
-- Camera
 
 所有互動皆建立於 HTML Overlay。
 
@@ -2973,7 +3098,6 @@ Loading Animation 適用於：
 
 - 匯入圖片
 - 匯入 PDF
-- Camera 拍照
 - 圖片最佳化
 - 圖片壓縮
 - 儲存教材
@@ -3027,6 +3151,10 @@ Replaceable Service（服務可替換）原則。
 不得因更換 AI、Dictionary、Audio、Video 或其他第三方服務，
 
 影響教材資料、產品架構或使用者操作流程（User Flow）。
+
+所有新增技術能力皆須遵循：
+
+Reuse Before Reinvent（先利用，再重新發明）。
 
 ---
 
@@ -3156,91 +3284,338 @@ Optimization
 
 完成第一版 MVP。
 
+下面是最後一批：**第 13～14 節**。
+這一批把目前已確認的 **PM Decision 01 + Image Import + Reuse Before Reinvent + Quality Check / Auto Correction / Re-Quality Check** 全部整合。
+
+特別修正你剛才指出的原則：
+
+* **MagicBook 不是照片倉庫**
+* 不保留「Original Image」作為永久資產的規格
+* 照片只是輸入教材的來源
+* 如果最後無法可靠建立互動內容，**直接拒絕**
+* 不產生錯誤 Hotspot
+* 使用者在輸入照片後，可以利用現有成熟的圖片調整能力調整，再決定送出或重拍
+* **不建立自己的 Camera System**
+* 不做一套像你截圖那種「必須下載 App 才能拍照」的系統
+* 優先利用裝置、瀏覽器、HTML、既有函式庫與成熟工具
+
+直接把下面接到上一批第 12 節後面即可。
+
+````markdown
+# 13. AI Automation — Technical Validation & PM Decision 01
+
+本章記錄 MagicBook 3.0 AI Automation（AI 自動化）相關功能之 Technical Validation（技術驗證）與 PM Decision（產品決策）。
+
+本章內容分為：
+
+1. Technical Evidence（技術證據）
+2. Confirmed Product Behavior（已確認產品行為）
+3. Pending PM Decision（尚待 PM 決策）
+
+Technical Evidence 不等同於 Production Threshold（正式產品門檻）。
+
+Benchmark 數據不得直接轉換為 Production Logic（正式產品邏輯），除非經 PM 正式核定。
+
 ---
 
-# 13. AI Automation — Technical Validation（Benchmark Stage）
+## 13.1 Scope
 
-> **文件定位：Technical Evidence（技術證據），不是正式產品規格。**
->
-> 本節記錄 Image Quality Check、Auto Correction、OCR / AI 與 End-to-End Pipeline 的實測結果，供後續 PM Decision（產品決策）與工程實作參考。
->
-> **在 PM 尚未正式核定 Threshold（門檻）與 OCR / AI 技術方案前，不得將本節數值直接視為 Production Rule（正式產品規則），不得進入正式 Production Implementation（正式產品實作）。**
->
-> 本節不修改 DB Schema（資料庫結構），不指定正式 OCR / AI Provider（供應商），不寫死正式 Threshold。
+本次 AI Automation 主要處理：
+
+使用者將教材圖片輸入 Image Area 後，
+
+系統協助判斷圖片是否適合建立互動內容，
+
+必要時進行 Auto Correction（自動修正），
+
+再進行 OCR / AI（文字辨識／人工智慧處理），
+
+最後建立 Hotspot（互動點）。
+
+核心流程：
+
+```text
+Image Import
+      ↓
+Image Quality Check
+      ↓
+判斷是否需要修正
+      ↓
+Auto Correction（必要時）
+      ↓
+Re-Quality Check
+      ↓
+OCR / AI
+      ↓
+Text + Bounding Box
+      ↓
+Hotspot Generator
+      ↓
+HTML Overlay
+      ↓
+Hotspot
+````
 
 ---
 
-## 13.1 Benchmark Status
+# 13.2 Image Import — Product Boundary
 
-本次已完成三條完整 Pipeline（流程）：
+MagicBook 不建立專用 Camera System（相機系統）。
+
+MagicBook 不負責：
+
+* Camera Hardware Control（相機硬體控制）
+* Exposure Control（曝光控制）
+* Focus Control（對焦控制）
+* HDR Control
+* Camera Preview System（專用相機預覽系統）
+* 自行建立 Camera App
+
+使用者拍照由裝置原生功能負責。
+
+MagicBook 的責任是：
+
+> 接收使用者已經取得的圖片，並將圖片轉換成教材內容。
+
+Image Import 可包含：
+
+* 使用者已拍攝的照片
+* 截圖
+* 從裝置選取的圖片檔案
+
+MagicBook 不要求使用者為了拍照而下載另一套專用 Camera App。
+
+---
+
+# 13.3 Reuse Before Reinvent — Image Input
+
+Image Input（圖片輸入）必須遵循：
+
+> Reuse Before Reinvent（先利用，再重新發明）
+
+MagicBook 應優先使用裝置與瀏覽器已存在的能力。
+
+優先順序：
+
+1. OS（作業系統）既有能力
+2. Browser（瀏覽器）既有能力
+3. HTML / CSS / JavaScript 原生能力
+4. 成熟 Open Source Library（開源函式庫）
+5. 成熟 Third-party Tool（第三方工具）
+6. 最後才評估自行開發
+
+因此：
+
+MagicBook 不應自行重新發明 Camera System。
+
+同樣原則適用於：
+
+* Image Editing（圖片編輯）
+* Brightness Adjustment（亮度調整）
+* Contrast Adjustment（對比調整）
+* Crop（裁切）
+* Rotate（旋轉）
+* Image Compression（圖片壓縮）
+* Image Processing（影像處理）
+* OCR（文字辨識）
+* AI Processing（AI 處理）
+
+工程若認為現有技術不足，
+
+必須先說明：
+
+* 現有技術為何無法使用
+* 限制為何
+* 為何需要自行開發
+
+未經 PM 確認，
+
+不得自行建立新的底層技術系統。
+
+---
+
+# 13.4 Image Adjustment — User Control
+
+圖片輸入後，
+
+不論圖片目前是否被判定為可用，
+
+使用者都應有機會先進行必要的圖片調整。
+
+可提供：
+
+* Brightness（亮度）
+* Contrast（對比）
+* Color（色彩）
+* Rotate（旋轉）
+* Crop（裁切）
+
+以及：
+
+* Retake / Re-select（重新拍攝／重新選取）
+
+這些功能應優先利用：
+
+* 裝置既有能力
+* Browser 原生能力
+* HTML / CSS / JavaScript
+* 成熟 Image Processing Library（影像處理函式庫）
+* 成熟第三方工具
+
+MagicBook 不需要自行發明一套新的圖片編輯技術。
+
+---
+
+## 13.4.1 Brightness Adjustment
+
+若使用者取得的圖片太暗，
+
+可以提供 Brightness Adjustment（亮度調整）。
+
+這個操作的概念可以借力使力於使用者已熟悉的產品操作方式，
+
+例如：
+
+* 手機照片調整
+* PowerPoint 圖片色彩工具
+* 其他成熟圖片編輯工具
+
+目的不是複製 PowerPoint，
+
+而是使用已被驗證的操作概念降低學習成本。
+
+MagicBook 不需要自行發明新的 Brightness Control。
+
+---
+
+## 13.4.2 Retake / Re-select
+
+使用者可選擇：
+
+* Retake（重新拍攝）
+* Re-select（重新選取圖片）
+
+MagicBook 不負責實作 Camera Hardware。
+
+Retake 的實際拍攝動作由裝置原生相機完成。
+
+拍攝完成後重新回到 Image Import。
+
+---
+
+# 13.5 Image Quality Check
+
+Image Quality Check（圖片品質檢查）負責判斷：
+
+> 這張圖片是否有足夠品質可靠建立互動內容？
+
+目前 Benchmark 測試過：
+
+* Blur（模糊）
+* Brightness（亮度）
+* Contrast（對比）
+* Skew / Tilt（傾斜）
+* Noise（雜訊）
+
+其中：
+
+### Blur
+
+使用：
+
+Laplacian Variance（拉普拉斯變異數）
+
+作為影像銳利度參考。
+
+### Skew
+
+使用：
+
+Projection Profile（投影輪廓）
+
+偵測文字排列方向。
+
+### Contrast
+
+使用：
+
+Grayscale Standard Deviation（灰階標準差）
+
+作為對比度參考。
+
+### Noise
+
+目前已確認：
+
+單純使用 Blur 指標不足以判斷 Noise。
+
+因此 Noise Detection（雜訊偵測）不得單獨依賴 Laplacian。
+
+---
+
+# 13.6 Technical Benchmark Result
+
+第一輪 Benchmark：
+
+15 種代表性情境。
+
+三條 Pipeline：
 
 ### Pipeline A — Baseline
 
 ```text
-Original Image
-    ↓
+Original Input
+↓
 OCR
-    ↓
+↓
 Hotspot Generator
 ```
 
 ### Pipeline B — Quality Check Only
 
 ```text
-Original Image
-    ↓
-Image Quality Check
-    ↓
+Image
+↓
+Quality Check
+↓
 OCR
-    ↓
+↓
 Hotspot Generator
 ```
 
 ### Pipeline C — Full Pipeline
 
 ```text
-Original Image
-    ↓
-Image Quality Check
-    ↓
+Image
+↓
+Quality Check
+↓
 Auto Correction
-    ↓
+↓
 Re-Quality Check
-    ↓
+↓
 OCR
-    ↓
+↓
 Hotspot Generator
 ```
 
-共測試：
+Benchmark 結果：
 
-**15 種代表性情境。**
+| Pipeline           |   SUCCESS | PARTIAL |  FAIL |
+| ------------------ | --------: | ------: | ----: |
+| Baseline           |     40.0% |   33.3% | 26.7% |
+| Quality Check Only |     33.3% |   26.7% | 40.0% |
+| Full Pipeline      | **73.3%** |   13.3% | 13.3% |
 
 ---
 
-## 13.2 End-to-End Benchmark Result
+# 13.7 PM Decision 01 — Quality Check 與 Auto Correction
 
-| Pipeline | SUCCESS | PARTIAL | FAIL |
-| --- | ---: | ---: | ---: |
-| A：Baseline | 40.0% | 33.3% | 26.7% |
-| B：Quality Check Only | 33.3% | 26.7% | 40.0% |
-| C：Full Pipeline | **73.3%** | 13.3% | 13.3% |
+PM 正式確認：
 
-### Technical Finding
+> Quality Check 不應成為單純的 Reject System（拒絕系統）。
 
-單獨加入 Quality Check 並不能改善整體結果。
-
-Pipeline B 反而從 40.0% SUCCESS 下降至 33.3%。
-
-原因：
-
-Quality Check 只能拒絕，不能修正。
-
-因此會把原本可以透過 Auto Correction（自動修正）救回的照片直接擋掉。
-
-### Engineering Conclusion
-
-Quality Check 不應單獨形成：
+不得採用：
 
 ```text
 Image
@@ -3252,9 +3627,9 @@ Quality Check
 要求老師重拍
 ```
 
-的主要自動化流程。
+作為主要流程。
 
-目前 Benchmark 支持的方向為：
+正式方向為：
 
 ```text
 Image
@@ -3267,567 +3642,834 @@ Auto Correction
 ↓
 Re-Quality Check
 ↓
-OCR
+OCR / AI
 ↓
 Hotspot Generator
 ```
 
-Quality Check 與 Auto Correction 應視為同一套自動化 Pipeline 的不同階段。
+因此：
+
+> Quality Check 與 Auto Correction 視為同一套自動化 Pipeline 的不同階段。
 
 ---
 
-## 13.3 Deskew（去歪斜）實測
+# 13.8 Auto Correction
 
-| 傾斜角度 | 修正前辨識率 | 修正後辨識率 |
-| --- | ---: | ---: |
-| 6° | 88.9% | **100%** |
-| 8° | 88.9% | **100%** |
-| 10° | 0% | **100%** |
-| 12° | 0% | **100%** |
-| 15° | 0% | **100%** |
+目前保留：
 
-Deskew 已證實能救回原本因傾斜而失敗的案例。
-
-5 次使用中救回 4 次：
-
-**Recovery Rate：80%。**
-
-Deskew 應保留於正式技術架構。
-
-正式 Skew Threshold（傾斜門檻）尚未由 PM 核定。
+* Deskew（去歪斜）
+* Denoise（去噪）
+* Sharpen（銳化）
 
 ---
 
-## 13.4 Denoise（去噪）實測
+## 13.8.1 Deskew
 
-| 情境 | 原始辨識率 | Denoise 後 |
-| --- | ---: | ---: |
-| 亮度 55% + 雜訊 15 | 0% | **100%** |
-| 亮度 40% + 雜訊 15 | 0% | **100%** |
+Benchmark 實測：
 
-Denoise 是目前測試中低光源 + 雜訊情境最有效的救援技術。
+| 傾斜角度 |   修正前 |  修正後 |
+| ---: | ----: | ---: |
+|   6° | 88.9% | 100% |
+|   8° | 88.9% | 100% |
+|  10° |    0% | 100% |
+|  12° |    0% | 100% |
+|  15° |    0% | 100% |
 
-單次處理約：
+Deskew 應保留。
 
-**1360ms / 張。**
+Deskew 採成熟影像處理技術。
 
-正式使用時必須支援：
+目前 Benchmark 已驗證：
 
-**Background Processing（背景處理）。**
+* 原始角度偵測
+* 修正角度方向
+* Image Rotation（圖片旋轉）
+* Re-Quality Check
 
-不得要求使用者同步等待 Denoise 完成。
+均可形成完整流程。
 
-本次端到端測試中 Denoise 使用 1 次並救回 1 次：
+正式 Threshold 尚未由 PM 核定。
 
-**Recovery Rate：100%。**
+不得自行將 Benchmark 數值寫成正式 Production Threshold。
 
 ---
 
-## 13.5 Sharpen（銳化）實測
+# 13.9 Denoise
 
-| 模糊程度 | 修正前辨識率 | Sharpen 後 |
-| --- | ---: | ---: |
-| 3px | 77.8% | **100%** |
-| 4px | 66.7% | 77.8% |
-| 5px | 55.6% | 55.6% |
-| 6px | 22.2% | 33.3% |
-| 8px | 0% | 0% |
+低光源 + 雜訊 Benchmark：
+
+| 情境             | 原始 | Denoise 後 |
+| -------------- | -: | --------: |
+| 亮度 55% + 雜訊 15 | 0% |      100% |
+| 亮度 40% + 雜訊 15 | 0% |      100% |
+
+Denoise 為目前低光源 + 雜訊情境最有效的救援技術。
+
+Benchmark：
+
+約 1360ms / 張。
+
+因此正式使用時：
+
+Denoise 必須支援：
+
+Background Processing（背景處理）。
+
+不得阻塞主要使用者操作流程。
+
+---
+
+# 13.10 Sharpen
+
+Benchmark：
+
+| 模糊程度 |   修正前 | Sharpen 後 |
+| ---: | ----: | --------: |
+|  3px | 77.8% |      100% |
+|  4px | 66.7% |     77.8% |
+|  5px | 55.6% |     55.6% |
+|  6px | 22.2% |     33.3% |
+|  8px |    0% |        0% |
 
 Sharpen：
 
-- 可改善輕微模糊
-- 無法恢復嚴重模糊已遺失的影像資訊
-- 約 16ms
-- 運算成本低
+* 保留
+* 定位為輔助
+* 不得視為嚴重模糊修復技術
 
-目前不能宣稱 Sharpen 對 End-to-End Success 有明確提升。
+Benchmark 約：
 
-可以保留為候選 Auto Correction 技術，但不得視為嚴重模糊的解決方案。
+16ms。
 
----
-
-## 13.6 CLAHE / Contrast Enhancement 實測
-
-CLAHE（對比度增強）對本次低光源 + 雜訊情境沒有實質改善。
-
-因此目前不列入主要 Auto Correction Pipeline。
-
-不要因單純亮度不足而強制執行 CLAHE。
+Sharpen 不得成為正式 Blur Threshold 的主要依據。
 
 ---
 
-## 13.7 尚未解決的情境
+# 13.11 CLAHE
 
-### 嚴重模糊
+Benchmark 已測試：
 
-影像資訊已遺失。
+Contrast Limited Adaptive Histogram Equalization（CLAHE）。
 
-Sharpen 無法真正恢復遺失資訊。
+測試結果：
 
-目前視為不可救援情境。
+對：
 
-### 中英混合
+低光源 + 雜訊
 
-目前為 PARTIAL。
+沒有實質改善。
 
-主要問題不是 Image Quality（圖片品質），而是 OCR / Layout Understanding（版面理解）問題。
+因此：
 
-不能單純以 Image Quality Check 解決。
+> CLAHE 暫不列入主要 Auto Correction Pipeline。
 
-### 表格 + 文字
+不得為了單純 Brightness 不足而強制執行 CLAHE。
 
-目前為 PARTIAL。
+Brightness 不得單獨作為 Reject Condition（拒絕條件）。
 
-主要問題為文字順序與版面結構。
-
-不是單純 Blur / Brightness / Contrast 問題。
-
-### 陰影遮擋
-
-目前為 FAIL。
-
-現有 Auto Correction 無法可靠救援。
-
-本次曾出現 Deskew 誤觸發，因此目前不要嘗試使用現有 Skew Detection（傾斜偵測）處理陰影遮擋。
+Contrast 亦不得單獨作為 Reject Condition。
 
 ---
 
-## 13.8 Auto Correction Trigger Logic — 已發現的工程問題
+# 13.12 Re-Quality Check
 
-「中度模糊」與「密集小字」原本 Pipeline A 已經 SUCCESS，Pipeline B 也 SUCCESS，但 Pipeline C 仍觸發：
+Auto Correction 完成後：
 
-- Denoise
-- Sharpen
+必須重新執行：
 
-造成額外處理時間。
+Image Quality Check。
 
-這不是正確性問題，而是：
-
-**Processing Efficiency（處理效率）問題。**
-
-因此正式實作前必須改善：
-
-**Auto Correction Trigger Logic（自動修正觸發邏輯）。**
-
-不得對已可可靠進入 OCR 的照片進行不必要的修正。
-
----
-
-## 13.9 Threshold — PM Decision Required
-
-目前以下數值僅為 Benchmark Evidence（實測證據），不得直接寫死：
-
-- Blur Threshold
-- Contrast Threshold
-- Skew Threshold
-- Auto Correction Trigger Condition
-
-阿德不得自行根據 Benchmark 結果將上述數值直接定義為正式 Production Threshold。
-
-正式 Threshold 必須由 PM Decision（產品決策）核定。
-
----
-
-## 13.10 Processing Time
-
-| Pipeline | Average | P95 | Maximum |
-| --- | ---: | ---: | ---: |
-| Baseline | 866ms | 2243ms | 2243ms |
-| Quality Check | 805ms | 1471ms | 1471ms |
-| Full Pipeline | **1878ms** | **3290ms** | **3290ms** |
-
-Full Pipeline 平均耗時為 Baseline 約 2.2 倍。
-
-最慢案例達 3290ms。
-
-Denoise 約 1360ms / 張。
-
-因此 Denoise 等較長時間的 Auto Correction 必須使用 Background Processing（背景處理）。
-
-Background Processing 不得造成 UI 凍結。
-
----
-
-## 13.11 OCR Cost Benchmark
-
-目前僅使用：
-
-**$0.0015 / OCR Call**
-
-作為成本模型假設。
-
-此數字不是正式供應商價格。
-
-| Pipeline | OCR 呼叫比例 | 1,000 張 OCR Calls | 假設成本 |
-| --- | ---: | ---: | ---: |
-| Baseline | 100% | 1000 | $1.50 |
-| Quality Check Only | 60% | 600 | $0.90 |
-| Full Pipeline | 93.3% | 933 | $1.40 |
-
-Quality Check 的主要價值不應定義為「節省 OCR API 成本」。
-
-真正需要避免的是：
+流程：
 
 ```text
-低品質照片
+Original Input
+↓
+Quality Check
+↓
+Auto Correction
+↓
+Re-Quality Check
+↓
+判斷是否可靠
+```
+
+不得：
+
+```text
+Auto Correction
+↓
+直接假設成功
 ↓
 OCR
-↓
-錯誤文字
-↓
-錯誤 Bounding Box
-↓
-錯誤 Hotspot
-↓
-老師人工清理
 ```
 
-因此更重要的產品 KPI（關鍵績效指標）是：
-
-> 降低老師人工修正教材的時間。
+Re-Quality Check 是必要步驟。
 
 ---
 
-## 13.12 Error Handling / Wrong Hotspot Principle
+# 13.13 OCR / AI
 
-本次 15 個測試案例中，沒有發現：
+OCR / AI 負責：
 
-「系統產生錯誤 Hotspot，但卻宣稱 SUCCESS」
+> 判斷圖片中的文字內容及其位置。
 
-的案例。
+輸出至少包含：
 
-中英混合、表格、陰影等無法可靠處理的情境，目前會以：
+* Text
+* Bounding Box
+* Language / Language Hint（若可取得）
+* Processing Status
 
-- PARTIAL
-- FAIL
+OCR / AI 為獨立模組。
 
-回報。
+因此未來可以替換：
 
-正式工程原則：
+* Local OCR
+* Cloud OCR
+* Vision AI
+* Hybrid OCR / AI
 
-> 如果系統不能可靠建立互動內容，不得標記 SUCCESS。
+而不應影響：
 
-應標記 PARTIAL 或 FAIL。
+* Image Area
+* HTML Overlay
+* Hotspot
+* 教材資料結構
 
-不得把不可靠的文字座標直接視為正確 Hotspot。
+目前：
+
+OCR / AI Provider 尚未由 PM 正式核定。
+
+不得自行決定正式 Provider。
 
 ---
 
-## 13.13 Original Image Protection
+# 13.14 Hotspot Generator
 
-原始照片是教材資產。
+Hotspot Generator 負責：
 
-Auto Correction 不得覆寫 Original Image（原始圖片）。
+> 將 OCR / AI 輸出的文字與位置轉換成 HTML Overlay 上的 Hotspot。
 
-概念：
+輸入：
 
 ```text
-Original Image
-      +
-Processed Image
+Text
++
+Bounding Box
 ```
 
-Processed Image（處理後圖片）僅供：
+輸出：
 
-- OCR
-- AI
-- Hotspot Generator
+```text
+Hotspot Data
+```
 
-使用。
+Hotspot Position 應採：
 
-原始教材必須保持不變。
+Normalized Coordinates（正規化座標）。
+
+不得只依賴固定：
+
+* Pixel
+* Device Resolution
+* Screen Size
+
+避免不同裝置造成位置錯誤。
 
 ---
 
-## 13.14 Current Technical Architecture
+# 13.15 HTML Overlay
+
+HTML Overlay 為教材互動層。
+
+架構：
 
 ```text
 Image Area
-    │
-    ▼
-Image Quality Check
-    │
-    ├── 明顯不可救
-    │       ↓
-    │     Reject
-    │
-    ├── 可修正
-    │       ↓
-    │   Auto Correction
-    │       ↓
-    │   Re-Quality Check
-    │
-    └── 品質正常
-            ↓
-           OCR
-            ↓
-    Text + Bounding Box
-            ↓
-    Hotspot Generator
-            ↓
-      HTML Overlay
-            ↓
-         Hotspot
+     ↓
+Teaching Material
+     ↓
+HTML Overlay
+     ↓
+Hotspot
 ```
 
-此架構為 Technical Validation 結果，不代表所有 Threshold 與 Provider 已正式核定。
+教材圖片本身不被修改。
+
+Hotspot、Popup、Dictionary、Audio、Video 等互動內容建立於 Overlay Layer。
 
 ---
 
-## 13.15 UX Technical Validation
+# 13.16 Reliable Failure
 
-若照片品質不足，使用者不需要知道：
+正式產品原則：
 
-- AI
-- OCR
-- Confidence
-- Quality Check
-- Model
+> Reliable Failure（可靠失敗）優於錯誤成功。
 
-目前驗證之 UX 方向：
+如果系統無法可靠建立互動內容：
 
-> ⚠️ 照片品質不足  
-> 請重新拍攝清晰、光線充足的照片  
-> [知道了]
+不得：
 
-若照片品質足夠，但自動建立互動內容失敗：
+* 猜測文字
+* 猜測座標
+* 建立不可靠 Hotspot
+* 標記為 SUCCESS
 
-> ⚠️ 無法自動建立互動內容  
-> 你可以重新拍攝，或直接手動建立互動內容  
-> [重新拍攝] [手動建立]
+應回報：
 
-照片本身仍保留。
+* PARTIAL
+* FAIL
 
-OCR 失敗不代表教材資產失敗。
+依實際處理結果決定。
 
 ---
 
-## 13.16 OCR / AI 技術方案狀態
+# 13.17 Unrecoverable Image
 
-目前尚未正式選定：
+以下情境目前視為不可可靠救援：
 
-- Local OCR（本地 OCR）
-- Cloud OCR（雲端 OCR）
-- Vision AI
-- Hybrid Architecture（混合架構）
-- 正式 OCR / AI Provider
+### Severe Blur
 
-因此不得在本階段：
+嚴重模糊造成影像資訊遺失。
 
-- 串接正式 OCR / AI Provider
-- 將特定 Provider 寫死於正式產品架構
-- 將 Benchmark 使用工具視為正式服務選型
+Sharpen 不得假裝恢復遺失資訊。
 
-OCR / AI 仍維持：
+若無法可靠建立互動內容：
 
-**Replaceable Service Architecture（可替換服務架構）。**
+直接拒絕。
 
 ---
 
-## 13.17 Benchmark Evidence Files
+### Shadow Occlusion
 
-End-to-End Benchmark 完整原始資料：
+陰影遮擋目前沒有可靠的 Auto Correction。
 
-`end_to_end_results.json`
+尤其 Benchmark 曾發現：
 
-Image Quality / Auto Correction Benchmark 原始資料：
+Shadow Occlusion 可能造成 Skew Detection 誤觸發。
 
-`correction_results.json`
+因此：
 
-上述資料屬於：
-
-**Technical Evidence（技術證據）**
-
-不是正式 Product Specification（產品規格）。
+不得將陰影問題直接當成 Skew 問題處理。
 
 ---
 
-## 13.18 PM Decision Required Before Production
+# 13.18 Content / Layout Problems
 
-正式進入 Production Implementation 前，至少仍需 PM 核定：
+部分失敗不是 Image Quality 問題。
 
-1. Blur Threshold
-2. Contrast Threshold
-3. Skew Threshold
-4. Auto Correction Trigger Logic
-5. OCR / AI 技術方案
-6. OCR / AI Provider
+例如：
 
-在上述項目完成 PM Decision 前：
+### Mixed Chinese / English
 
-**不得進入正式 Production Implementation。**
+中英混合可能造成：
+
+OCR / Language Understanding 問題。
+
+不能單純透過：
+
+* Blur
+* Brightness
+* Contrast
+* Deskew
+* Denoise
+
+解決。
+
+---
+
+### Table + Text
+
+表格 + 文字可能造成：
+
+Layout Understanding（版面理解）問題。
+
+主要問題為：
+
+* Reading Order
+* Structure
+* Bounding Box Relationship
+
+不能單純視為圖片品質問題。
+
+---
+
+# 13.19 Auto Correction Trigger Logic
+
+Benchmark 發現：
+
+部分圖片原本已可成功 OCR，
+
+但目前 Trigger Logic 仍可能觸發：
+
+* Denoise
+* Sharpen
+
+例如：
+
+* 中度模糊
+* 密集小字
+
+這些案例原本已經 SUCCESS。
+
+因此：
+
+> Auto Correction Trigger Logic 目前仍需要最佳化。
+
+這是：
+
+Processing Efficiency（處理效率）問題，
+
+不是目前已確認的 Correctness（正確性）問題。
+
+正式 Trigger Logic 尚未由 PM 核定。
+
+不得自行將 Benchmark 數值直接寫死。
+
+---
+
+# 13.20 Threshold
+
+目前尚未正式核定：
+
+* Blur Threshold
+* Skew Threshold
+* Contrast Threshold
+* Noise Threshold
+* Auto Correction Trigger Threshold
+
+Benchmark 數據僅作為：
+
+Technical Evidence（技術證據）。
+
+不得直接轉換為：
+
+Production Logic（正式產品邏輯）。
+
+PM Decision 02 將另行決定正式門檻。
+
+---
+
+# 13.21 Processing Time
+
+目前 Benchmark：
+
+| Pipeline      | Average |    P95 | Maximum |
+| ------------- | ------: | -----: | ------: |
+| Baseline      |   866ms | 2243ms |  2243ms |
+| Quality Check |   805ms | 1471ms |  1471ms |
+| Full Pipeline |  1878ms | 3290ms |  3290ms |
+
+Denoise：
+
+約 1360ms / 張。
+
+因此：
+
+長時間 Auto Correction 必須使用：
+
+Background Processing。
+
+使用者不應被迫等待完整處理完成後才能繼續使用 MagicBook。
+
+---
+
+# 13.22 Original Input / Temporary Processing
+
+MagicBook 不是使用者的照片倉庫。
+
+Image Import 的圖片是：
+
+> 教材建立流程的輸入資料。
+
+系統應依教材建立流程處理圖片。
+
+Auto Correction 產生的處理結果：
+
+僅作為：
+
+* OCR
+* AI
+* Hotspot Generator
+
+等自動化流程的處理資料。
+
+不得因 Auto Correction 而建立一套與教材無關的照片收藏系統。
+
+不得自行增加：
+
+* Photo Library
+* Original Photo Archive
+* Camera Roll
+* 永久原始照片倉庫
+
+等未經 PM 確認的功能。
+
+---
+
+# 13.23 Image Quality Failure UX
+
+如果圖片品質不足，
+
+但系統仍可以讓使用者重新調整或重新取得圖片，
+
+使用者可以選擇：
+
+* Adjust Image（調整圖片）
+* Retake / Re-select（重新拍攝／重新選取）
+
+使用者介面不得顯示技術術語：
+
+* AI
+* OCR
+* Confidence
+* Model
+* Quality Check
+
+---
+
+## User Message
+
+品質不足時：
+
+> ⚠️ 照片品質不足
+>
+> 請重新拍攝清晰、光線充足的照片
+
+提供：
+
+```text
+[重新拍攝]
+[重新選取]
+```
+
+若產品流程提供圖片調整，
+
+也可提供：
+
+```text
+[調整圖片]
+```
+
+---
+
+# 13.24 Automation Failure UX
+
+如果：
+
+圖片本身可以處理，
+
+但 OCR / AI / Hotspot Generator 無法可靠建立互動內容，
+
+不得建立猜測性 Hotspot。
+
+使用者看到：
+
+> ⚠️ 無法自動建立互動內容
+>
+> 你可以重新拍攝，或直接手動建立互動內容。
+
+提供：
+
+```text
+[重新拍攝]
+[手動建立]
+```
+
+---
+
+# 13.25 Product Behavior — Reject
+
+MagicBook 的目的不是：
+
+> 儘可能讓每一張照片都進入 AI。
+
+MagicBook 的目的為：
+
+> 幫助使用者快速建立可靠的教材互動內容。
+
+因此：
+
+如果圖片最終無法可靠建立互動內容：
+
+應直接拒絕自動建立。
+
+不得因「已經輸入圖片」而強迫系統產生結果。
+
+---
+
+# 13.26 Benchmark Recovery
+
+Baseline 非 SUCCESS：
+
+9 個案例。
+
+Full Pipeline：
+
+成功救回 5 個。
+
+Overall Recovery Rate：
+
+55.6%。
+
+---
+
+## Deskew
+
+使用：
+
+5 次。
+
+救回：
+
+4 次。
+
+Recovery Rate：
+
+80%。
+
+---
+
+## Denoise
+
+使用：
+
+1 次。
+
+救回：
+
+1 次。
+
+Recovery Rate：
+
+100%。
+
+---
+
+## Sharpen
+
+目前沒有單獨救回完整 End-to-End SUCCESS 案例。
+
+因此：
+
+不能宣稱 Sharpen 已證明提升整體 End-to-End Success Rate。
+
+目前僅能確認：
+
+Sharpen 對部分輕微模糊 OCR Accuracy 有改善。
+
+---
+
+# 13.27 End-to-End Benchmark Conclusion
+
+Benchmark 證明：
+
+單獨：
+
+Quality Check Only
+
+會降低整體 SUCCESS。
+
+Full Pipeline：
+
+```text
+Quality Check
++
+Auto Correction
++
+Re-Quality Check
+```
+
+能將：
+
+40.0% SUCCESS
+
+提升至：
+
+73.3% SUCCESS。
+
+因此 PM Decision 01 正式確認：
+
+> Quality Check 與 Auto Correction 應作為同一套自動化流程設計。
+
+---
+
+# 13.28 PM Decision 01 — Confirmed
+
+以下正式確認：
+
+### 已確認
+
+* Quality Check
+* Auto Correction
+* Re-Quality Check
+* Deskew
+* Denoise
+* Sharpen
+* CLAHE 暫不採用
+* Reliable Failure
+* Hotspot 不得猜測
+* Image Import
+* 不建立 MagicBook 專用 Camera System
+* 使用者可重新拍攝／重新選取
+* 圖片可使用成熟圖片調整能力進行調整
+* Background Processing
+* 原有成熟技術優先
+* Reuse Before Reinvent
+* Image Area 與 Text Area 分離
+* Image Area 負責圖片
+* Text Area 僅負責文字
+* HTML Overlay 負責互動層
+
+---
+
+# 13.29 PM Decision 01 — Not Yet Confirmed
+
+以下尚未正式核定：
+
+* Blur Threshold
+* Skew Threshold
+* Contrast Threshold
+* Noise Threshold
+* Auto Correction Trigger Logic
+* OCR Provider
+* AI Provider
+* Local OCR / Cloud OCR / Vision AI / Hybrid Strategy
+* Crop
+* Perspective Correction
+* Shadow Detection
+* Handwriting Recognition
+* Complex Background Processing
+
+以上不得自行加入正式 Production Implementation。
+
+---
+
+# 13.30 Engineering Boundary
+
+阿德進行實作時：
+
+可以：
+
+* 驗證現有技術
+* 測試成熟函式庫
+* 測量效能
+* 建立 Prototype
+* 建立 Benchmark
+* 提出技術限制
+
+不得自行：
+
+* 決定正式 Threshold
+* 選定正式 OCR Provider
+* 選定正式 AI Provider
+* 增加未核定功能
+* 建立專用 Camera System
+* 建立新的照片倉庫
+* 改變使用者核心操作流程
+* 將 Benchmark 數字直接寫成 Production Logic
+* 因工程方便而增加新的產品功能
+
+如需超出本文件範圍：
+
+先回報 PM。
+
+---
+
+# 13.31 Technical Evidence Status
+
+本章 Benchmark 所使用之技術驗證包括：
+
+* OpenCV Image Processing
+* Blur Measurement
+* Skew Detection
+* Deskew
+* Denoise
+* Sharpen
+* OCR
+* End-to-End Pipeline
+
+以上技術驗證結果可作為工程決策依據。
+
+但：
+
+Technical Evidence
+
+不等於：
+
+Production Specification。
+
+正式 Production Specification 必須經 PM Decision 確認。
+
+---
+
+# 13.32 Current Status
+
+目前狀態：
+
+```text
+Benchmark
+    ↓
+Technical Validation
+    ↓
+PM Decision 01
+    ↓
+[Current Status]
+    ↓
+PM Decision 02
+    ↓
+Production Implementation
+```
+
+目前尚未進入：
+
+Production Implementation（正式產品實作）。
 
 ---
 
 # 14. Change Log
 
-本文件記錄 MagicBook 3.0 MVP Development 之重大版本更新。
+## Version 2.5 — 2026-08-08
+
+### Updated
+
+* 整合 PM Decision 01
+* 將 Image Quality Check 與 Auto Correction 正式定義為同一套自動化 Pipeline
+* 正式確認 Deskew
+* 正式確認 Denoise
+* 正式確認 Sharpen 為輔助技術
+* CLAHE 暫不採用
+* 新增 Re-Quality Check 為必要流程
+* 正式確認 Reliable Failure 原則
+* 正式禁止產生猜測性 Hotspot
+* 正式確認 Image Import
+* 移除 MagicBook 專用 Camera System 方向
+* 加入 Reuse Before Reinvent 工程原則
+* 明確區分 Technical Evidence 與 Production Specification
+* 明確保留 Threshold 為 PM Decision 02
+* 明確保留 OCR / AI Provider 選型為後續 PM Decision
+* 明確規定 Background Processing
+* 明確規定 MagicBook 不作為使用者照片倉庫
+* 明確規定 Image Area 與 Text Area 分離
+* 明確規定圖片調整應優先利用既有成熟技術
+* 明確規定使用者可重新拍攝／重新選取圖片
+* 明確規定無法可靠建立互動內容時應拒絕自動建立
+
+### Not Changed
+
+* Database Schema
+* API Design
+* OCR Provider
+* AI Provider
+* Production Threshold
+* Crop
+* Perspective Correction
+* Shadow Detection
+* Handwriting Recognition
+* Complex Background Processing
+
+以上項目未因本次 PM Decision 01 自動進入 Production Implementation。
+
+```
 
-所有需求變更皆應先更新本文件，
 
-再同步更新相關設計文件。
-
----
-
-## Version 2.2
-
-### AI Automation — Technical Validation
-
-新增第 13 節：
-
-**AI Automation — Technical Validation（Benchmark Stage）**
-
-本次新增內容包含：
-
-- Image Quality Check
-- Auto Correction
-- Deskew
-- Denoise
-- Sharpen
-- Re-Quality Check
-- OCR / AI
-- Hotspot Generator
-- HTML Overlay
-- Background Processing
-- Error Handling
-- Original Image Protection
-- End-to-End Benchmark
-
-本節定位為：
-
-**Technical Evidence（技術證據）**
-
-不是正式產品規格。
-
-本次未：
-
-- 修改 DB Schema
-- 串接正式 OCR / AI Provider
-- 寫入正式 Threshold
-- 進入 Phase 4 Production Implementation
-
----
-
-
-
-本文件記錄 MagicBook 3.0 MVP Development 之重大版本更新。
-
-所有需求變更皆應先更新本文件，
-
-再同步更新相關設計文件。
-
----
-
-## Version 2.1
-
-### Exercise Removed
-
-確認 Exercise 不屬於 MagicBook 3.0 MVP。
-
-移除所有 Exercise 相關規格，包括：
-
-- Exercise Module
-- Exercise CRUD
-- Exercise Popup
-- Exercise Rendering
-- Exercise User Flow
-- Exercise Reading Mode
-- Exercise Context Toolbar Option
-
-MagicBook 3.0 定位為互動教材工具（Interactive Teaching Material Tool），
-
-不包含考卷或題目製作系統（Exercise / Exam Authoring System）。
-
----
-
-### Book Library
-
-確認 Folder 為 Book Library 的固定功能。
-
-Folder 支援：
-
-- Create Folder
-- Rename Folder
-- Delete Folder
-- Move Folder
-- Reorder Folder
-- Nested Folder
-- Drag & Drop Sorting
-
-使用者可自行決定是否使用 Folder。
-
-Book 可直接存在於 Book Library 根目錄，
-
-也可放入 Folder。
-
----
-
-### Global Search
-
-重新確認 Global Search 採 Floating Search Toolbar。
-
-平時固定顯示 Search Icon。
-
-Search Icon 位於畫面右上方。
-
-點擊後展開 Search Toolbar。
-
-Toolbar 可整合：
-
-- Home
-- Back
-- Keyword Search
-- Search Scope
-- Close
-
-Home、Back 屬於 Navigation 功能。
-
-關閉搜尋後，
-
-Search Icon 必須繼續顯示。
-
----
-
-### System Performance
-
-確認 Performance（效能）為 MVP 驗收標準之一。
-
-背景處理（Background Processing）不得造成 UI 凍結。
-
-Loading Animation：
-
-- 顯示於畫面中央
-- 約佔畫面 15%
-- 採品牌角色動作動畫
-- 持續播放至工作完成
-- 工作完成後自動關閉
-
----
-
-### Development Philosophy
-
-MagicBook 3.0
-
-採：
-
-Complete Product Architecture。
-
-所有核心模組：
-
-第一版全部建立。
-
-所有第三方服務：
-
-採 Replaceable Service。
-
-所有功能：
-
-遵循：
-
-- Teaching Material First
-- Modular Architecture
-- Global Search
-- Context Toolbar
-- Specification Consistency Review
-
-作為後續版本共同開發原則。
