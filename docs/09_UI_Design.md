@@ -1,6 +1,6 @@
 # MagicBook 3.0 UI Design
 
-Version: 1.0
+Version: 2.0
 
 Status: Draft
 
@@ -19,7 +19,7 @@ Last Update: 2026-08-09
 1. UI Design Purpose
 2. UI Design Principles
 3. UI Architecture
-4. Workspace UI
+4. User Account and Access UI
 5. Book Library UI
 6. Folder UI
 7. Book UI
@@ -43,7 +43,7 @@ Last Update: 2026-08-09
 25. Background Processing UI
 26. Loading UI
 27. AI Automation Result UI
-28. Workspace Isolation UI
+28. User Data Isolation UI
 29. Error and Failure UI
 30. UI Interaction Rules
 31. Performance UI Rules
@@ -234,7 +234,7 @@ UI Capability（介面能力）優先使用：
 
 MagicBook UI Architecture（介面架構）：
 
-Workspace（工作空間）
+User Account（使用者帳號）
 
 ↓
 
@@ -312,52 +312,195 @@ HTML Overlay 可以承載：
 
 ---
 
-# 4. Workspace UI
+# 4. User Account and Access UI
 
-## 4.1 Workspace Purpose
+## 4.1 Purpose
 
-Workspace（工作空間）為最高層級的資料與權限邊界。
+User Account（使用者帳號）是 MagicBook 的使用者入口。
 
-支援：
+MagicBook 不使用 Workspace（工作空間）作為 UI 或資料架構層級。
 
-- Personal Workspace（個人工作空間）
-- Organization Workspace（組織工作空間）
+User Account UI 負責目前已確認的：
+
+- Email Verification（Email 驗證）
+- User Account（使用者帳號）
+- Login（登入）
+- Logout（登出）
+- Session（工作階段）
+- Access Status（使用權狀態）
+- Trial Used（試用狀態）
 
 ---
 
-## 4.2 Workspace Entry
+## 4.2 First Use Flow
 
-使用者登入後：
+第一次使用 MagicBook：
 
-Authentication（身分驗證）
+加入主畫面／桌面／書籤
 
 ↓
 
-Workspace（工作空間）
+Email Verification（Email 驗證）
+
+↓
+
+建立 User Account（使用者帳號）
+
+↓
+
+首頁
+
+---
+
+## 4.3 Home Entry
+
+首頁提供目前已確認的兩個主要入口：
+
+- 🆓 免費試用一次
+- ✨ 購買產品
+
+免費試用與購買流程不得繞過 User Account。
+
+---
+
+## 4.4 Trial UI
+
+Trial（免費試用）每個 User Account 一生一次。
+
+試用可以實際使用：
+
+- 一張圖片
+- Image Area（圖片區）互動
+- Text Area（文字區）文字輸入
+
+Trial Used（試用狀態）完成後，不得再次取得完整免費試用。
+
+---
+
+## 4.5 Purchase UI
+
+Purchase（購買）流程提供：
+
+- Personal（個人）
+- Group（團體）
+
+Group Purchase（團體購買）目前確認的選項：
+
+- 2–10 人
+- 11–20 人
+- 21+ 人
+
+價格尚未決定。
+
+UI 不得寫死任何價格。
+
+Billing System（計費系統）負責：
+
+- 付款
+- 續約
+- 到期
+- 團體邀請
+- 團體人數
+- 價格
+- 付款週期
+- 付款來源
+
+UI 不建立 Group Entity（團體實體）作為 MagicBook 教材資料層級。
+
+---
+
+## 4.6 Session UI
+
+登入成功後：
+
+User Account
+
+↓
+
+Session（工作階段）
 
 ↓
 
 Book Library（教材庫）
 
-Workspace UI 必須先確認目前使用者所屬的 Workspace。
+正常情況下，使用者不需要每次重新輸入 Email。
 
 ---
 
-## 4.3 Workspace Isolation
+## 4.7 Access Status UI
 
-UI 只能顯示目前使用者有權限存取的：
+Access Status（使用權狀態）只有：
 
-Workspace Data（工作空間資料）。
+- Active（啟用）
+- Inactive（停用）
 
-不同 Workspace：
+Active：
 
-- 不顯示其他 Workspace 教材
-- 不顯示其他 Workspace 使用者
-- 不顯示其他 Workspace 權限資料
-- 不使用其他 Workspace Processing Data（處理資料）
+可正常使用 MagicBook。
+
+Inactive：
+
+不得使用 MagicBook。
+
+Inactive 不建立：
+
+- Read Only（唯讀模式）
+- Archive Mode（封存模式）
+- Temporary Access（臨時使用權）
 
 ---
 
+## 4.8 Data Retention UI Boundary
+
+使用權到期後：
+
+Inactive
+
+↓
+
+90 Days Retention（90 天資料保留）
+
+90 天內重新取得使用權：
+
+↓
+
+Active
+
+↓
+
+原資料繼續存在。
+
+90 天內未恢復使用權：
+
+↓
+
+資料清除。
+
+上述資料保留與清除由系統服務處理。
+
+UI 不自行建立另一套資料生命週期。
+
+---
+
+## 4.9 Billing / Supabase Status Boundary
+
+Billing System（計費系統）與 Supabase（資料服務）透過 Webhook（網路回呼）同步使用權。
+
+UI 不顯示 Billing 的內部處理細節。
+
+如果系統正在處理 Billing → Supabase 的同步：
+
+「工程忙線中，系統正在處理中，請稍候再試。」
+
+如果是 Database Internal Error（資料庫內部錯誤）：
+
+- 不要求使用者重新付款
+- 不要求使用者重新輸入 Email
+- 由系統重試並通知管理者
+
+如果是 User / Email 對應問題：
+
+- 引導使用者重新輸入購買時使用的 Email
 # 5. Book Library UI
 
 ## 5.1 Purpose
@@ -1370,25 +1513,25 @@ SUCCESS（成功）。
 
 ---
 
-# 28. Workspace Isolation UI
+# 28. User Data Isolation UI
 
 ## 28.1 Scope
 
 Editor（編輯器）只能操作：
 
-目前 Workspace 已授權的教材。
+目前 User Account（使用者帳號）所擁有的教材資料。
 
 ---
 
 ## 28.2 Permission
 
-Editor UI 權限依：
+Editor UI 資料存取依：
 
-Workspace（工作空間）
+User Account Identity（使用者帳號身分）
 
 +
 
-User Permission（使用者權限）
+Resource Ownership（資源所有權）
 
 +
 
@@ -1396,19 +1539,20 @@ API Authorization（API 授權）
 
 執行。
 
+UI 不建立 Workspace Permission（工作空間權限）模型。
+
 ---
 
-## 28.3 Cross Workspace Boundary
+## 28.3 Data Boundary
 
 不得透過 UI：
 
-- 讀取其他 Workspace
-- 修改其他 Workspace
-- 建立跨 Workspace Hotspot
-- 使用其他 Workspace AI Processing Data
+- 讀取其他 User Account 的教材
+- 修改其他 User Account 的教材
+- 建立跨 User Account Hotspot（熱點）
+- 使用其他 User Account 的 Processing Data（處理資料）
 
----
-
+不同 User Account 的教材資料必須保持隔離。
 # 29. Error and Failure UI
 
 ## 29.1 General Principle
@@ -1458,6 +1602,32 @@ UI 應顯示實際失敗狀態。
 即使 Processing（處理）失敗：
 
 不得因此建立第二份正式教材資產。
+
+---
+
+## 29.5 Billing Synchronization Error
+
+Billing System（計費系統）與 Supabase（資料服務）同步失敗時：
+
+第一次失敗：
+
+↓
+
+10 分鐘後 Retry（重試）
+
+↓
+
+第二次仍失敗：
+
+↓
+
+通知管理者／PM。
+
+使用者看到：
+
+「工程忙線中，系統正在處理中，請稍候再試。」
+
+Database Internal Error（資料庫內部錯誤）不得要求使用者重新付款。
 
 ---
 
@@ -1641,11 +1811,15 @@ Custom Development
 
 MVP UI 包含目前已確認的：
 
-### Workspace
+### User Account and Access
 
-- Workspace UI
-- Workspace Isolation
-- Permission-aware UI
+- User Account UI
+- Email Verification
+- Session
+- Trial UI
+- Purchase UI
+- Access Status
+- User Data Isolation
 
 ### Book Library
 
@@ -1753,7 +1927,7 @@ Separate Material Data（獨立教材資料）。
 
 ## 35.1 Product Structure
 
-- [ ] Workspace UI 與 Workspace Architecture 一致
+- [ ] User Account UI 與 User Account Architecture 一致
 - [ ] Book Library UI 與 Book Library Architecture 一致
 - [ ] Folder UI 與 Folder Rule 一致
 - [ ] Book UI 與 Book Architecture 一致
@@ -1805,12 +1979,13 @@ Separate Material Data（獨立教材資料）。
 
 ---
 
-## 35.6 Workspace Security
+## 35.6 User Data Security
 
-- [ ] UI 只顯示目前 Workspace 可存取資料
-- [ ] 不跨 Workspace 讀取資料
-- [ ] 不跨 Workspace 修改資料
-- [ ] 不跨 Workspace 使用 Processing Data
+- [ ] UI 只顯示目前 User Account 可存取資料
+- [ ] 不跨 User Account 讀取資料
+- [ ] 不跨 User Account 修改資料
+- [ ] 不跨 User Account 使用 Processing Data
+- [ ] 不建立 Workspace Permission 模型
 
 ---
 
@@ -1891,3 +2066,29 @@ Date: 2026-08-09
 - 不建立第二份教材資料
 
 本文件僅整理既有已確認規格之 UI 表現與操作邊界。
+
+---
+
+## Version 2.0
+
+Date: 2026-08-09
+
+同步 `01_Product_Specification.md` v3.4、`02_MVP_Development.md` v3.0、`04_Development_Guidelines.md` v4.4、`05_Database_Design.md` v2.0、`06_API_Design.md` v2.0 已確認的 Account / Billing 架構。
+
+本版本：
+
+- 移除 Workspace 作為 UI 架構層級
+- 新增 User Account UI
+- 新增 Email Verification、Session、Trial Used、Access Status
+- 新增免費試用入口
+- 新增 Personal / Group 購買入口
+- Group 購買 UI 不寫死價格
+- 新增 Active / Inactive 使用權狀態
+- 新增到期後 90 天資料保留的 UI 邊界
+- 新增 Billing System / Supabase Webhook 狀態處理
+- User Data Isolation 取代 Workspace Isolation
+- 保留既有 Book Library、Folder、Book、Lesson、Page、Editor、Image Area、Text Area、HTML Overlay、Hotspot、Reading Mode、AI、Audio、Video、Global Search、Background Processing 等 UI 規格
+
+本版本不新增未核定產品功能。
+本版本不新增 Group Entity 作為教材資料層級。
+本版本不寫死價格。
