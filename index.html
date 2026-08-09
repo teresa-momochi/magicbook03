@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MagicBook 3.0</title>
+  <link rel="stylesheet" href="src/ui/app.css" />
+
+  <!--
+    config.local.js provides window.MAGICBOOK_CONFIG (Supabase URL + anon key).
+    It is gitignored. Copy config.example.js to config.local.js and fill in
+    your project's values. Without it, main.js falls back to in-memory mode
+    (APP_MODE = 'memory') so the UI is still explorable without Supabase set up.
+  -->
+  <script src="config.local.js" onerror="console.warn('config.local.js not found — running in in-memory mode. See config.example.js.')"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
