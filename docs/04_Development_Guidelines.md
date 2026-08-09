@@ -1,6 +1,6 @@
 # MagicBook 3.0 Development Guidelines
 
-Version: 4.3
+Version: 4.4
 
 Status: Draft
 
@@ -137,7 +137,7 @@ MagicBook 不綁定任何第三方服務。
 更換服務不得影響：
 
 - 教材資料
-- Workspace
+- User Account（使用者帳號）
 - 系統架構
 - 使用者操作流程
 
@@ -300,7 +300,7 @@ MagicBook 採統一產品架構（Unified Product Architecture）。
 
 MagicBook 採以下核心資料架構：
 
-Workspace
+User Account（使用者帳號）
 
 ↓
 
@@ -491,7 +491,7 @@ Book Module
 MagicBook 第一版建立以下核心模組：
 
 - Authentication
-- Workspace
+- User Account
 - Book Library
 - Folder
 - Book
@@ -591,7 +591,7 @@ MagicBook 第一版建立以下核心模組：
 
 例如：
 
-- Workspace Module
+- User Account Module
 - Book Library Module
 - Folder Module
 - Book Module
@@ -973,26 +973,116 @@ Loading Animation：
 
 ---
 
-## 7.2 Workspace Ownership
+## 7.2 User Account Ownership
 
-所有教材皆歸屬於 Workspace。
+所有個人教材資料皆直接歸屬於 User Account（使用者帳號）。
 
-Workspace 分為：
+核心資料關係：
 
-- Personal Workspace
-- Organization Workspace
+User Account（使用者帳號）
+↓
+Book Library（教材庫）
+↓
+Folder（資料夾）
+↓
+Book（教材）
+↓
+Lesson（課程）
+↓
+Page（頁面）
 
-教材所有權不得因：
+MagicBook 3.0 不使用 Workspace（工作空間）作為教材資料根層級。
+
+教材資料不得因：
 
 - 登入裝置
 - 登入地點
-- 使用者更換
+- 使用者更換裝置
 
-而改變。
+而改變其 User Account（使用者帳號）歸屬。
+
+User Account（使用者帳號）由 Authentication（驗證）與 Supabase 管理。
+
+## 7.3 Billing and Access Boundary
+
+Billing System（計費系統）與 Supabase 的職責必須分離。
+
+Billing System 負責：
+
+- 個人方案
+- 團體方案
+- Payment（付款）
+- Renewal（續約）
+- Expiration（到期）
+- 團體邀請
+- 團體人數
+- Pricing（價格）
+- Payment Cycle（付款週期）
+- 商業規則
+
+Supabase 負責：
+
+- User Account（使用者帳號）
+- Authentication（驗證）
+- Session（工作階段）
+- User ID（使用者識別）
+- 個人教材資料
+- Access Status（使用權狀態）
+- Trial Used（試用是否已使用）
+
+Supabase 不建立或管理：
+
+- Workspace Entity
+- Group Entity（團體實體）
+- Group ID
+- 團主
+- 團員
+- 邀請關係
+- 價格
+- 付款資料
+- 付款週期
+- 付款來源
+
+Billing System 透過 Webhook（網路回呼）通知 Supabase 使用權狀態：
+
+User ID → Active / Inactive
+
+價格不得寫死於程式或本開發規範。
+
 
 ---
 
-## 7.3 Module Independence
+## 7.4 Account Access Lifecycle
+
+Access Status（使用權狀態）僅使用：
+
+- Active
+- Inactive
+
+Inactive 不建立唯讀模式（Read Only Mode）、Archive Mode 或 Temporary Access。
+
+Trial（免費試用）：
+
+- 每個 User Account 一生一次
+- Trial Used 用於記錄是否已使用
+
+使用權到期後：
+
+- 到期日起保留資料 90 天
+- 90 天內重新取得使用權：原資料保留並可繼續使用
+- 90 天後仍未重新取得使用權：清除資料
+
+Webhook（網路回呼）同步失敗時：
+
+1. 第一次失敗後 10 分鐘重試
+2. 第二次仍無回應，通知管理者／PM
+3. 使用者顯示「工程忙線中，系統正在處理中，請稍候再試。」
+
+Database Internal Error（資料庫內部錯誤）不得要求使用者重新付款。
+
+User 自行更換 Email 或重新註冊時，視為新的 User Account；系統不自動合併帳號或搬移資料。
+
+## 7.5 Module Independence
 
 各模組應管理自己的資料。
 
@@ -1011,7 +1101,7 @@ Book Module
 
 ---
 
-## 7.4 Teaching Material Protection
+## 7.6 Teaching Material Protection
 
 教材為使用者資產。
 
@@ -1023,7 +1113,7 @@ Book Module
 
 ---
 
-## 7.5 Folder and Book Data
+## 7.7 Folder and Book Data
 
 Folder 為 Book Library 的分類資料。
 
@@ -1054,7 +1144,7 @@ Folder 僅負責分類與管理。
 
 ---
 
-## 7.6 Data Expansion
+## 7.8 Data Expansion
 
 所有新增資料皆應建立於既有資料架構。
 
@@ -1406,6 +1496,7 @@ main branch
 | Version | Date | Description |
 |----------|------------|------------------------------------------------|
 
+| 4.4 Draft | 2026-08-09 | Synchronized User Account, Billing, Access Status, Trial, 90-day retention, and Webhook boundaries with Product Specification 3.4 and MVP Development 3.0; removed Workspace as the core data root |
 | 4.3 Draft | 2026-08-09 | Synchronized the confirmed Reading Mode → Editor Mode single Edit Button entry; no new feature, data model, or scope added |
 | 4.2 Draft | 2026-08-09 | Synchronized Camera terminology with the confirmed Image Import architecture; retained Reuse Before Reinvent and existing development principles |
 | 4.1 Draft | 2026-08-08 | Added Reuse Before Reinvent as a Core Development Principle |
