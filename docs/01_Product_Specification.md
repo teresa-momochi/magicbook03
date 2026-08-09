@@ -1,6 +1,6 @@
 # MagicBook 3.0 Product Specification
 
-Version: 3.2
+Version: 3.3
 
 Status: Draft
 
@@ -1908,6 +1908,18 @@ Reading Mode 專注於教材閱讀與互動。
 
 不得修改教材內容。
 
+Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
+
+Edit Button：
+
+- 位於 Reading Mode
+- 作為 Editor Mode 的單一進入入口
+- 使用者可由 Reading Mode 進入 Editor Mode
+- 不建立另一套編輯流程
+
+此入口只負責從 Reading Mode 進入既有 Editor System，
+不新增另一套 Editor 架構或資料模型。
+
 ---
 
 ## 11.2 Reading Flow
@@ -2322,6 +2334,24 @@ Future Expansion 不代表 MVP 自動包含未確認功能。
 ---
 
 # 14. Change Log
+
+## Version 3.3
+### Synchronization of Reading Mode → Editor Entry
+
+本版本同步既有已確認的 Reading Mode → Editor Mode 入口行為。
+
+本次同步僅正式記錄既有產品決策，不新增產品功能、不擴大 MVP Scope、不新增 Editor 架構、不新增資料模型。
+
+### Reading Mode Edit Entry
+
+確認 Reading Mode 提供：
+
+- 單一 Edit Button（編輯按鈕）
+- 由 Reading Mode 進入既有 Editor Mode
+- Editor Mode 與 Reading Mode 共用同一份教材資料
+- 不建立另一套 Editor 流程或資料模型
+
+本次同步目的為讓 Product Specification 與既有 Editor Design（08_Editor_Design.md）中的已確認行為一致。
 
 ## Version 3.2
 ### Synchronization with Image Import Architecture and Reuse Before Reinvent
