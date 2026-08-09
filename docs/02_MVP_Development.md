@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.5
+Version: 2.6
 
 Status: Draft
 
@@ -10,9 +10,8 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-08
+Last Update: 2026-08-09
 
----
 
 # Table of Contents
 
@@ -29,10 +28,9 @@ Last Update: 2026-08-08
 10. Development Boundary
 11. Acceptance Criteria
 12. Development Sequence
-13. AI Automation — Technical Validation & PM Decision 01
+13. AI Automation — Image Quality / Auto Correction / OCR
 14. Change Log
 
----
 
 # 0. Product Positioning
 
@@ -48,7 +46,6 @@ MagicBook 3.0 為 MagicBook 2 的下一代版本（Next Generation）。
 
 若需重構，應改善系統架構，而非改變產品核心操作流程。
 
----
 
 # 1. System Architecture
 
@@ -58,11 +55,11 @@ Workspace 為整個系統最高層級（Root Entity）。
 
 所有教材、使用者、設定、媒體、AI 使用紀錄與權限皆隸屬於 Workspace。
 
----
 
 ## 1.1 Workspace Types
 
 MagicBook 提供兩種 Workspace。
+
 
 ### Personal Workspace（個人工作空間）
 
@@ -78,7 +75,6 @@ MagicBook 提供兩種 Workspace。
 - 教材歸屬個人
 - 採個人訂閱（Personal Subscription）
 
----
 
 ### Organization Workspace（機構工作空間）
 
@@ -104,7 +100,6 @@ MagicBook 提供兩種 Workspace。
 
 保留未來擴充更多角色。
 
----
 
 ## 1.2 Teaching Material Hierarchy
 
@@ -135,24 +130,47 @@ Page
 ↓
 
 Image Area
-
++
 Text Area
-
++
 HTML Overlay
 
-Folder 為 Book Library 的教材分類工具。
 
-使用者可建立、重新命名、刪除及管理 Folder。
+## 1.3 Book Library
 
-Folder 可包含子資料夾（Nested Folder）及 Book。
+Book Library 為教材管理中心。
 
-Book 也可以直接存在於 Book Library 根目錄。
+使用者可：
 
-此資料架構於所有版本保持一致。
+- 建立 Book
+- 重新命名 Book
+- 複製 Book
+- 刪除 Book
+- 開啟 Book Editor
+- 開啟 Reading Mode
+- 使用 Search
+- 使用 Folder
 
-不得因功能增加而改變資料階層。
+Folder 為 Book Library 的固定分類工具。
 
----
+Folder 支援：
+
+- Create Folder
+- Rename Folder
+- Delete Folder
+- Move Folder
+- Reorder Folder
+- Nested Folder
+- Drag & Drop Sorting
+
+Book 可以：
+
+- 直接存在於 Book Library 根目錄
+- 放入 Folder
+- 在 Folder 之間移動
+
+使用者可自行決定是否使用 Folder。
+
 
 # 2. MVP Purpose
 
@@ -175,13 +193,11 @@ MagicBook 2 已完成產品驗證，因此 MagicBook 3.0 MVP 的目的為：
 
 第三方服務可逐步完善，但所有核心模組必須於 MVP 階段建立完成。
 
----
 
 # 3. Development Philosophy
 
 MagicBook 3.0 採用以下開發哲學。
 
----
 
 ## 3.1 Architecture First
 
@@ -191,7 +207,6 @@ MagicBook 3.0 採用以下開發哲學。
 
 所有後續版本皆建立於相同架構之上。
 
----
 
 ## 3.2 Module Complete
 
@@ -214,7 +229,6 @@ MagicBook 3.0 採用以下開發哲學。
 
 MVP 不因功能簡化而移除已確認之核心模組。
 
----
 
 ## 3.3 CRUD Complete
 
@@ -227,7 +241,6 @@ MVP 不因功能簡化而移除已確認之核心模組。
 
 並建立完整資料模型（Data Model）。
 
----
 
 ## 3.4 Teaching Material First
 
@@ -239,35 +252,30 @@ AI、Dictionary、Audio、Video、Translation、TTS 等皆屬工具（Tool）。
 
 不得主導產品架構。
 
----
 
 ## 3.5 Replaceable Services
 
-MagicBook 不綁定任何第三方服務。
+MagicBook 不應將核心產品架構綁定單一第三方服務。
 
-包括：
+第三方服務皆採：
+
+Replaceable Service Architecture（可替換服務架構）。
+
+適用於：
 
 - AI
 - Dictionary
 - Translation
 - TTS
+- OCR
 - Search
-
-皆採 Replaceable Service Architecture。
-
-支援：
-
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future AI Providers
+- Audio
+- Video
 
 任何 Provider 均可替換。
 
-不得影響教材資料。
+不得因更換 Provider 而影響教材資料、產品架構或使用者操作流程。
 
----
 
 ## 3.6 Previous Version Baseline
 
@@ -277,9 +285,7 @@ MagicBook 2 已完成產品驗證（Product Validation）。
 
 所有已驗證成功之核心功能不得因 MVP 而移除。
 
-若需重構，
-
-應改善：
+若需重構，應改善：
 
 - 系統架構
 - 可維護性
@@ -287,7 +293,6 @@ MagicBook 2 已完成產品驗證（Product Validation）。
 
 不得改變核心使用流程。
 
----
 
 ## 3.7 Documentation Principle
 
@@ -305,60 +310,13 @@ MagicBook 文件允許重要規格重複出現。
 
 文件精簡（Conciseness）。
 
----
-
-## 3.8 Reuse Before Reinvent
-
-MagicBook 3.0 全部工程開發皆應遵循：
-
-> Reuse Before Reinvent（先利用，再重新發明）
-
-當產品需要某項技術能力時，工程應優先確認是否已有成熟技術可以直接使用或整合。
-
-評估順序：
-
-1. OS（作業系統）既有能力
-2. Browser（瀏覽器）既有能力
-3. HTML / CSS / JavaScript 原生能力
-4. 成熟 Open Source Library（開源函式庫）
-5. 成熟 Third-party Tool（第三方工具）
-6. 最後才評估自行開發
-
-例如：
-
-Camera（相機）、圖片調整、圖片處理、圖片壓縮、影像辨識等能力，不應預設由 MagicBook 自行重新發明。
-
-MagicBook 的責任是：
-
-- 選擇適合的現有技術
-- 整合現有技術
-- 建立產品流程
-- 驗證結果
-- 在必要時提供產品層級的操作介面
-
-而不是重新建立已經存在的基礎技術。
-
-此原則適用於所有後續功能，不只適用於圖片或 Camera。
-
-如果工程認為必須自行開發新的技術能力，
-
-應先向 PM 說明：
-
-- 現有技術為何無法使用
-- 現有技術的限制
-- 自行開發的必要性
-
-未經確認，不得因工程方便或習慣而自行建立新的技術系統。
-
----
 
 # 4. Architecture Principles
 
+
 ## 4.1 One Data Model
 
-Editor Mode 與 Reading Mode
-
-共用同一份教材資料。
+Editor Mode 與 Reading Mode 共用同一份教材資料。
 
 不得建立兩套教材資料。
 
@@ -374,9 +332,8 @@ Reading Mode：
 - Read
 - Interaction
 
-不得修改教材。
+Reading Mode 不得修改教材。
 
----
 
 ## 4.2 Independent Modules
 
@@ -399,7 +356,6 @@ Reading Mode：
 
 共同功能應建立 Shared Module。
 
----
 
 ## 4.3 Context Toolbar
 
@@ -407,15 +363,14 @@ MagicBook 全系統共用 Context Toolbar。
 
 Toolbar：
 
-- 平時隱藏
+- 預設隱藏
 - 選取物件後自動顯示
 - 完成操作後自動隱藏
 - 可自由拖曳
 - 可自由放置於畫面上下左右
 
-Image、Text、Hotspot、HTML Overlay 等所有可編輯物件皆使用同一套 Toolbar。
+Image、Text、Hotspot、HTML Overlay 等可編輯物件皆使用同一套 Toolbar。
 
----
 
 ## 4.4 Default First
 
@@ -435,9 +390,7 @@ Advanced on Demand
 - KK
 - Pronunciation
 
-若需更多功能，
-
-再透過 Context Toolbar 開啟：
+若需要更多功能，再透過 Context Toolbar 開啟：
 
 - Dictionary
 - AI
@@ -449,52 +402,44 @@ Advanced on Demand
 
 避免影響閱讀流程。
 
----
 
 ## 4.5 Media First
 
-Image Area 並不限於圖片。
+Image Area 負責教材視覺內容。
 
-凡可作為教材視覺內容（Visual Teaching Material）之媒體，
+MagicBook 不要求使用者理解不同媒體格式之技術差異。
 
-皆可加入。
-
-支援：
+Image Area 可匯入：
 
 - PNG
 - JPG
 - JPEG
 - PDF
-- Image Import（圖片輸入）
-- Video（影片）
+- 使用者已拍攝之照片
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
 
-Image Import 可包含：
+上述皆統一視為：
 
-- 使用者已拍攝的照片
-- 截圖
-- 從裝置選取的圖片檔案
+Image Import（圖片匯入）。
 
 MagicBook 不建立專用 Camera System（相機系統）。
 
-使用者拍照由裝置本身負責。
+拍照由裝置原生相機完成。
 
-MagicBook 僅接收使用者已取得的圖片。
+MagicBook 的責任從 Image Import 開始。
 
-未來可持續擴充更多媒體格式。
+系統須具備：
 
-系統須自動執行：
-
-- Media Optimization（媒體最佳化）
+- Image Optimization（圖片最佳化）
 - Image Compression（圖片壓縮）
 - Background Processing（背景處理）
+- Large File Warning（大檔提示）
 
-若檔案超過系統限制，
-
-須提示使用者，
+若檔案超過系統限制，應提示使用者重新調整或壓縮後再上傳。
 
 不得直接造成系統失敗。
 
----
 
 # 5. Development Scope
 
@@ -504,9 +449,8 @@ MagicBook 僅接收使用者已取得的圖片。
 
 所有核心模組皆須完成基本 CRUD（Create / Read / Update / Delete）。
 
-第三方服務（Third-party Services）可使用 Placeholder、Mock Data 或後續串接正式 API，不影響產品架構。
+第三方服務可使用 Placeholder、Mock Data 或正式 API，不得因此破壞產品架構。
 
----
 
 ## 5.1 Authentication
 
@@ -520,7 +464,6 @@ MagicBook 僅接收使用者已取得的圖片。
 
 登入後依使用者權限進入對應 Workspace。
 
----
 
 ## 5.2 Workspace
 
@@ -538,11 +481,8 @@ MagicBook 僅接收使用者已取得的圖片。
 - Workspace Billing
 - Workspace Analytics
 
----
 
 ## 5.3 Book Library
-
-Book Library 為教材管理中心。
 
 完成：
 
@@ -553,7 +493,7 @@ Book Library 為教材管理中心。
 - Search Book
 - Recently Used
 
-Book Library 支援：
+支援：
 
 - Folder
 - Nested Folder
@@ -565,7 +505,6 @@ Book Library 支援：
 
 Book 可以直接存在於 Book Library 根目錄，也可以放入 Folder。
 
----
 
 ## 5.4 Lesson
 
@@ -580,11 +519,8 @@ Book 可以直接存在於 Book Library 根目錄，也可以放入 Folder。
 
 第一版可隱藏 Lesson 管理介面。
 
-建立 Book 時，
+建立 Book 時，系統自動建立 Default Lesson。
 
-系統自動建立 Default Lesson。
-
----
 
 ## 5.5 Page
 
@@ -598,7 +534,6 @@ Book 可以直接存在於 Book Library 根目錄，也可以放入 Folder。
 
 Page 為教材最小管理單位。
 
----
 
 ## 5.6 Image Area
 
@@ -610,26 +545,19 @@ Image Area 負責教材視覺內容管理。
 - Replace Image
 - Delete Image
 - Reorder Image
+- Image Import
 
-第一版支援：
+支援：
 
 - PNG
 - JPG
 - JPEG
 - PDF
-- Image Import（圖片輸入）
-
-Image Import 包含：
-
 - 使用者已拍攝之照片
-- 截圖
-- 從裝置選取之圖片檔案
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
 
-MagicBook 不建立專用 Camera System。
-
-使用者拍照由裝置原生功能負責。
-
-MagicBook 只接收已取得的圖片。
+MagicBook 不建立專用 Camera 功能。
 
 系統需具備：
 
@@ -638,11 +566,8 @@ MagicBook 只接收已取得的圖片。
 - Background Processing（背景處理）
 - Large File Warning（大檔提示）
 
-若檔案超過系統限制，
+若檔案超過系統限制，應提示使用者重新調整或壓縮後再上傳。
 
-系統應提示使用者重新調整或壓縮後再上傳。
-
----
 
 ## 5.7 Text Area
 
@@ -653,11 +578,12 @@ MagicBook 只接收已取得的圖片。
 - Delete Text Block
 - Reorder Text Block
 
-每個 Page 可建立不限數量 Text Block。
+Text Area 只負責文字輸入與文字編輯。
 
-第一版以基本文字編輯為主。
+OCR / AI 不得自動將辨識內容直接寫入 Text Area。
 
----
+OCR / AI 自動化產生的互動內容屬於 Hotspot / HTML Overlay 流程。
+
 
 ## 5.8 HTML Overlay
 
@@ -665,14 +591,7 @@ MagicBook 只接收已取得的圖片。
 
 HTML Overlay 為教材互動層（Interaction Layer）。
 
-可覆蓋於教材內容：
-
-- Image
-- PDF
-
-教材內容保持原貌。
-
-所有互動資訊皆建立於 HTML Overlay。
+可覆蓋於教材內容之上。
 
 HTML Overlay 負責：
 
@@ -684,7 +603,6 @@ HTML Overlay 負責：
 
 不得直接修改教材內容。
 
----
 
 ## 5.9 Hotspot
 
@@ -703,7 +621,6 @@ Hotspot 為獨立互動物件（Interactive Object）。
 
 所有 Hotspot 建立於 HTML Overlay Layer。
 
----
 
 ## 5.10 Popup
 
@@ -723,7 +640,6 @@ Popup 採 Context Toolbar 機制。
 
 完成操作後自動隱藏。
 
----
 
 ## 5.11 Dictionary
 
@@ -746,7 +662,6 @@ Dictionary 提供查閱功能。
 
 資料來源可後續替換。
 
----
 
 ## 5.12 AI
 
@@ -777,7 +692,6 @@ AI 為產品工具（Tool）。
 
 不得綁定特定 AI 服務。
 
----
 
 ## 5.13 Audio
 
@@ -791,7 +705,6 @@ AI 為產品工具（Tool）。
 
 Audio 可由正式 API 或 Placeholder 提供。
 
----
 
 ## 5.14 Video
 
@@ -805,7 +718,6 @@ Audio 可由正式 API 或 Placeholder 提供。
 
 Video 可由正式來源或 Placeholder 提供。
 
----
 
 ## 5.15 Navigation
 
@@ -821,7 +733,6 @@ Video 可由正式來源或 Placeholder 提供。
 
 Navigation 可與 Context Toolbar 整合。
 
----
 
 ## 5.16 Reading Mode
 
@@ -838,15 +749,17 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 
 Reading Mode 不可修改教材內容。
 
----
 
 # 6. Core Modules
 
 MagicBook 3.0 採模組化架構（Modular Architecture）。
 
-所有模組皆須保持獨立（Independent）、低耦合（Low Coupling）及可持續擴充（Scalable）。
+所有模組皆須保持：
 
----
+- Independent（獨立）
+- Low Coupling（低耦合）
+- Scalable（可擴充）
+
 
 ## 6.1 Authentication Module
 
@@ -858,7 +771,6 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 - Workspace Authentication
 - Permission Verification
 
----
 
 ## 6.2 Workspace Module
 
@@ -871,7 +783,6 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 
 Workspace 為所有教材之最高資料歸屬。
 
----
 
 ## 6.3 Book Library Module
 
@@ -883,7 +794,6 @@ Workspace 為所有教材之最高資料歸屬。
 - Recently Used
 - Book Management
 
----
 
 ## 6.4 Folder Module
 
@@ -911,7 +821,6 @@ Folder 不儲存教材內容。
 
 Folder 僅負責教材分類與管理。
 
----
 
 ## 6.5 Book Module
 
@@ -922,7 +831,6 @@ Folder 僅負責教材分類與管理。
 - Recently Used
 - Book Information
 
----
 
 ## 6.6 Lesson Module
 
@@ -934,9 +842,6 @@ Folder 僅負責教材分類與管理。
 
 第一版採預設 Lesson。
 
-後續版本開放完整 Lesson 管理。
-
----
 
 ## 6.7 Page Module
 
@@ -948,34 +853,30 @@ Folder 僅負責教材分類與管理。
 
 Page 為教材最小管理單位。
 
----
 
 ## 6.8 Image Area Module
 
+Image Area 為教材視覺內容工作區。
+
 負責：
 
+- Image Import
 - Image Management
 - PDF Management
 - Image Rendering
 - Image Optimization
 - Image Compression
-- Image Import
-
-Image Import 負責接收：
-
-- 使用者已拍攝的照片
-- 截圖
-- 從裝置選取的圖片檔案
-
-MagicBook 不建立專用 Camera System。
 
 Image Area 不負責互動。
 
-教材內容保持原貌。
+教材互動由 HTML Overlay 負責。
 
----
+MagicBook 不建立專用 Camera System。
+
 
 ## 6.9 Text Area Module
+
+Text Area 為文字工作區。
 
 負責：
 
@@ -985,7 +886,6 @@ Image Area 不負責互動。
 
 每個 Page 可建立不限數量 Text Block。
 
----
 
 ## 6.10 HTML Overlay Module
 
@@ -1002,7 +902,6 @@ HTML Overlay 不修改教材內容。
 
 所有互動皆建立於 Overlay Layer。
 
----
 
 ## 6.11 Hotspot Module
 
@@ -1017,7 +916,6 @@ Hotspot 為獨立互動物件（Interactive Object）。
 
 Hotspot 建立於 HTML Overlay。
 
----
 
 ## 6.12 Context Toolbar Module
 
@@ -1025,37 +923,39 @@ Context Toolbar 為全系統共用工具列。
 
 負責：
 
-- Tool Switching
-- Floating Toolbar
-- Auto Show
-- Auto Hide
-- Dragging
-- Docking
+- Object Editing
+- Object Settings
+- Interaction Settings
 
-所有可編輯物件共用同一套 Toolbar。
+Toolbar：
 
-包括：
+- 平時隱藏
+- 選取物件後自動顯示
+- 完成操作後自動隱藏
+- 可自由拖曳
+- 可自由放置於畫面上下左右
 
-- Image
-- Text
-- HTML Overlay
-- Hotspot
-
----
 
 ## 6.13 Popup Module
 
-Popup 為互動資訊容器（Interaction Container）。
+Popup 為互動資訊視窗。
 
 負責：
 
+- Popup Editor
 - Popup Layout
 - Popup CRUD
-- Popup Display
 
-Popup 由 Context Toolbar 開啟。
+點擊 Hotspot：
 
----
+立即顯示 Default Popup。
+
+預設顯示：
+
+- Chinese
+- KK
+- Pronunciation
+
 
 ## 6.14 Dictionary Module
 
@@ -1073,7 +973,6 @@ Dictionary 為查閱工具。
 
 不是收藏系統。
 
----
 
 ## 6.15 AI Module
 
@@ -1090,7 +989,6 @@ AI Provider 可替換。
 
 不得綁定特定 AI。
 
----
 
 ## 6.16 Audio Module
 
@@ -1102,7 +1000,6 @@ AI Provider 可替換。
 
 Audio Provider 可後續替換。
 
----
 
 ## 6.17 Video Module
 
@@ -1114,7 +1011,6 @@ Audio Provider 可後續替換。
 
 Video Provider 可後續替換。
 
----
 
 ## 6.18 Navigation Module
 
@@ -1128,25 +1024,20 @@ Video Provider 可後續替換。
 
 Navigation 為共用導覽功能。
 
----
 
 ## 6.19 Global Search Module
 
 Global Search 為全系統共用搜尋模組（Shared Service）。
 
-搜尋介面採 Floating Toolbar 模式。
+搜尋採 Floating Toolbar 模式。
 
-平時只顯示 Search Icon（搜尋圖示）。
+平時只顯示 Search Icon。
 
 Search Icon 固定顯示於畫面右上方。
 
-使用者不需要猜測搜尋功能的位置。
+點擊 Search Icon 後展開 Search Toolbar。
 
-點擊 Search Icon 後，
-
-展開 Search Toolbar。
-
-Toolbar 可包含：
+Search Toolbar 可包含：
 
 - Home
 - Back
@@ -1159,15 +1050,13 @@ Toolbar 可包含：
 - Home
 - Back
 
-屬於 Navigation（導覽）功能，
-
-不是 Search 功能。
+屬於 Navigation（導覽）功能，不是 Search 功能。
 
 關閉 Search Toolbar 後，
 
 Search Icon 必須繼續顯示於畫面右上方。
 
-Search Toolbar 提供搜尋範圍（Search Scope）：
+提供搜尋範圍：
 
 - All
 - Folder
@@ -1188,23 +1077,7 @@ Search Toolbar 提供搜尋範圍（Search Scope）：
 - Recent Search（最近搜尋）
 - Search Result Navigation（搜尋結果導覽）
 
-Global Search 可從使用者目前所在畫面開始搜尋。
-
-搜尋結果可導向實際對應的：
-
-- Folder
-- Book
-- Lesson
-- Page
-- Text
-- Image
-- PDF
-- Hotspot
-- Dictionary
-
-搜尋不限制使用者只能看到單一層級的結果。
-
-搜尋結果應協助使用者快速返回實際相關內容。
+搜尋結果可導向實際相關內容。
 
 Global Search 不直接管理資料。
 
@@ -1214,7 +1087,6 @@ Global Search 不直接管理資料。
 - Index
 - Search Result Navigation
 
----
 
 ## 6.20 Save Module
 
@@ -1225,7 +1097,6 @@ Global Search 不直接管理資料。
 - Save Status
 - Cloud Storage
 
----
 
 ## 6.21 Reading Module
 
@@ -1235,7 +1106,7 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 
 - Reading UI
 - Hotspot Interaction
-- Popup Display
+- Popup
 - Dictionary
 - AI
 - Audio
@@ -1245,6 +1116,7 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 Reading Mode 僅提供閱讀與互動。
 
 不得修改教材內容。
+
 
 # 7. User Flow
 
@@ -1263,7 +1135,6 @@ MagicBook 3.0 提供兩種使用模式：
 
 教材操作流程保持一致。
 
----
 
 ## 7.1 Login Flow
 
@@ -1285,7 +1156,6 @@ Authentication
 
 Home
 
----
 
 ## 7.2 Home Flow
 
@@ -1311,7 +1181,6 @@ Create Book
 
 Book Library
 
----
 
 ## 7.3 Book Editing Flow
 
@@ -1339,11 +1208,38 @@ Image Import
 
 ↓
 
-Text Area
+使用者選擇：
+
+- 已拍攝照片
+- 截圖
+- 裝置中的圖片／檔案
+- PDF
 
 ↓
 
-Add Text Block
+若使用自動建立互動內容：
+
+Image Quality Check
+
+↓
+
+必要時 Auto Correction
+
+↓
+
+Re-Quality Check
+
+↓
+
+OCR
+
+↓
+
+Text + Bounding Box
+
+↓
+
+Hotspot Generator
 
 ↓
 
@@ -1351,7 +1247,7 @@ HTML Overlay
 
 ↓
 
-Create Hotspot
+Hotspot
 
 ↓
 
@@ -1373,21 +1269,10 @@ Save Book
 
 Book Library
 
-### Image Import
+使用者亦可完全不使用 AI。
 
-Image Import 可接收：
+Image Area 匯入教材後，可直接手動建立 Hotspot。
 
-- 使用者已拍攝的照片
-- 截圖
-- 從裝置選取的圖片檔案
-
-MagicBook 不建立專用 Camera System（相機系統）。
-
-使用者拍照由裝置本身負責。
-
-MagicBook 僅接收使用者已取得的圖片。
-
----
 
 ## 7.4 Book Library Flow
 
@@ -1397,8 +1282,8 @@ Book Library 為教材管理中心。
 
 - Search Book
 - Create Book
-- Open Book（Book Editor）
-- Open Reading（Reading Mode）
+- Open Book
+- Open Reading
 - Rename Book
 - Duplicate Book
 - Delete Book
@@ -1421,14 +1306,13 @@ Select Result
 
 可執行：
 
-- Open Book（Book Editor）
-- Open Reading（Reading Mode）
+- Open Book
+- Open Reading
 - Rename Book
 - Duplicate Book
 - Delete Book
 - Move to Folder
 
----
 
 ## 7.5 Reading Flow
 
@@ -1470,7 +1354,6 @@ Video
 
 Continue Reading
 
----
 
 ## 7.6 Editor Mode
 
@@ -1489,7 +1372,6 @@ Editor Mode 提供完整教材編輯能力。
 
 Editor Mode 可修改教材內容。
 
----
 
 ## 7.7 Reading Mode
 
@@ -1506,7 +1388,6 @@ Reading Mode 不可修改教材內容。
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
----
 
 ## 7.8 Save Flow
 
@@ -1535,7 +1416,6 @@ Book Library
 - Continue Editing
 - Open Reading
 
----
 
 ## 7.9 Unsaved Changes
 
@@ -1545,16 +1425,11 @@ Book Library
 
 系統應提示：
 
-> 尚未儲存教材，離開後資料將遺失。
-
-提供：
-
 - Continue Editing
 - Leave Without Saving
 
 避免教材內容遺失。
 
----
 
 ## 7.10 Error Handling
 
@@ -1564,16 +1439,27 @@ Book Library
 - Upload Failure
 - Save Failure
 - Network Failure
+- OCR / Automation Failure
 
 系統應：
 
-- 顯示錯誤訊息
-- 保留目前教材
-- 提供 Retry
+- 顯示使用者可理解的錯誤訊息
+- 保留目前教材內容
+- 提供適當 Retry
 - 不得直接關閉編輯畫面
 - 不得遺失使用者目前編輯內容
 
----
+不得向一般使用者暴露：
+
+- AI
+- OCR
+- Confidence
+- Model
+- Provider
+- Bounding Box
+
+等技術錯誤細節。
+
 
 # 8. Screen Specifications
 
@@ -1588,19 +1474,12 @@ MagicBook 3.0 所有畫面皆遵循一致設計原則：
 
 不得因後續功能增加而重新設計主要介面。
 
----
 
 ## 8.1 Login
 
 MagicBook 提供兩種登入模式。
 
 ### Personal Workspace
-
-適用：
-
-- 個人教師
-- 家教老師
-- 自學使用者
 
 提供：
 
@@ -1616,15 +1495,8 @@ MagicBook 提供兩種登入模式。
 
 登入成功後進入 Home。
 
----
 
 ### Organization Workspace
-
-適用：
-
-- 補習班
-- 學校
-- 教育機構
 
 Workspace Administrator 建立：
 
@@ -1640,9 +1512,6 @@ Workspace Administrator 建立：
 
 登入成功後直接進入所屬 Organization Workspace。
 
-不得使用個人 Google Account 登入機構 Workspace。
-
----
 
 ## 8.2 Home
 
@@ -1660,7 +1529,6 @@ Home 不負責教材管理。
 
 教材管理由 Book Library 負責。
 
----
 
 ## 8.3 Book Library
 
@@ -1676,8 +1544,8 @@ Book Library 為教材管理中心。
 - Rename Book
 - Duplicate Book
 - Delete Book
-- Open Book（Book Editor）
-- Open Reading（Reading Mode）
+- Open Book
+- Open Reading
 
 Folder 支援：
 
@@ -1702,63 +1570,27 @@ Search Icon 固定顯示於畫面右上方。
 
 Search Icon 仍保留於畫面右上方。
 
-教材可依：
-
-- Recently Used
-- Create Time
-
-排序。
-
----
 
 ## 8.4 Book Editor
 
-Book Editor 為教材編輯中心。
+Book Editor 為主要教材編輯環境。
 
-固定包含：
+包含：
 
 - Page Manager
 - Image Area
 - Text Area
 - HTML Overlay
+- Context Toolbar
+- Save
+- Reading Mode
 
-Editor 採左右雙工作區（Dual Workspace）。
+Image Area、Text Area、HTML Overlay 為三個平行工作區。
 
-提供：
-
-- 左右工作區自由調整比例
-- Image Area 可獨立放大或縮小
-- Text Area 可獨立放大或縮小
-- 快速恢復預設版面配置
-
-桌機／筆電：
-
-- 拖曳中間分隔線調整工作區大小
-
-平板／手機／觸控裝置：
-
-- 支援雙指縮放（Pinch Zoom）
-
-Image Area、Text Area 與 HTML Overlay
-
-共同隸屬於同一個 Page。
-
-三者：
-
-- 架構獨立
-- 功能獨立
-- 資料獨立
-- 操作獨立
-
-除共同隸屬於同一個 Page 外，
-
-不得建立任何未定義的互動關係。
-
----
 
 ## 8.5 Page Manager
 
-提供：
+Page Manager 負責：
 
 - Add Page
 - Delete Page
@@ -1768,102 +1600,75 @@ Image Area、Text Area 與 HTML Overlay
 
 Page 為教材最小管理單位。
 
-所有教材內容皆建立於 Page。
-
----
 
 ## 8.6 Image Area
 
-Image Area 為教材圖片工作區。
+Image Area 負責：
 
-提供：
+- Image Import
+- Image Display
+- Image Replace
+- Image Delete
+- PDF Display
 
-- Add Image
-- Replace Image
-- Delete Image
-- Reorder Image
-
-第一版支援：
+支援：
 
 - PNG
 - JPG
 - JPEG
 - PDF
-- Image Import（圖片輸入）
-
-Image Import 包含：
-
 - 使用者已拍攝之照片
-- 截圖
-- 從裝置選取之圖片檔案
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
 
-MagicBook 不建立專用 Camera System。
+MagicBook 不建立專用 Camera 功能。
 
-使用者拍照由裝置原生功能負責。
+拍照由裝置原生相機完成。
 
-MagicBook 只接收已取得的圖片。
+Image Area 不負責 OCR。
 
-系統自動：
+OCR / AI 為 Optional Automation Layer（選用自動化層）。
 
-- Image Optimization（圖片最佳化）
-- Image Compression（圖片壓縮）
-- Background Processing（背景處理）
-
-若檔案超過系統限制，
-
-應提示使用者重新調整後再上傳。
-
----
 
 ## 8.7 Text Area
 
-Text Area 為文字工作區。
+Text Area 為純文字編輯區。
 
 提供：
 
-- Add Text Block
-- Edit Text Block
-- Delete Text Block
-- Reorder Text Block
+- Add Text
+- Edit Text
+- Delete Text
+- Reorder Text
 
-每個 Page 可建立不限數量 Text Block。
+Text Area 不負責：
 
-第一版提供基本文字編輯。
+- OCR
+- PDF Processing
+- Image Processing
 
-後續可持續擴充更多文字功能。
-
----
 
 ## 8.8 HTML Overlay
 
-HTML Overlay 為教材互動層（Interaction Layer）。
+HTML Overlay 為教材互動層。
 
-可覆蓋於：
+負責：
 
-- Image
-- PDF
-
-教材內容保持原貌。
-
-所有互動資訊皆建立於 HTML Overlay。
-
-HTML Overlay 負責：
-
-- Layer Management
-- Interactive Object Rendering
-- Object Selection
+- Hotspot
+- Popup
+- Interactive Object
 - Object Position
 - Object Resize
+- Layer Management
 
-不得直接修改教材內容。
+HTML Overlay 不修改教材底圖。
 
----
 
 ## 8.9 Hotspot
 
-Hotspot 為 HTML Overlay 上的互動物件（Interactive Object）。
+Hotspot 為獨立互動物件。
 
-提供：
+支援：
 
 - Add
 - Edit
@@ -1872,56 +1677,35 @@ Hotspot 為 HTML Overlay 上的互動物件（Interactive Object）。
 - Resize
 - Save
 
-Hotspot 不修改教材。
+Hotspot 建立於 HTML Overlay。
 
-僅記錄：
-
-- Position
-- Properties
-- Actions
-
----
 
 ## 8.10 Context Toolbar
 
-Context Toolbar 為全系統共用工具列。
-
-Toolbar：
+Context Toolbar：
 
 - 預設隱藏
-- 選取物件後自動顯示
-- 完成操作後自動隱藏
+- 選取物件後顯示
+- 完成操作後隱藏
 - 可自由拖曳
-- 可停靠畫面上下左右任意位置
+- 可自由放置
 
-所有可編輯物件共用同一套 Toolbar。
+所有可編輯物件共用。
 
-包括：
-
-- Image
-- Text
-- HTML Overlay
-- Hotspot
-
----
 
 ## 8.11 Popup
-
-Popup 為互動資訊視窗。
 
 點擊 Hotspot：
 
 立即顯示 Default Popup。
 
-預設顯示：
+預設：
 
 - Chinese
 - KK
 - Pronunciation
 
-若需要更多功能，
-
-可由 Context Toolbar 開啟：
+更多功能：
 
 - Dictionary
 - AI
@@ -1931,13 +1715,10 @@ Popup 為互動資訊視窗。
 - URL
 - Navigation
 
-Popup 為所有互動功能共同入口。
-
----
 
 ## 8.12 Save Dialog
 
-點擊 Save 後，
+點擊 Save 後：
 
 顯示 Save Dialog。
 
@@ -1953,7 +1734,6 @@ Popup 為所有互動功能共同入口。
 - Continue Editing
 - Open Reading
 
----
 
 ## 8.13 Reading Mode
 
@@ -1979,7 +1759,6 @@ Reading Mode 僅提供閱讀與互動。
 
 不得修改教材內容。
 
----
 
 ## 8.14 Settings
 
@@ -2003,9 +1782,6 @@ Reading Mode 僅提供閱讀與互動。
 
 所有第三方服務皆採 Replaceable Service Architecture。
 
-不得綁定任何特定 AI、Dictionary、TTS 或其他第三方服務。
-
----
 
 # 9. Functional Modules
 
@@ -2023,13 +1799,9 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 - Teaching Material First（教材優先）
 - Low Coupling（低耦合）
 - Replaceable Service（服務可替換）
-- Reuse Before Reinvent（先利用，再重新發明）
 
 各模組透過統一資料架構協同運作。
 
-不得直接依賴其他模組。
-
----
 
 ## 9.1 Authentication Module
 
@@ -2046,11 +1818,10 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 - Personal Workspace
 - Organization Workspace
 
----
 
 ## 9.2 Workspace Module
 
-Workspace 為系統最高管理單位（Root Entity）。
+Workspace 為系統最高管理單位。
 
 負責：
 
@@ -2061,12 +1832,6 @@ Workspace 為系統最高管理單位（Root Entity）。
 - Permission Management
 - Data Ownership
 
-支援：
-
-- Personal Workspace
-- Organization Workspace
-
----
 
 ## 9.3 Book Library Module
 
@@ -2080,9 +1845,6 @@ Book Library 為教材管理中心。
 - Recently Used
 - Book Management
 
-Book Library 為所有教材操作入口。
-
----
 
 ## 9.4 Folder Module
 
@@ -2095,22 +1857,9 @@ Folder 為教材分類工具。
 - Delete Folder
 - Move Folder
 - Reorder Folder
+- Nested Folder
+- Drag & Drop Sorting
 
-支援：
-
-- Nested Folder（子資料夾）
-- Drag & Drop Sorting（拖曳排序）
-
-Folder 可包含：
-
-- Folder
-- Book
-
-Folder 不儲存教材內容。
-
-Folder 僅負責教材分類與管理。
-
----
 
 ## 9.5 Book Module
 
@@ -2129,7 +1878,6 @@ Book 包含：
 - Lesson
 - Page
 
----
 
 ## 9.6 Lesson Module
 
@@ -2142,9 +1890,6 @@ Lesson 為教材章節管理單位。
 - Delete Lesson
 - Reorder Lesson
 
-Lesson 隸屬於 Book。
-
----
 
 ## 9.7 Page Module
 
@@ -2158,220 +1903,83 @@ Page 為教材最小管理單位。
 - Reorder Page
 - Page Navigation
 
-每個 Page 包含：
-
-- Image Area
-- Text Area
-- HTML Overlay
-
----
 
 ## 9.8 Image Area Module
 
-Image Area 為教材圖片工作區。
-
 負責：
 
-- Add Image
-- Replace Image
-- Delete Image
-- Reorder Image
 - Image Import
+- Image Management
+- PDF Management
+- Image Rendering
 - Image Optimization
 - Image Compression
 
-支援：
-
-- PNG
-- JPG
-- JPEG
-- PDF
-- Image Import（圖片輸入）
-
-Image Import 包含：
-
-- 使用者已拍攝的照片
-- 截圖
-- 從裝置選取的圖片檔案
-
 MagicBook 不建立專用 Camera System。
 
-使用者拍照由裝置原生功能負責。
-
-MagicBook 只接收已取得的圖片。
-
-系統自動：
-
-- Image Optimization（圖片最佳化）
-- Image Compression（圖片壓縮）
-- Background Processing（背景處理）
-
-若圖片超過系統限制，
-
-應提示使用者重新調整後再上傳。
-
-教材內容保持原貌。
-
-所有互動由 HTML Overlay 負責。
-
----
 
 ## 9.9 Text Area Module
 
-Text Area 為文字工作區。
-
 負責：
 
-- Add Text Block
-- Edit Text Block
-- Delete Text Block
-- Reorder Text Block
+- Text Block Management
+- Text Editing
+- Text Rendering
 
-每個 Page 可建立不限數量 Text Block。
-
----
 
 ## 9.10 HTML Overlay Module
 
-HTML Overlay 為教材互動層（Interaction Layer）。
-
 負責：
 
-- Layer Management
+- Overlay Layer
 - Interactive Object Rendering
 - Object Selection
-- Object Position
-- Object Resize
+- Layer Management
 
-HTML Overlay 可覆蓋於：
-
-- Image
-- PDF
-
-教材內容保持原貌。
-
-所有互動皆建立於 HTML Overlay。
-
----
 
 ## 9.11 Hotspot Module
 
-Hotspot 為互動物件（Interactive Object）。
-
 負責：
 
-- Add
-- Edit
-- Delete
-- Move
-- Resize
-- Save
-
-Hotspot 記錄：
-
+- Hotspot CRUD
 - Position
-- Properties
-- Actions
+- Resize
+- Layer Order
 
-所有 Hotspot 建立於 HTML Overlay。
 
----
-
-## 9.12 Context Toolbar Module
-
-Context Toolbar 為全系統共用工具列。
+## 9.12 Popup Module
 
 負責：
 
-- Tool Switching
-- Floating Toolbar
-- Auto Show
-- Auto Hide
-- Dragging
-- Docking
-
-所有可編輯物件共用同一套 Toolbar。
-
-包括：
-
-- Image
-- Text
-- HTML Overlay
-- Hotspot
-
----
-
-## 9.13 Popup Module
-
-Popup 為互動資訊視窗。
-
-負責：
-
-- Default Popup
-- Popup Rendering
+- Popup Editor
 - Popup Layout
+- Popup CRUD
 
-點擊 Hotspot：
 
-立即顯示 Default Popup。
-
-預設內容：
-
-- Chinese
-- KK
-- Pronunciation
-
-其他功能由 Context Toolbar 開啟。
-
----
-
-## 9.14 Dictionary Module
-
-Dictionary 為 Lookup Tool。
+## 9.13 Dictionary Module
 
 負責：
 
-- Word
+- Word Information
 - Chinese
 - KK
 - Pronunciation
 - Example
-- AI Assistance
 
-Dictionary 僅提供查閱。
 
-不提供收藏功能。
-
----
-
-## 9.15 AI Module
-
-AI 為產品工具（Tool）。
+## 9.14 AI Module
 
 負責：
 
-- AI Panel
-- Prompt Manager
-- Conversation
-- History
-- AI Settings
-- AI Provider Interface
+- AI Conversation
+- Prompt Management
+- AI Provider
+- AI History
 
 採 Replaceable Provider Architecture。
 
-支援：
 
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future Providers
-
-不得綁定任何特定 AI 服務。
-
----
-
-## 9.16 Audio Module
+## 9.15 Audio Module
 
 負責：
 
@@ -2379,11 +1987,8 @@ AI 為產品工具（Tool）。
 - Audio Source
 - Audio Settings
 
-Audio Provider 可自由替換。
 
----
-
-## 9.17 Video Module
+## 9.16 Video Module
 
 負責：
 
@@ -2391,11 +1996,8 @@ Audio Provider 可自由替換。
 - Video Source
 - Video Settings
 
-Video Provider 可自由替換。
 
----
-
-## 9.18 Navigation Module
+## 9.17 Navigation Module
 
 負責：
 
@@ -2405,79 +2007,25 @@ Video Provider 可自由替換。
 - Book Navigation
 - Lesson Navigation
 
-Navigation 為共用導覽功能。
 
----
+## 9.18 Global Search Module
 
-## 9.19 Global Search Module
-
-Global Search 為全系統共用搜尋模組（Shared Service）。
-
-搜尋採 Floating Toolbar 模式。
-
-平時只顯示 Search Icon。
-
-Search Icon 固定顯示於畫面右上方。
-
-點擊 Search Icon 後展開 Search Toolbar。
-
-Search Toolbar 可包含：
-
-- Home
-- Back
-- Keyword Search
-- Search Scope
-- Close
-
-其中：
-
-- Home
-- Back
-
-屬於 Navigation（導覽）功能，
-
-不是 Search 功能。
-
-關閉 Search Toolbar 後，
-
-Search Icon 必須繼續顯示於畫面右上方。
-
-提供搜尋範圍（Search Scope）：
-
-- All
-- Folder
-- Book
-- Lesson
-- Page
-- Text
-- Image
-- PDF
-- Hotspot
-- Dictionary
+Global Search 為全系統共用搜尋模組。
 
 提供：
 
-- Keyword Search（關鍵字搜尋）
-- Instant Search（即時搜尋）
-- Search Suggestions（搜尋建議）
-- Recent Search（最近搜尋）
-- Search Result Navigation（搜尋結果導覽）
-
-搜尋可從使用者目前所在畫面開始。
-
-搜尋結果可導向實際相關內容。
-
-Global Search 不直接管理資料。
-
-僅負責：
-
-- Search
-- Index
+- Keyword Search
+- Search Scope
+- Search Suggestions
+- Recent Search
 - Search Result Navigation
 
----
+Search Icon 固定於畫面右上方。
 
-## 9.20 Save Module
+Search Toolbar 採 Floating Toolbar。
+
+
+## 9.19 Save Module
 
 負責：
 
@@ -2486,11 +2034,8 @@ Global Search 不直接管理資料。
 - Save Status
 - Cloud Storage
 
----
 
-## 9.21 Reading Module
-
-Reading Mode 與 Editor Mode 共用同一份教材資料。
+## 9.20 Reading Module
 
 負責：
 
@@ -2503,444 +2048,243 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Video
 - Navigation
 
-Reading Mode 僅提供閱讀與互動。
+Reading Mode 不修改教材。
 
-不得修改教材內容。
-
----
 
 # 10. Development Boundary
 
 MagicBook 3.0 第一階段建立完整產品架構（Complete Product Architecture）。
 
-所有核心模組皆須建立完整資料架構、使用者介面（UI）與 CRUD（Create、Read、Update、Delete）能力。
+所有核心模組皆須建立完整：
 
-第三方服務（Third-party Services）可依實際開發進度逐步完成串接。
+- Data Model
+- UI
+- CRUD
+- User Flow
 
-本階段開發遵循以下原則：
+第三方服務可依實際開發進度逐步完成串接。
 
-- 不變更產品架構（Architecture）
-- 不刪除已確認功能（Confirmed Features）
-- 不新增未確認功能（Undefined Features）
-- 不因技術限制修改使用者操作流程（User Flow）
-- Reuse Before Reinvent（先利用，再重新發明）
+本階段開發遵循：
 
-若需新增功能或修改需求，
+- 不變更產品架構
+- 不刪除已確認功能
+- 不新增未確認功能
+- 不因技術限制修改使用者操作流程
 
-應先更新：
+若需新增功能或修改需求，應先更新：
 
 - Product Specification
 - MVP Development
 
-完成 Specification Consistency Review 後，
-
-再更新其他相關文件。
+完成 Specification Consistency Review 後，再更新其他相關文件。
 
 所有新增功能皆須遵循：
 
-- Modular Architecture（模組化架構）
-- Teaching Material First（教材優先）
-- Replaceable Service（服務可替換）
-- Global Search（全域搜尋）
-- Context Toolbar（共用浮動工具列）
-- Reuse Before Reinvent（先利用，再重新發明）
+- Modular Architecture
+- Teaching Material First
+- Replaceable Service
+- Global Search
+- Context Toolbar
+- Reuse Before Reinvent
 
 不得建立獨立且不一致的操作流程。
 
----
 
 # 11. Acceptance Criteria
 
-MagicBook 3.0 MVP 完成後，應符合以下驗收標準（Acceptance Criteria）。
+MagicBook 3.0 MVP 完成後，應符合以下驗收標準。
 
-所有核心模組皆須完成資料架構（Data Model）、使用者介面（UI）、CRUD（Create、Read、Update、Delete）與完整操作流程（User Flow）。
+所有核心模組皆須完成：
 
-第三方服務（Third-party Services）可採 Placeholder 或 Mock Data，正式 API 可於後續版本串接，但不得影響產品架構。
+- Data Model
+- UI
+- CRUD
+- User Flow
 
----
+第三方服務可採 Placeholder 或 Mock Data，正式 API 可於後續串接，但不得影響產品架構。
+
 
 ## 11.1 Authentication
 
-系統應支援：
+必須：
 
-- Email Login
-- Google Login
-- Logout
-- Remember Me
-- Forgot Password
-- Session Management
-- User Authentication
+- 可以登入
+- 可以登出
+- 可以維持 Session
+- 可以辨識 Workspace
+- 可以依權限進入對應 Workspace
 
-登入後應依使用者身分進入正確 Workspace。
-
----
 
 ## 11.2 Workspace
 
-Workspace 應支援：
+必須：
 
-- Personal Workspace（個人）
-- Organization Workspace（機構）
+- 支援 Personal Workspace
+- 支援 Organization Workspace
+- 正確管理 Data Ownership
+- 正確管理基本 Permission
 
-Organization Workspace：
-
-由 Workspace 管理者建立教師帳號。
-
-教師使用 Workspace 提供之帳號與密碼登入。
-
-不得使用個人帳號直接加入 Organization Workspace。
-
-不同 Workspace 間資料不得互相存取。
-
-所有教材皆應依 Workspace 正確歸屬。
-
----
 
 ## 11.3 Book Library
 
-Book Library 應提供：
+必須：
 
-### Folder
-
-- Create Folder
-- Rename Folder
-- Delete Folder
-- Move Folder
-- Reorder Folder
-
-Folder 應支援：
-
-- Nested Folder（子資料夾）
-- Drag & Drop Sorting（拖曳排序）
-
-Folder 可包含：
-
-- Folder
-- Book
-
-Folder 不儲存教材內容。
-
-Folder 僅負責教材分類與管理。
-
-Book 應支援：
-
-- Create Book
-- Rename Book
-- Duplicate Book
-- Delete Book
-- Open Book
-
-Book Library 應提供：
-
+- 建立 Book
+- 開啟 Book
+- Rename
+- Duplicate
+- Delete
 - Search
 - Recently Used
 
-Book 應可：
 
-- 拖曳至 Folder
-- 移動至其他 Folder
-- 保留於 Book Library 根目錄
+## 11.4 Folder
 
-Folder 應可：
+必須：
 
-- 建立子資料夾
-- 拖曳返回根目錄
+- Create
+- Rename
+- Delete
+- Move
+- Reorder
+- Nested Folder
+- Drag & Drop
 
-不得跨越不允許的資料層級拖曳。
 
----
+## 11.5 Lesson
 
-## 11.4 Lesson
+必須：
 
-使用者應可：
+- 建立 Default Lesson
+- Lesson 隸屬於 Book
 
-- Create Lesson
-- Rename Lesson
-- Delete Lesson
-- Reorder Lesson
 
-建立 Book 時，
+## 11.6 Page
 
-系統自動建立 Default Lesson。
+必須：
 
-Lesson 應正確隸屬於 Book。
+- Add
+- Delete
+- Duplicate
+- Reorder
+- Navigation
 
----
-
-## 11.5 Page
-
-使用者應可：
-
-- Add Page
-- Delete Page
-- Duplicate Page
-- Reorder Page
-- Page Navigation
-
-Page 為教材最小管理單位。
-
----
-
-## 11.6 Book Editor
-
-Book Editor 應包含：
-
-- Page Manager
-- Image Area
-- Text Area
-- HTML Overlay
-
-桌機／筆電：
-
-- 可拖曳分隔線調整 Image Area 與 Text Area 大小。
-
-手機／平板：
-
-- 支援雙指縮放（Pinch Zoom）。
-
-Image Area 與 Text Area：
-
-可獨立放大、縮小。
-
-可恢復預設版面。
-
----
 
 ## 11.7 Image Area
 
-使用者應可：
+必須：
 
-- 匯入 PNG
-- 匯入 JPG
-- 匯入 JPEG
-- 匯入 PDF
-- Image Import（圖片輸入）
+- Image Import
+- Image Display
+- Replace
+- Delete
+- PDF Display
+- Image Optimization
+- Image Compression
+- Background Processing
 
-Image Import 可包含：
+Image Import 支援：
 
-- 使用者已拍攝的照片
-- 截圖
-- 從裝置選取的圖片檔案
+- PNG
+- JPG
+- JPEG
+- PDF
+- 使用者已拍攝之照片
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
 
 MagicBook 不建立專用 Camera System。
 
-使用者拍照由裝置原生功能負責。
-
-MagicBook 只接收已取得的圖片。
-
-系統應：
-
-- 自動最佳化圖片
-- 自動壓縮圖片
-- 背景處理
-- 大檔提示
-
-教材內容保持原貌。
-
-所有互動由 HTML Overlay 建立。
-
----
 
 ## 11.8 Text Area
 
-使用者應可：
-
-- Add Text Block
-- Edit Text Block
-- Delete Text Block
-- Reorder Text Block
-
-每個 Page 可建立不限數量 Text Block。
-
----
-
-## 11.9 HTML Overlay
-
-HTML Overlay 為教材互動層。
-
-應：
-
-- 建立於教材之上
-- 不修改教材內容
-- 可建立互動物件
-- 可管理 Layer
-- 可儲存 Overlay 資料
-
-HTML Overlay 可覆蓋：
-
-- Image
-- PDF
-
-所有互動皆建立於 HTML Overlay。
-
----
-
-## 11.10 Hotspot
-
-使用者應可：
+必須：
 
 - Add
 - Edit
 - Delete
+- Reorder
+
+Text Area 必須維持純文字編輯定位。
+
+
+## 11.9 HTML Overlay
+
+必須：
+
+- 建立 Overlay
+- 顯示 Overlay
+- 管理 Layer
+- 選取 Object
+- 不修改教材底圖
+
+
+## 11.10 Hotspot
+
+必須：
+
+- Create
+- Read
+- Update
+- Delete
 - Move
 - Resize
-- Save
 
-Hotspot 建立於 HTML Overlay。
 
-每個 Hotspot 應記錄：
+## 11.11 Popup
 
-- Position
-- Properties
-- Actions
+必須：
 
-點擊 Hotspot：
-
-立即顯示 Default Popup。
-
----
-
-## 11.11 Context Toolbar
-
-Context Toolbar 為全系統共用工具列。
-
-所有可編輯物件皆共用同一套 Context Toolbar。
-
-包括：
-
-- Image
-- Text
-- HTML Overlay
-- Hotspot
-
-Toolbar 應符合：
-
-- Auto Show（自動顯示）
-- Auto Hide（自動隱藏）
-- Floating（浮動）
-- Draggable（可拖曳）
-- Dockable（可停靠）
-
-Toolbar 可停靠於：
-
-- 上方
-- 下方
-- 左側
-- 右側
-
-Toolbar 不得遮蔽教材主要內容。
-
----
-
-## 11.12 Popup
-
-點擊 Hotspot：
-
-立即顯示 Default Popup。
-
-預設顯示：
-
-- Chinese
-- KK
-- Pronunciation
-
-其他功能由 Context Toolbar 開啟。
-
-Popup 應支援：
-
-- Popup Layout
-- Popup Rendering
 - Popup CRUD
+- Default Popup
+- Context Toolbar Integration
 
-Popup 為資訊顯示容器。
 
-不直接修改教材內容。
+## 11.12 Dictionary
 
----
-
-## 11.13 Dictionary
-
-Dictionary 為 Lookup Tool（查閱工具）。
-
-提供：
+必須提供：
 
 - Word
 - Chinese
 - KK
 - Pronunciation
 - Example
-- AI Assistance
 
-Dictionary 僅供查閱。
 
-不提供收藏功能。
+## 11.13 AI
 
-Dictionary 資料來源可自由替換。
-
-不得影響教材資料。
-
----
-
-## 11.14 AI
-
-AI 為產品工具（Tool）。
-
-應提供：
+必須：
 
 - AI Panel
 - Prompt Manager
 - Conversation
 - History
-- AI Settings
-- AI Provider Interface
+- Provider Interface
 
-AI 採 Replaceable Provider Architecture。
+Provider 必須可替換。
 
-Provider 可自由替換：
 
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future Providers
+## 11.14 Audio
 
-不得綁定任何特定 AI。
+必須：
 
-更換 AI Provider 不得影響教材資料。
+- Player
+- Source
+- Settings
 
----
 
-## 11.15 Audio
+## 11.15 Video
 
-Audio 應提供：
+必須：
 
-- Audio Player
-- Audio Source
-- Audio Settings
+- Player
+- Source
+- Settings
 
-Audio Provider 可自由替換。
 
-Audio 不得影響教材資料。
+## 11.16 Navigation
 
----
-
-## 11.16 Video
-
-Video 應提供：
-
-- Video Player
-- Video Source
-- Video Settings
-
-Video Provider 可自由替換。
-
-Video 不得影響教材資料。
-
----
-
-## 11.17 Navigation
-
-Navigation 應提供：
+必須：
 
 - Home
 - Back
@@ -2948,87 +2292,31 @@ Navigation 應提供：
 - Book Navigation
 - Lesson Navigation
 
-Navigation 為共用導覽功能。
 
----
+## 11.17 Global Search
 
-## 11.18 Global Search
+必須：
 
-Global Search 為全系統共用搜尋模組。
-
-Search Icon 應固定顯示於畫面右上方。
-
-平時僅顯示 Search Icon。
-
-點擊 Search Icon 後展開 Floating Search Toolbar。
-
-Toolbar 可包含：
-
-- Home
-- Back
+- Search Icon 固定顯示
+- Floating Search Toolbar
 - Keyword Search
 - Search Scope
-- Close
-
-其中 Home、Back 屬於 Navigation 功能。
-
-關閉 Search Toolbar 後，
-
-Search Icon 必須繼續顯示。
-
-提供：
-
-- Keyword Search
-- Instant Search
-- Search Suggestions
-- Recent Search
 - Search Result Navigation
 
-提供 Search Scope：
 
-- All
-- Folder
-- Book
-- Lesson
-- Page
-- Text
-- Image
-- PDF
-- Hotspot
-- Dictionary
+## 11.18 Save
 
-搜尋結果可導向使用者實際相關內容。
+必須：
 
-搜尋不限制使用者只能看到單一資料層級的結果。
-
-Global Search 不直接修改資料。
-
-僅負責搜尋、索引與搜尋結果導覽。
-
----
-
-## 11.19 Save
-
-使用者應可：
-
-- Save Book
+- Save Dialog
 - Auto Validation
-- Continue Editing
-- Open Reading Mode
+- Save Status
+- Cloud Storage
 
-教材資料應正確儲存至 Cloud Storage（Supabase）。
 
-不得因網路異常造成教材遺失。
+## 11.19 Reading Mode
 
----
-
-## 11.20 Reading Mode
-
-Reading Mode 與 Editor Mode
-
-共用同一份教材資料。
-
-Reading Mode 提供：
+必須：
 
 - Hotspot
 - Popup
@@ -3038,93 +2326,42 @@ Reading Mode 提供：
 - Video
 - Navigation
 
-Reading Mode 僅提供閱讀與互動。
+Reading Mode 不得修改教材。
 
-不得修改教材內容。
 
----
+## 11.20 Background Processing
 
-## 11.21 System Performance
+Background Processing 必須：
 
-MagicBook 執行背景工作（Background Processing）時，
+- 不造成 UI Freeze
+- 顯示 Loading Animation
+- 工作完成後自動結束 Loading
+- 支援大型圖片處理
+- 支援圖片最佳化
+- 支援圖片壓縮
+- 支援 AI / OCR 等耗時工作
 
-系統不得凍結操作介面。
 
-不得讓使用者誤認系統已停止運作。
-
-所有背景工作皆應顯示 Loading Animation（品牌動畫）。
-
-### Loading Animation
+## 11.21 Brand Loading Animation
 
 MagicBook 採 Brand Character Animation（品牌角色動畫）。
 
-不使用傳統 Loading Bar。
+不使用傳統 Loading Bar 作為主要品牌工作狀態。
 
-Loading Animation 應符合：
+Loading Animation：
 
-- 採持續動作動畫（如奔跑、搬運、飛行等）。
-- 不使用靜態圖片。
-- 動畫持續播放至工作完成。
-- 工作完成後自動關閉。
-- 不使用大量文字說明工作狀態。
+- 顯示於畫面中央
+- 約佔畫面 15%
+- 採品牌角色動作動畫
+- 持續播放至工作完成
+- 工作完成後自動關閉
 
-### Animation Position
+品牌角色可依工作內容播放不同動畫。
 
-Loading Animation 顯示於畫面中央。
+系統可採 Random Character（隨機角色）機制。
 
-背景工作期間，
+品牌角色以動作呈現系統工作狀態，不得以大量文字取代動畫。
 
-使用者無須操作教材，
-
-因此動畫可置於畫面中央，
-
-提供清楚的工作狀態回饋。
-
-### Animation Size
-
-品牌角色動畫約佔畫面 15%。
-
-系統應依不同裝置（桌機、筆電、平板、手機）
-
-自動調整實際尺寸，
-
-維持約 15% 的視覺比例，
-
-確保動畫清楚可見。
-
-### Supported Background Tasks
-
-Loading Animation 適用於：
-
-- 匯入圖片
-- 匯入 PDF
-- 圖片最佳化
-- 圖片壓縮
-- 儲存教材
-- AI 處理
-- 搜尋
-- 其他背景工作
-
-### Brand Character
-
-品牌角色可依工作內容播放不同動畫，例如：
-
-- 小松鼠奔跑
-- 小狐狸奔跑
-- 小企鵝搬教材
-- 貓頭鷹飛行
-
-品牌角色可依節日、活動或版本更新替換。
-
-系統可採 Random Character（隨機角色）機制，
-
-增加品牌辨識度與產品趣味性。
-
-品牌角色以動作呈現系統工作狀態，
-
-不得以大量文字取代動畫。
-
----
 
 ## 11.22 Architecture
 
@@ -3150,13 +2387,8 @@ Replaceable Service（服務可替換）原則。
 
 不得因更換 AI、Dictionary、Audio、Video 或其他第三方服務，
 
-影響教材資料、產品架構或使用者操作流程（User Flow）。
+影響教材資料、產品架構或使用者操作流程。
 
-所有新增技術能力皆須遵循：
-
-Reuse Before Reinvent（先利用，再重新發明）。
-
----
 
 # 12. Development Sequence
 
@@ -3166,7 +2398,6 @@ MagicBook 3.0 採模組化開發（Modular Development）。
 
 但建議依下列順序完成。
 
----
 
 ## Phase 1
 
@@ -3177,7 +2408,6 @@ System Foundation
 - Database
 - Book Library
 
----
 
 ## Phase 2
 
@@ -3190,7 +2420,6 @@ Book Structure
 
 完成教材基本架構。
 
----
 
 ## Phase 3
 
@@ -3207,7 +2436,6 @@ Editor
 
 完成教材編輯能力。
 
----
 
 ## Phase 4
 
@@ -3224,7 +2452,6 @@ Interaction
 
 建立教材互動能力。
 
----
 
 ## Phase 5
 
@@ -3238,9 +2465,10 @@ AI
 - Conversation
 - History
 
-正式串接 AI Provider。
+AI 自動化為可選功能。
 
----
+OCR / AI 自動 Hotspot 不得破壞手動建立 Hotspot 的基本流程。
+
 
 ## Phase 6
 
@@ -3254,7 +2482,6 @@ Reading
 
 Reading Mode 與 Editor 共用同一份教材資料。
 
----
 
 ## Phase 7
 
@@ -3269,7 +2496,6 @@ System Services
 
 建立共用系統服務。
 
----
 
 ## Phase 8
 
@@ -3284,781 +2510,410 @@ Optimization
 
 完成第一版 MVP。
 
-下面是最後一批：**第 13～14 節**。
-這一批把目前已確認的 **PM Decision 01 + Image Import + Reuse Before Reinvent + Quality Check / Auto Correction / Re-Quality Check** 全部整合。
 
-特別修正你剛才指出的原則：
+# 13. AI Automation — Image Quality / Auto Correction / OCR
 
-* **MagicBook 不是照片倉庫**
-* 不保留「Original Image」作為永久資產的規格
-* 照片只是輸入教材的來源
-* 如果最後無法可靠建立互動內容，**直接拒絕**
-* 不產生錯誤 Hotspot
-* 使用者在輸入照片後，可以利用現有成熟的圖片調整能力調整，再決定送出或重拍
-* **不建立自己的 Camera System**
-* 不做一套像你截圖那種「必須下載 App 才能拍照」的系統
-* 優先利用裝置、瀏覽器、HTML、既有函式庫與成熟工具
+## 13.0 文件狀態
 
-直接把下面接到上一批第 12 節後面即可。
+本節包含：
 
-````markdown
-# 13. AI Automation — Technical Validation & PM Decision 01
+- Technical Evidence（技術證據）
+- Benchmark（實測）
+- PM Decision（產品決策）
+- Production Boundary（正式實作邊界）
 
-本章記錄 MagicBook 3.0 AI Automation（AI 自動化）相關功能之 Technical Validation（技術驗證）與 PM Decision（產品決策）。
+PM Decision 已正式核定之內容優先於舊 Benchmark 敘述。
 
-本章內容分為：
+未經 PM 核定之 Threshold 與具體實作細節，不得自行寫死。
 
-1. Technical Evidence（技術證據）
-2. Confirmed Product Behavior（已確認產品行為）
-3. Pending PM Decision（尚待 PM 決策）
+本節不代表阿德可以自行擴大 MVP Scope。
 
-Technical Evidence 不等同於 Production Threshold（正式產品門檻）。
 
-Benchmark 數據不得直接轉換為 Production Logic（正式產品邏輯），除非經 PM 正式核定。
+## 13.1 Confirmed Engineering Architecture
 
----
+MagicBook 不建立 Camera System。
 
-## 13.1 Scope
+使用者使用裝置原生相機完成拍照。
 
-本次 AI Automation 主要處理：
+MagicBook 從 Image Import 開始。
 
-使用者將教材圖片輸入 Image Area 後，
+正式流程：
 
-系統協助判斷圖片是否適合建立互動內容，
+使用者以裝置原生相機拍照
 
-必要時進行 Auto Correction（自動修正），
+↓
 
-再進行 OCR / AI（文字辨識／人工智慧處理），
+Image Area — Image Import
 
-最後建立 Hotspot（互動點）。
+↓
 
-核心流程：
-
-```text
-Image Import
-      ↓
 Image Quality Check
-      ↓
-判斷是否需要修正
-      ↓
-Auto Correction（必要時）
-      ↓
+
+↓
+
+必要時 Auto Correction
+
+↓
+
 Re-Quality Check
-      ↓
-OCR / AI
-      ↓
+
+↓
+
+OCR
+
+↓
+
 Text + Bounding Box
-      ↓
+
+↓
+
 Hotspot Generator
-      ↓
+
+↓
+
 HTML Overlay
-      ↓
+
+↓
+
 Hotspot
-````
 
----
+拍照本身不屬於 MagicBook Camera System。
 
-# 13.2 Image Import — Product Boundary
 
-MagicBook 不建立專用 Camera System（相機系統）。
+## 13.2 Image Quality Check
 
-MagicBook 不負責：
+Image Quality Check 的目的不是找出完美照片。
 
-* Camera Hardware Control（相機硬體控制）
-* Exposure Control（曝光控制）
-* Focus Control（對焦控制）
-* HDR Control
-* Camera Preview System（專用相機預覽系統）
-* 自行建立 Camera App
+主要目的：
 
-使用者拍照由裝置原生功能負責。
+> 判斷照片是否值得進入自動化處理，避免產生錯誤 Hotspot。
 
-MagicBook 的責任是：
+正式採三層結構。
 
-> 接收使用者已經取得的圖片，並將圖片轉換成教材內容。
 
-Image Import 可包含：
+### Layer 1 — 明顯不可救
 
-* 使用者已拍攝的照片
-* 截圖
-* 從裝置選取的圖片檔案
+照片已明顯不適合自動化處理。
 
-MagicBook 不要求使用者為了拍照而下載另一套專用 Camera App。
+直接：
 
----
+Reject Automation（拒絕自動化處理）
 
-# 13.3 Reuse Before Reinvent — Image Input
+不得進入 OCR。
 
-Image Input（圖片輸入）必須遵循：
 
-> Reuse Before Reinvent（先利用，再重新發明）
+### Layer 2 — 可修正
 
-MagicBook 應優先使用裝置與瀏覽器已存在的能力。
+照片存在品質問題，但可能透過成熟 Auto Correction 技術改善。
 
-優先順序：
+執行：
 
-1. OS（作業系統）既有能力
-2. Browser（瀏覽器）既有能力
-3. HTML / CSS / JavaScript 原生能力
-4. 成熟 Open Source Library（開源函式庫）
-5. 成熟 Third-party Tool（第三方工具）
-6. 最後才評估自行開發
+Auto Correction
 
-因此：
+↓
 
-MagicBook 不應自行重新發明 Camera System。
+Re-Quality Check
 
-同樣原則適用於：
 
-* Image Editing（圖片編輯）
-* Brightness Adjustment（亮度調整）
-* Contrast Adjustment（對比調整）
-* Crop（裁切）
-* Rotate（旋轉）
-* Image Compression（圖片壓縮）
-* Image Processing（影像處理）
-* OCR（文字辨識）
-* AI Processing（AI 處理）
+### Layer 3 — 品質正常
 
-工程若認為現有技術不足，
+照片可可靠進入 OCR。
 
-必須先說明：
+直接：
 
-* 現有技術為何無法使用
-* 限制為何
-* 為何需要自行開發
+OCR
 
-未經 PM 確認，
+↓
 
-不得自行建立新的底層技術系統。
+Hotspot Generator
 
----
 
-# 13.4 Image Adjustment — User Control
+精確 Threshold 數值仍不得由阿德自行寫死。
 
-圖片輸入後，
 
-不論圖片目前是否被判定為可用，
+## 13.3 End-to-End Benchmark
 
-使用者都應有機會先進行必要的圖片調整。
+本次已完成：
 
-可提供：
+- Pipeline A — Baseline
+- Pipeline B — Quality Check Only
+- Pipeline C — Full Pipeline
 
-* Brightness（亮度）
-* Contrast（對比）
-* Color（色彩）
-* Rotate（旋轉）
-* Crop（裁切）
-
-以及：
-
-* Retake / Re-select（重新拍攝／重新選取）
-
-這些功能應優先利用：
-
-* 裝置既有能力
-* Browser 原生能力
-* HTML / CSS / JavaScript
-* 成熟 Image Processing Library（影像處理函式庫）
-* 成熟第三方工具
-
-MagicBook 不需要自行發明一套新的圖片編輯技術。
-
----
-
-## 13.4.1 Brightness Adjustment
-
-若使用者取得的圖片太暗，
-
-可以提供 Brightness Adjustment（亮度調整）。
-
-這個操作的概念可以借力使力於使用者已熟悉的產品操作方式，
-
-例如：
-
-* 手機照片調整
-* PowerPoint 圖片色彩工具
-* 其他成熟圖片編輯工具
-
-目的不是複製 PowerPoint，
-
-而是使用已被驗證的操作概念降低學習成本。
-
-MagicBook 不需要自行發明新的 Brightness Control。
-
----
-
-## 13.4.2 Retake / Re-select
-
-使用者可選擇：
-
-* Retake（重新拍攝）
-* Re-select（重新選取圖片）
-
-MagicBook 不負責實作 Camera Hardware。
-
-Retake 的實際拍攝動作由裝置原生相機完成。
-
-拍攝完成後重新回到 Image Import。
-
----
-
-# 13.5 Image Quality Check
-
-Image Quality Check（圖片品質檢查）負責判斷：
-
-> 這張圖片是否有足夠品質可靠建立互動內容？
-
-目前 Benchmark 測試過：
-
-* Blur（模糊）
-* Brightness（亮度）
-* Contrast（對比）
-* Skew / Tilt（傾斜）
-* Noise（雜訊）
-
-其中：
-
-### Blur
-
-使用：
-
-Laplacian Variance（拉普拉斯變異數）
-
-作為影像銳利度參考。
-
-### Skew
-
-使用：
-
-Projection Profile（投影輪廓）
-
-偵測文字排列方向。
-
-### Contrast
-
-使用：
-
-Grayscale Standard Deviation（灰階標準差）
-
-作為對比度參考。
-
-### Noise
-
-目前已確認：
-
-單純使用 Blur 指標不足以判斷 Noise。
-
-因此 Noise Detection（雜訊偵測）不得單獨依賴 Laplacian。
-
----
-
-# 13.6 Technical Benchmark Result
-
-第一輪 Benchmark：
+共測試：
 
 15 種代表性情境。
 
-三條 Pipeline：
 
-### Pipeline A — Baseline
+### Benchmark Result
 
-```text
-Original Input
-↓
-OCR
-↓
-Hotspot Generator
-```
+| Pipeline | SUCCESS | PARTIAL | FAIL |
+| --- | ---: | ---: | ---: |
+| A：Baseline | 40.0% | 33.3% | 26.7% |
+| B：Quality Check Only | 33.3% | 26.7% | 40.0% |
+| C：Full Pipeline | 73.3% | 13.3% | 13.3% |
 
-### Pipeline B — Quality Check Only
 
-```text
-Image
-↓
-Quality Check
-↓
-OCR
-↓
-Hotspot Generator
-```
+### 結論
 
-### Pipeline C — Full Pipeline
+單獨加入 Quality Check 不能改善整體結果。
 
-```text
-Image
-↓
-Quality Check
-↓
-Auto Correction
-↓
-Re-Quality Check
-↓
-OCR
-↓
-Hotspot Generator
-```
+Pipeline B 反而使 SUCCESS：
 
-Benchmark 結果：
+40.0%
 
-| Pipeline           |   SUCCESS | PARTIAL |  FAIL |
-| ------------------ | --------: | ------: | ----: |
-| Baseline           |     40.0% |   33.3% | 26.7% |
-| Quality Check Only |     33.3% |   26.7% | 40.0% |
-| Full Pipeline      | **73.3%** |   13.3% | 13.3% |
+下降至：
 
----
+33.3%。
 
-# 13.7 PM Decision 01 — Quality Check 與 Auto Correction
+原因是：
 
-PM 正式確認：
+Quality Check 如果只負責 Reject，
 
-> Quality Check 不應成為單純的 Reject System（拒絕系統）。
-
-不得採用：
-
-```text
-Image
-↓
-Quality Check
-↓
-品質不好
-↓
-要求老師重拍
-```
-
-作為主要流程。
-
-正式方向為：
-
-```text
-Image
-↓
-Quality Check
-↓
-判斷是否需要修正
-↓
-Auto Correction
-↓
-Re-Quality Check
-↓
-OCR / AI
-↓
-Hotspot Generator
-```
+會把原本可以透過 Auto Correction 救回的照片直接擋掉。
 
 因此：
 
-> Quality Check 與 Auto Correction 視為同一套自動化 Pipeline 的不同階段。
+**Quality Check 與 Auto Correction 應視為同一套自動化 Pipeline。**
 
----
 
-# 13.8 Auto Correction
+## 13.4 Deskew
 
-目前保留：
+實測：
 
-* Deskew（去歪斜）
-* Denoise（去噪）
-* Sharpen（銳化）
+| 傾斜角度 | 修正前 | 修正後 |
+| --- | ---: | ---: |
+| 6° | 88.9% | 100% |
+| 8° | 88.9% | 100% |
+| 10° | 0% | 100% |
+| 12° | 0% | 100% |
+| 15° | 0% | 100% |
 
----
+5 次使用中：
 
-## 13.8.1 Deskew
+救回 4 次。
 
-Benchmark 實測：
+Recovery Rate：
 
-| 傾斜角度 |   修正前 |  修正後 |
-| ---: | ----: | ---: |
-|   6° | 88.9% | 100% |
-|   8° | 88.9% | 100% |
-|  10° |    0% | 100% |
-|  12° |    0% | 100% |
-|  15° |    0% | 100% |
+80%。
 
-Deskew 應保留。
+正式流程：
 
-Deskew 採成熟影像處理技術。
+Skew Detection
 
-目前 Benchmark 已驗證：
+↓
 
-* 原始角度偵測
-* 修正角度方向
-* Image Rotation（圖片旋轉）
-* Re-Quality Check
+Deskew
 
-均可形成完整流程。
+↓
 
-正式 Threshold 尚未由 PM 核定。
+Re-Quality Check
 
-不得自行將 Benchmark 數值寫成正式 Production Threshold。
+只有修正後仍不可靠，才 FAIL。
 
----
 
-# 13.9 Denoise
+## 13.5 Denoise
 
-低光源 + 雜訊 Benchmark：
+低光源＋雜訊：
 
-| 情境             | 原始 | Denoise 後 |
-| -------------- | -: | --------: |
-| 亮度 55% + 雜訊 15 | 0% |      100% |
-| 亮度 40% + 雜訊 15 | 0% |      100% |
+| 情境 | 原始 | Denoise 後 |
+| --- | ---: | ---: |
+| 亮度 55% + 雜訊 15 | 0% | 100% |
+| 亮度 40% + 雜訊 15 | 0% | 100% |
 
-Denoise 為目前低光源 + 雜訊情境最有效的救援技術。
+Denoise 約：
 
-Benchmark：
+1360ms / 張。
 
-約 1360ms / 張。
+因此：
 
-因此正式使用時：
+Denoise 必須使用 Background Processing。
 
-Denoise 必須支援：
 
-Background Processing（背景處理）。
+### Denoise Trigger
 
-不得阻塞主要使用者操作流程。
+Denoise 必須同時具備：
 
----
+Low Quality Evidence
 
-# 13.10 Sharpen
++
 
-Benchmark：
+Independent Noise Evidence
 
-| 模糊程度 |   修正前 | Sharpen 後 |
-| ---: | ----: | --------: |
-|  3px | 77.8% |      100% |
-|  4px | 66.7% |     77.8% |
-|  5px | 55.6% |     55.6% |
-|  6px | 22.2% |     33.3% |
-|  8px |    0% |        0% |
+才能觸發。
+
+Contrast 偏低不得單獨觸發 Denoise。
+
+
+## 13.6 Sharpen
+
+| 模糊程度 | 修正前 | Sharpen 後 |
+| --- | ---: | ---: |
+| 3px | 77.8% | 100% |
+| 4px | 66.7% | 77.8% |
+| 5px | 55.6% | 55.6% |
+| 6px | 22.2% | 33.3% |
+| 8px | 0% | 0% |
 
 Sharpen：
 
-* 保留
-* 定位為輔助
-* 不得視為嚴重模糊修復技術
+- 可改善輕微模糊
+- 無法恢復嚴重模糊
+- 約 16ms
+- 成本低
 
-Benchmark 約：
+不能宣稱 Sharpen 已證實能提升整體 End-to-End Success。
 
-16ms。
 
-Sharpen 不得成為正式 Blur Threshold 的主要依據。
+## 13.7 CLAHE
 
----
-
-# 13.11 CLAHE
-
-Benchmark 已測試：
-
-Contrast Limited Adaptive Histogram Equalization（CLAHE）。
-
-測試結果：
-
-對：
-
-低光源 + 雜訊
-
-沒有實質改善。
+CLAHE（對比度增強）對本次低光源＋雜訊情境沒有實質改善。
 
 因此：
 
-> CLAHE 暫不列入主要 Auto Correction Pipeline。
+**CLAHE 不列入目前主要 Auto Correction Pipeline。**
 
-不得為了單純 Brightness 不足而強制執行 CLAHE。
 
-Brightness 不得單獨作為 Reject Condition（拒絕條件）。
+## 13.8 尚未解決情境
 
-Contrast 亦不得單獨作為 Reject Condition。
+### 嚴重模糊
 
----
+影像資訊已遺失。
 
-# 13.12 Re-Quality Check
+目前視為不可救援情境。
 
-Auto Correction 完成後：
 
-必須重新執行：
-
-Image Quality Check。
-
-流程：
-
-```text
-Original Input
-↓
-Quality Check
-↓
-Auto Correction
-↓
-Re-Quality Check
-↓
-判斷是否可靠
-```
-
-不得：
-
-```text
-Auto Correction
-↓
-直接假設成功
-↓
-OCR
-```
-
-Re-Quality Check 是必要步驟。
-
----
-
-# 13.13 OCR / AI
-
-OCR / AI 負責：
-
-> 判斷圖片中的文字內容及其位置。
-
-輸出至少包含：
-
-* Text
-* Bounding Box
-* Language / Language Hint（若可取得）
-* Processing Status
-
-OCR / AI 為獨立模組。
-
-因此未來可以替換：
-
-* Local OCR
-* Cloud OCR
-* Vision AI
-* Hybrid OCR / AI
-
-而不應影響：
-
-* Image Area
-* HTML Overlay
-* Hotspot
-* 教材資料結構
+### 中英混合
 
 目前：
 
-OCR / AI Provider 尚未由 PM 正式核定。
+PARTIAL。
 
-不得自行決定正式 Provider。
+主要問題：
 
----
+OCR / Layout Understanding。
 
-# 13.14 Hotspot Generator
 
-Hotspot Generator 負責：
+### 表格＋文字
 
-> 將 OCR / AI 輸出的文字與位置轉換成 HTML Overlay 上的 Hotspot。
+目前：
 
-輸入：
+PARTIAL。
 
-```text
-Text
-+
-Bounding Box
-```
+主要問題：
 
-輸出：
+- 文字順序
+- 版面結構
 
-```text
-Hotspot Data
-```
 
-Hotspot Position 應採：
+### 陰影遮擋
 
-Normalized Coordinates（正規化座標）。
+目前：
 
-不得只依賴固定：
+FAIL。
 
-* Pixel
-* Device Resolution
-* Screen Size
+現有 Auto Correction 無法可靠救援。
 
-避免不同裝置造成位置錯誤。
+不得將陰影遮擋誤判為 Skew。
 
----
 
-# 13.15 HTML Overlay
+## 13.9 Minimum Necessary Processing
 
-HTML Overlay 為教材互動層。
+不得對所有圖片執行：
 
-架構：
+- Deskew
+- Denoise
+- Sharpen
 
-```text
-Image Area
-     ↓
-Teaching Material
-     ↓
-HTML Overlay
-     ↓
-Hotspot
-```
+全部處理。
 
-教材圖片本身不被修改。
+應只執行必要修正。
 
-Hotspot、Popup、Dictionary、Audio、Video 等互動內容建立於 Overlay Layer。
+原因：
 
----
+- 降低 Processing Time
+- 降低 Background Processing 負擔
+- 避免不必要影像處理
 
-# 13.16 Reliable Failure
 
-正式產品原則：
+## 13.10 Re-Quality Check
 
-> Reliable Failure（可靠失敗）優於錯誤成功。
+任何 Auto Correction 完成後：
 
-如果系統無法可靠建立互動內容：
+**必須重新執行 Image Quality Check。**
 
 不得：
 
-* 猜測文字
-* 猜測座標
-* 建立不可靠 Hotspot
-* 標記為 SUCCESS
+Correction
 
-應回報：
+↓
 
-* PARTIAL
-* FAIL
+直接假設成功
 
-依實際處理結果決定。
+↓
 
----
+OCR
 
-# 13.17 Unrecoverable Image
+必須：
 
-以下情境目前視為不可可靠救援：
+Correction
 
-### Severe Blur
+↓
 
-嚴重模糊造成影像資訊遺失。
+Re-Quality Check
 
-Sharpen 不得假裝恢復遺失資訊。
+↓
 
-若無法可靠建立互動內容：
+Pass → OCR
 
-直接拒絕。
+Fail → Reliable Failure
 
----
 
-### Shadow Occlusion
+## 13.11 Reliable Failure
 
-陰影遮擋目前沒有可靠的 Auto Correction。
+正式原則：
 
-尤其 Benchmark 曾發現：
+> Reliable Failure（可靠失敗）優於錯誤成功。
 
-Shadow Occlusion 可能造成 Skew Detection 誤觸發。
+如果系統不能可靠建立互動內容：
 
-因此：
+不得：
 
-不得將陰影問題直接當成 Skew 問題處理。
+- 猜測文字
+- 猜測座標
+- 建立錯誤 Hotspot
+- 顯示 SUCCESS
 
----
+應：
 
-# 13.18 Content / Layout Problems
+PARTIAL
 
-部分失敗不是 Image Quality 問題。
+或：
 
-例如：
+FAIL。
 
-### Mixed Chinese / English
 
-中英混合可能造成：
+## 13.12 Brightness / Contrast
 
-OCR / Language Understanding 問題。
+Brightness（亮度）與 Contrast（對比度）不得單獨作為 Reject 條件。
 
-不能單純透過：
+單純偏暗不代表照片一定不可用。
 
-* Blur
-* Brightness
-* Contrast
-* Deskew
-* Denoise
+單純 Contrast 偏低也不代表一定需要 Denoise。
 
-解決。
 
----
+## 13.13 Processing Time
 
-### Table + Text
+| Pipeline | Average | P95 | Maximum |
+| --- | ---: | ---: | ---: |
+| Baseline | 866ms | 2243ms | 2243ms |
+| Quality Check | 805ms | 1471ms | 1471ms |
+| Full Pipeline | 1878ms | 3290ms | 3290ms |
 
-表格 + 文字可能造成：
+Full Pipeline 平均約為 Baseline 的 2.2 倍。
 
-Layout Understanding（版面理解）問題。
+最慢案例：
 
-主要問題為：
-
-* Reading Order
-* Structure
-* Bounding Box Relationship
-
-不能單純視為圖片品質問題。
-
----
-
-# 13.19 Auto Correction Trigger Logic
-
-Benchmark 發現：
-
-部分圖片原本已可成功 OCR，
-
-但目前 Trigger Logic 仍可能觸發：
-
-* Denoise
-* Sharpen
-
-例如：
-
-* 中度模糊
-* 密集小字
-
-這些案例原本已經 SUCCESS。
-
-因此：
-
-> Auto Correction Trigger Logic 目前仍需要最佳化。
-
-這是：
-
-Processing Efficiency（處理效率）問題，
-
-不是目前已確認的 Correctness（正確性）問題。
-
-正式 Trigger Logic 尚未由 PM 核定。
-
-不得自行將 Benchmark 數值直接寫死。
-
----
-
-# 13.20 Threshold
-
-目前尚未正式核定：
-
-* Blur Threshold
-* Skew Threshold
-* Contrast Threshold
-* Noise Threshold
-* Auto Correction Trigger Threshold
-
-Benchmark 數據僅作為：
-
-Technical Evidence（技術證據）。
-
-不得直接轉換為：
-
-Production Logic（正式產品邏輯）。
-
-PM Decision 02 將另行決定正式門檻。
-
----
-
-# 13.21 Processing Time
-
-目前 Benchmark：
-
-| Pipeline      | Average |    P95 | Maximum |
-| ------------- | ------: | -----: | ------: |
-| Baseline      |   866ms | 2243ms |  2243ms |
-| Quality Check |   805ms | 1471ms |  1471ms |
-| Full Pipeline |  1878ms | 3290ms |  3290ms |
+3290ms。
 
 Denoise：
 
@@ -4066,410 +2921,548 @@ Denoise：
 
 因此：
 
-長時間 Auto Correction 必須使用：
+Background Processing 必須存在。
 
-Background Processing。
 
-使用者不應被迫等待完整處理完成後才能繼續使用 MagicBook。
+## 13.14 OCR Cost Benchmark
 
----
+目前使用：
 
-# 13.22 Original Input / Temporary Processing
+$0.0015 / OCR Call
+
+作為成本模型假設。
+
+不是正式 Provider 價格。
+
+| Pipeline | OCR 呼叫比例 | 1,000 張 OCR Calls | 假設成本 |
+| --- | ---: | ---: | ---: |
+| Baseline | 100% | 1000 | $1.50 |
+| Quality Check Only | 60% | 600 | $0.90 |
+| Full Pipeline | 93.3% | 933 | $1.40 |
+
+Quality Check 的主要價值不是節省 OCR API 成本。
+
+真正價值是：
+
+降低錯誤 Hotspot。
+
+降低老師人工修正教材的時間。
+
+
+## 13.15 OCR Provider
+
+MVP 已核定：
+
+Google Cloud Vision API
+
+DOCUMENT_TEXT_DETECTION
+
+正式串接必須透過：
+
+Replaceable Provider Adapter（可替換 Provider Adapter）。
+
+MagicBook 不得讓核心資料架構直接綁死 Google API。
+
+
+## 13.16 Hotspot Coordinate Transformation
+
+如果 Auto Correction 改變影像幾何，
+
+例如：
+
+Deskew
+
+則 OCR 取得之座標屬於 Processed Image 座標系統。
+
+Hotspot Generator 必須：
+
+Processed Coordinates
+
+↓
+
+Coordinate Transform
+
+↓
+
+Final Display Coordinates
+
+↓
+
+Hotspot
+
+確保 Hotspot 正確對應使用者實際看到的教材圖片。
+
+
+## 13.17 Image Storage Rule
 
 MagicBook 不是使用者的照片倉庫。
 
-Image Import 的圖片是：
-
-> 教材建立流程的輸入資料。
-
-系統應依教材建立流程處理圖片。
-
-Auto Correction 產生的處理結果：
-
-僅作為：
-
-* OCR
-* AI
-* Hotspot Generator
-
-等自動化流程的處理資料。
-
-不得因 Auto Correction 而建立一套與教材無關的照片收藏系統。
-
-不得自行增加：
-
-* Photo Library
-* Original Photo Archive
-* Camera Roll
-* 永久原始照片倉庫
-
-等未經 PM 確認的功能。
-
----
-
-# 13.23 Image Quality Failure UX
-
-如果圖片品質不足，
-
-但系統仍可以讓使用者重新調整或重新取得圖片，
-
-使用者可以選擇：
-
-* Adjust Image（調整圖片）
-* Retake / Re-select（重新拍攝／重新選取）
-
-使用者介面不得顯示技術術語：
-
-* AI
-* OCR
-* Confidence
-* Model
-* Quality Check
-
----
-
-## User Message
-
-品質不足時：
-
-> ⚠️ 照片品質不足
->
-> 請重新拍攝清晰、光線充足的照片
-
-提供：
-
-```text
-[重新拍攝]
-[重新選取]
-```
-
-若產品流程提供圖片調整，
-
-也可提供：
-
-```text
-[調整圖片]
-```
-
----
-
-# 13.24 Automation Failure UX
-
-如果：
-
-圖片本身可以處理，
-
-但 OCR / AI / Hotspot Generator 無法可靠建立互動內容，
-
-不得建立猜測性 Hotspot。
-
-使用者看到：
-
-> ⚠️ 無法自動建立互動內容
->
-> 你可以重新拍攝，或直接手動建立互動內容。
-
-提供：
-
-```text
-[重新拍攝]
-[手動建立]
-```
-
----
-
-# 13.25 Product Behavior — Reject
-
-MagicBook 的目的不是：
-
-> 儘可能讓每一張照片都進入 AI。
-
-MagicBook 的目的為：
-
-> 幫助使用者快速建立可靠的教材互動內容。
-
 因此：
 
-如果圖片最終無法可靠建立互動內容：
+### 被拒絕的圖片
 
-應直接拒絕自動建立。
+如果圖片被判定為明顯不可救：
 
-不得因「已經輸入圖片」而強迫系統產生結果。
+不得形成教材資產。
 
----
+不得因 Quality Check 失敗而永久建立另一份教材圖片。
 
-# 13.26 Benchmark Recovery
+
+### Processed Image
+
+Auto Correction 所產生的 Processed Image：
+
+僅供：
+
+- OCR
+- AI
+- Hotspot Generator
+
+使用。
+
+不得形成第二份教材圖片資產。
+
+不得自動建立新的 Page Image。
+
+
+### 教材 Image Asset
+
+只有真正被使用者確認為教材內容的圖片，
+
+才成為 Page 的 Image Asset。
+
+
+## 13.18 Image Adjustment / Retake / Re-select
+
+使用者可以：
+
+- 調整圖片
+- 重新拍攝
+- 重新選擇圖片
+
+可借力使用：
+
+- 裝置既有影像能力
+- 瀏覽器既有能力
+- HTML 原生能力
+- 成熟影像工具
+- 成熟開源函式庫
+
+MagicBook 不自行重新發明一套 Image Editor。
+
+使用者完成調整後：
+
+必須重新進入完整 Image Quality Check 流程。
+
+
+## 13.19 User Experience
+
+使用者不需要知道：
+
+- AI
+- OCR
+- Confidence
+- Bounding Box
+- Model
+- Provider
+- Quality Check
+
+### 照片品質不足
+
+顯示：
+
+「⚠️ 照片品質不足」
+
+「請重新拍攝清晰、光線充足的照片」
+
+「[知道了]」
+
+
+### 自動建立互動內容失敗
+
+顯示：
+
+「⚠️ 無法自動建立互動內容」
+
+「你可以重新拍攝，或直接手動建立互動內容」
+
+「[重新拍攝] [手動建立]」
+
+
+## 13.20 Camera API — Not MVP
+
+以下技術正式排除於 MagicBook 3.0 MVP：
+
+- getUserMedia()
+- ImageCapture
+- Exposure Control
+- Focus Control
+- HDR Control
+- MediaStreamTrack Camera Capability
+- Camera Preview
+- MagicBook 專用 Camera System
+
+使用者拍照由裝置既有相機完成。
+
+MagicBook 僅負責 Image Import。
+
+
+## 13.21 Reuse Before Reinvent
+
+MagicBook 所有工程開發皆必須遵守：
+
+> Reuse Before Reinvent（先利用現有技術，再考慮自行開發）
+
+遇到新需求時，優先順序：
+
+1. OS / Device Existing Capability
+2. Browser Existing Capability
+3. HTML / CSS / JavaScript Native Capability
+4. Mature Open Source Library
+5. Mature Third-party Service
+6. 最後才評估自行開發
+
+工程師不得在未確認現有技術之前，
+
+直接自行建立新的：
+
+- Camera System
+- Image Editor
+- Image Processing Algorithm
+- Browser Capability
+- UI Interaction Mechanism
+
+MagicBook 的工程價值不是重新發明已經存在的工具，
+
+而是：
+
+**把成熟技術組合成簡單的使用者體驗。**
+
+
+## 13.22 Benchmark Recovery Summary
 
 Baseline 非 SUCCESS：
 
 9 個案例。
 
-Full Pipeline：
+Full Pipeline 成功救回：
 
-成功救回 5 個。
+5 個。
 
 Overall Recovery Rate：
 
 55.6%。
 
----
-
-## Deskew
-
-使用：
-
-5 次。
-
-救回：
-
-4 次。
-
-Recovery Rate：
+Deskew：
 
 80%。
 
----
-
-## Denoise
-
-使用：
-
-1 次。
-
-救回：
-
-1 次。
-
-Recovery Rate：
+Denoise：
 
 100%。
 
----
+Sharpen：
 
-## Sharpen
+目前沒有單獨救回完整 End-to-End 案例。
 
-目前沒有單獨救回完整 End-to-End SUCCESS 案例。
 
-因此：
+## 13.23 Error Hotspot Principle
 
-不能宣稱 Sharpen 已證明提升整體 End-to-End Success Rate。
+本次 15 個案例中：
 
-目前僅能確認：
+沒有發現：
 
-Sharpen 對部分輕微模糊 OCR Accuracy 有改善。
+「系統產生錯誤 Hotspot，但卻宣稱 SUCCESS」
 
----
+的案例。
 
-# 13.27 End-to-End Benchmark Conclusion
+正式工程原則：
 
-Benchmark 證明：
+如果系統不能可靠建立互動內容，
 
-單獨：
+不得標記 SUCCESS。
 
-Quality Check Only
+不得建立猜測性 Hotspot。
 
-會降低整體 SUCCESS。
 
-Full Pipeline：
+## 13.24 Technical Evidence Files
 
-```text
-Quality Check
-+
-Auto Correction
-+
-Re-Quality Check
-```
+End-to-End Benchmark：
 
-能將：
+end_to_end_results.json
 
-40.0% SUCCESS
+Image Quality / Auto Correction Benchmark：
 
-提升至：
+correction_results.json
 
-73.3% SUCCESS。
+上述資料屬於：
 
-因此 PM Decision 01 正式確認：
+Technical Evidence（技術證據）。
 
-> Quality Check 與 Auto Correction 應作為同一套自動化流程設計。
+不是獨立 Product Specification。
 
----
 
-# 13.28 PM Decision 01 — Confirmed
+## 13.25 Production Implementation Boundary
 
-以下正式確認：
+以下項目不得由阿德自行擴大：
 
-### 已確認
+- Crop
+- Perspective Correction
+- Shadow Detection
+- Handwriting Recognition
+- Camera System
+- 自製 Image Editor
+- 未核定 OCR Provider
+- 未核定新的 Quality Metric
 
-* Quality Check
-* Auto Correction
-* Re-Quality Check
-* Deskew
-* Denoise
-* Sharpen
-* CLAHE 暫不採用
-* Reliable Failure
-* Hotspot 不得猜測
-* Image Import
-* 不建立 MagicBook 專用 Camera System
-* 使用者可重新拍攝／重新選取
-* 圖片可使用成熟圖片調整能力進行調整
-* Background Processing
-* 原有成熟技術優先
-* Reuse Before Reinvent
-* Image Area 與 Text Area 分離
-* Image Area 負責圖片
-* Text Area 僅負責文字
-* HTML Overlay 負責互動層
+若需要新增技術：
 
----
+必須先提出 Technical Proposal（技術方案），
 
-# 13.29 PM Decision 01 — Not Yet Confirmed
+再由 PM Decision（產品決策）核定。
 
-以下尚未正式核定：
 
-* Blur Threshold
-* Skew Threshold
-* Contrast Threshold
-* Noise Threshold
-* Auto Correction Trigger Logic
-* OCR Provider
-* AI Provider
-* Local OCR / Cloud OCR / Vision AI / Hybrid Strategy
-* Crop
-* Perspective Correction
-* Shadow Detection
-* Handwriting Recognition
-* Complex Background Processing
+## 13.26 Threshold Status
 
-以上不得自行加入正式 Production Implementation。
+以下精確數值仍不得由阿德自行寫死：
 
----
+- Blur Threshold
+- Skew Threshold
+- Noise Threshold
+- Contrast 參考值
+- Auto Correction Trigger Condition
 
-# 13.30 Engineering Boundary
+Benchmark 數據只能作為：
 
-阿德進行實作時：
+Technical Evidence（技術證據）。
 
-可以：
+正式 Production Threshold 必須經 PM 核定。
 
-* 驗證現有技術
-* 測試成熟函式庫
-* 測量效能
-* 建立 Prototype
-* 建立 Benchmark
-* 提出技術限制
-
-不得自行：
-
-* 決定正式 Threshold
-* 選定正式 OCR Provider
-* 選定正式 AI Provider
-* 增加未核定功能
-* 建立專用 Camera System
-* 建立新的照片倉庫
-* 改變使用者核心操作流程
-* 將 Benchmark 數字直接寫成 Production Logic
-* 因工程方便而增加新的產品功能
-
-如需超出本文件範圍：
-
-先回報 PM。
-
----
-
-# 13.31 Technical Evidence Status
-
-本章 Benchmark 所使用之技術驗證包括：
-
-* OpenCV Image Processing
-* Blur Measurement
-* Skew Detection
-* Deskew
-* Denoise
-* Sharpen
-* OCR
-* End-to-End Pipeline
-
-以上技術驗證結果可作為工程決策依據。
-
-但：
-
-Technical Evidence
-
-不等於：
-
-Production Specification。
-
-正式 Production Specification 必須經 PM Decision 確認。
-
----
-
-# 13.32 Current Status
-
-目前狀態：
-
-```text
-Benchmark
-    ↓
-Technical Validation
-    ↓
-PM Decision 01
-    ↓
-[Current Status]
-    ↓
-PM Decision 02
-    ↓
-Production Implementation
-```
-
-目前尚未進入：
-
-Production Implementation（正式產品實作）。
-
----
 
 # 14. Change Log
 
-## Version 2.5 — 2026-08-08
+本文件記錄 MagicBook 3.0 MVP Development 之重大版本更新。
 
-### Updated
+所有需求變更皆應先更新本文件，
 
-* 整合 PM Decision 01
-* 將 Image Quality Check 與 Auto Correction 正式定義為同一套自動化 Pipeline
-* 正式確認 Deskew
-* 正式確認 Denoise
-* 正式確認 Sharpen 為輔助技術
-* CLAHE 暫不採用
-* 新增 Re-Quality Check 為必要流程
-* 正式確認 Reliable Failure 原則
-* 正式禁止產生猜測性 Hotspot
-* 正式確認 Image Import
-* 移除 MagicBook 專用 Camera System 方向
-* 加入 Reuse Before Reinvent 工程原則
-* 明確區分 Technical Evidence 與 Production Specification
-* 明確保留 Threshold 為 PM Decision 02
-* 明確保留 OCR / AI Provider 選型為後續 PM Decision
-* 明確規定 Background Processing
-* 明確規定 MagicBook 不作為使用者照片倉庫
-* 明確規定 Image Area 與 Text Area 分離
-* 明確規定圖片調整應優先利用既有成熟技術
-* 明確規定使用者可重新拍攝／重新選取圖片
-* 明確規定無法可靠建立互動內容時應拒絕自動建立
-
-### Not Changed
-
-* Database Schema
-* API Design
-* OCR Provider
-* AI Provider
-* Production Threshold
-* Crop
-* Perspective Correction
-* Shadow Detection
-* Handwriting Recognition
-* Complex Background Processing
-
-以上項目未因本次 PM Decision 01 自動進入 Production Implementation。
-
-```
+再同步更新相關設計文件。
 
 
+## Version 2.6
+
+### PM Decision 01 / 02 + Image Import + Reuse Before Reinvent
+
+本版本整合：
+
+- PM Decision 01
+- PM Decision 02
+- End-to-End Benchmark
+- Image Import Architecture
+- Camera API 排除
+- Auto Correction
+- Deskew
+- Denoise
+- Sharpen
+- Re-Quality Check
+- Reliable Failure
+- Background Processing
+- OCR Provider
+- Hotspot Coordinate Transformation
+- Image Storage Rule
+- User Adjustment / Retake / Re-select
+- Reuse Before Reinvent
+
+正式確認：
+
+### Image Input
+
+MagicBook 不建立專用 Camera System。
+
+使用者使用裝置既有相機完成拍照。
+
+MagicBook 從 Image Import 開始。
+
+### Image Quality
+
+Quality Check 與 Auto Correction 為同一套自動化 Pipeline。
+
+不得只建立單獨 Reject System。
+
+### Auto Correction
+
+正式保留：
+
+- Deskew
+- Denoise
+- Sharpen
+
+正式不採用：
+
+- CLAHE
+
+### User Control
+
+使用者可以：
+
+- 調整圖片
+- 重新拍攝
+- 重新選擇圖片
+
+調整後必須重新進入品質檢查流程。
+
+### Image Storage
+
+MagicBook 不作為使用者照片倉庫。
+
+拒絕的圖片不得形成教材資產。
+
+Processed Image 不形成第二份教材資產。
+
+### OCR
+
+MVP 使用：
+
+Google Cloud Vision API DOCUMENT_TEXT_DETECTION
+
+並採：
+
+Replaceable Provider Adapter。
+
+### Engineering Principle
+
+正式加入：
+
+Reuse Before Reinvent。
+
+所有新技術需求必須先確認既有：
+
+- OS
+- Device
+- Browser
+- Native HTML / CSS / JavaScript
+- Open Source Library
+- Third-party Service
+
+最後才評估自行開發。
+
+
+## Version 2.5
+
+### PM Decision 01 / 02 Integration
+
+正式整合：
+
+- Image Import Architecture
+- Image Quality Check
+- Auto Correction
+- Deskew
+- Denoise
+- Sharpen
+- Re-Quality Check
+- Reliable Failure
+- Background Processing
+- OCR Provider
+- Hotspot Coordinate Transformation
+
+
+## Version 2.4
+
+### Image Area — Image Import
+
+將 Camera（拍照）正式用詞統一為：
+
+Image Import（圖片匯入）。
+
+MagicBook 不建立專用 Camera 功能。
+
+
+## Version 2.3
+
+### Camera API Excluded
+
+確認 Camera API 不屬於 MagicBook 3.0 MVP。
+
+MagicBook 不建立 Camera System。
+
+
+## Version 2.2
+
+### AI Automation — Technical Validation
+
+新增：
+
+- Image Quality Check
+- Auto Correction
+- Deskew
+- Denoise
+- Sharpen
+- Re-Quality Check
+- OCR / AI
+- Hotspot Generator
+- HTML Overlay
+- Background Processing
+- Error Handling
+- End-to-End Benchmark
+
+本階段定位為：
+
+Technical Evidence（技術證據）。
+
+未自行寫死正式 Threshold。
+
+未自行擴大 MVP Scope。
+
+
+## Version 2.1
+
+### Exercise Removed
+
+確認 Exercise 不屬於 MagicBook 3.0 MVP。
+
+移除 Exercise 相關規格。
+
+MagicBook 3.0 定位為：
+
+Interactive Teaching Material Tool（互動教材工具）。
+
+不包含：
+
+Exercise / Exam Authoring System（考題／考卷製作系統）。
+
+
+### Book Library
+
+確認 Folder 為 Book Library 正式分類功能。
+
+支援：
+
+- Create
+- Rename
+- Delete
+- Move
+- Reorder
+- Nested Folder
+- Drag & Drop Sorting
+
+
+### Global Search
+
+確認：
+
+- Search Icon 固定於畫面右上方
+- Floating Search Toolbar
+- Close 後 Search Icon 仍保留
+
+
+### System Performance
+
+確認：
+
+- Background Processing
+- Non-blocking UI
+- Loading Animation
+
+為共同開發要求。
+
+
+# END OF DOCUMENT
