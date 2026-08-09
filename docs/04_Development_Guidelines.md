@@ -1,6 +1,6 @@
 # MagicBook 3.0 Development Guidelines
 
-Version: 4.1
+Version: 4.2
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-08
+Last Update: 2026-08-09
 
 ---
 
@@ -394,7 +394,6 @@ HTML Overlay 為獨立互動層（Interaction Layer）。
 
 - Image
 - PDF
-- Camera
 
 所有互動皆建立於 HTML Overlay。
 
@@ -863,7 +862,6 @@ Popup 應採一致設計。
 
 - 匯入圖片
 - 匯入 PDF
-- Camera 拍照
 - 圖片最佳化
 - 圖片壓縮
 - 儲存教材
@@ -1191,7 +1189,7 @@ Home、Back 等系統導覽功能屬於 Navigation。
 - Image Area
 - Text Area
 - PDF
-- Camera 原始教材內容
+- Imported Image（已匯入圖片）
 
 應建立於 HTML Overlay 或既有互動架構。
 
@@ -1407,6 +1405,8 @@ main branch
 | Version | Date | Description |
 |----------|------------|------------------------------------------------|
 
+| 4.2 Draft | 2026-08-09 | Synchronized Camera terminology with the confirmed Image Import architecture; retained Reuse Before Reinvent and existing development principles |
+| 4.1 Draft | 2026-08-08 | Added Reuse Before Reinvent as a Core Development Principle |
 | 4.0 Draft | 2026-08-08 | Synchronized Development Guidelines with MVP 2.1 and Product Specification 3.1 |
 
 ### Core Modules
