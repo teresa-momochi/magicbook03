@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Task List
 
-Version: 2.1
+Version: 2.3
 
 Status: In Progress
 
@@ -127,6 +127,13 @@ Page
 - [ ] Search Book
 - [ ] Recently Used
 - [ ] Folder
+- [ ] Create Folder
+- [ ] Rename Folder
+- [ ] Delete Folder
+- [ ] Move Folder
+- [ ] Reorder Folder
+- [ ] Nested Folder
+- [ ] Drag & Drop Sorting
 - [ ] Open Book（Book Editor）
 - [ ] Open Reading（Reading Mode）
 
@@ -148,13 +155,19 @@ Page
 - [ ] 建立 Book Editor
 - [ ] 建立 Lesson / Page Manager
 - [ ] Add Lesson
+- [ ] Rename Lesson
+- [ ] Delete Lesson
+- [ ] Reorder Lesson
 - [ ] Add Page
 - [ ] Delete Page
+- [ ] Duplicate Page
 - [ ] Reorder Page
 - [ ] Page Navigation
 - [ ] 左右雙工作區
 - [ ] Image Area
 - [ ] Text Area
+- [ ] HTML Overlay
+- [ ] Context Toolbar
 
 注意：
 
@@ -192,6 +205,11 @@ Image Area 與 Text Area 同屬於同一個 Page。
 - [ ] Replace Image / PDF
 - [ ] Delete Image / PDF
 - [ ] Reorder Image / PDF
+- [ ] Image Import
+- [ ] Image Optimization
+- [ ] Image Compression
+- [ ] Background Processing
+- [ ] Large File Warning
 
 第一版支援：
 
@@ -213,6 +231,7 @@ Image Area 負責圖片與 PDF 相關功能。
 - [ ] Add Text
 - [ ] Edit Text
 - [ ] Delete Text
+- [ ] Reorder Text
 - [ ] Basic Text Input
 
 Text Area 為文字編輯區域。
@@ -223,7 +242,131 @@ Text Area 為文字編輯區域。
 
 ---
 
-# Task 8 — Save Book / Data Persistence
+# Task 8 — HTML Overlay / Hotspot / Popup
+
+完成教材互動層（Interaction Layer）。
+
+HTML Overlay：
+
+- [ ] Overlay Layer
+- [ ] Interactive Object Rendering
+- [ ] Object Selection
+- [ ] Layer Management
+
+Hotspot：
+
+- [ ] Add
+- [ ] Edit
+- [ ] Delete
+- [ ] Move
+- [ ] Resize
+- [ ] Save
+
+Popup：
+
+- [ ] Popup Editor
+- [ ] Popup Layout
+- [ ] Popup CRUD
+- [ ] Default Popup
+- [ ] Chinese
+- [ ] KK
+- [ ] Pronunciation
+
+HTML Overlay 不得直接修改教材底圖。
+
+---
+
+# Task 9 — Context Toolbar
+
+完成全系統共用 Context Toolbar（情境工具列）。
+
+- [ ] 預設隱藏
+- [ ] 選取物件後顯示
+- [ ] 完成操作後隱藏
+- [ ] 可自由拖曳
+- [ ] 可自由放置
+- [ ] Image
+- [ ] Text
+- [ ] HTML Overlay
+- [ ] Hotspot
+
+---
+
+# Task 10 — Dictionary / AI / Audio / Video
+
+完成核心互動服務模組。
+
+Dictionary：
+
+- [ ] Dictionary Popup
+- [ ] Word
+- [ ] Chinese
+- [ ] KK
+- [ ] Pronunciation
+- [ ] Example
+
+AI：
+
+- [ ] AI Panel
+- [ ] Prompt Manager
+- [ ] Conversation
+- [ ] History
+- [ ] AI Settings
+- [ ] AI Provider Interface
+
+Audio：
+
+- [ ] Audio Player
+- [ ] Audio CRUD
+- [ ] Audio Settings
+
+Video：
+
+- [ ] Video Player
+- [ ] Video Source
+- [ ] Video Settings
+
+第三方服務必須保持可替換。
+
+---
+
+# Task 11 — Navigation / Global Search
+
+Navigation：
+
+- [ ] Home
+- [ ] Back
+- [ ] Page Navigation
+- [ ] Book Navigation
+- [ ] Lesson Navigation
+
+Global Search：
+
+- [ ] Search Icon
+- [ ] Floating Search Toolbar
+- [ ] Keyword Search
+- [ ] Search Scope
+- [ ] Search Suggestions
+- [ ] Recent Search
+- [ ] Search Result Navigation
+- [ ] 關閉後 Search Icon 仍保留
+
+Search Scope 至少包含：
+
+- [ ] All
+- [ ] Folder
+- [ ] Book
+- [ ] Lesson
+- [ ] Page
+- [ ] Text
+- [ ] Image
+- [ ] PDF
+- [ ] Hotspot
+- [ ] Dictionary
+
+---
+
+# Task 12 — Save Book / Data Persistence
 
 完成教材儲存。
 
@@ -240,7 +383,7 @@ Text Area 為文字編輯區域。
 
 ---
 
-# Task 9 — Reading Mode
+# Task 13 — Reading Mode
 
 完成閱讀模式。
 
@@ -262,7 +405,7 @@ Inactive User 不可使用 MagicBook。
 
 ---
 
-# Task 10 — Trial / Access
+# Task 14 — Trial / Access
 
 完成 MVP 的使用權流程。
 
@@ -288,7 +431,7 @@ Access：
 
 ---
 
-# Task 11 — Billing Integration Boundary
+# Task 15 — Billing Integration Boundary
 
 Billing System（計費系統）與 Supabase 必須保持責任分離。
 
@@ -300,6 +443,9 @@ Billing System 負責：
 - 續約
 - 到期
 - 團體邀請
+- 同一 User 同時間不能接受兩個團體邀請
+- 換團規則：下個月再接受新的團體邀請
+- User Account 永遠維持原帳號
 - 團體人數
 - 價格
 - 付款週期
@@ -336,7 +482,7 @@ Billing → Supabase：
 
 ---
 
-# Task 12 — Billing Webhook Error Handling
+# Task 16 — Billing Webhook Error Handling
 
 完成 Billing → Supabase 的錯誤處理。
 
@@ -421,6 +567,10 @@ GitHub `main` 上最新正式文件為開發依據。
 | Book Editor | ⬜ |
 | Image Area | ⬜ |
 | Text Area | ⬜ |
+| HTML Overlay / Hotspot / Popup | ⬜ |
+| Context Toolbar | ⬜ |
+| Dictionary / AI / Audio / Video | ⬜ |
+| Navigation / Global Search | ⬜ |
 | Save Book / Data Persistence | ⬜ |
 | Reading Mode | ⬜ |
 | Trial / Access | ⬜ |
@@ -434,6 +584,8 @@ GitHub `main` 上最新正式文件為開發依據。
 
 | Version | Date | Description |
 |---|---|---|
+| 2.3 | 2026-08-09 | Final Cross-Document Consistency Check 修正：補齊 Folder CRUD、Move / Reorder / Nested Folder / Drag & Drop Sorting，並將已確認的團體邀請互斥、換團與 User Account 不變規則正式列入 Billing Task。僅同步既有規格，不新增產品功能。 |
+| 2.2 | 2026-08-09 | 依 02_MVP_Development v3.0 進行第二次 Cross-Document Consistency Check，補齊已確認的 Lesson / Page、HTML Overlay、Hotspot、Popup、Context Toolbar、Dictionary、AI、Audio、Video、Navigation、Global Search、圖片最佳化／壓縮／背景處理／大檔提示等 MVP 任務；並補齊團體邀請互斥與換團規則。僅同步既有規格，不新增產品功能。 |
 | 2.1 | 2026-08-09 | Cross-Document Consistency Check 後補齊已確認的 Rename / Duplicate / Move Book、Trial → Purchase 保留 Trial Content、團體邀請互斥與換團規則；不新增產品功能。 |
 | 2.0 | 2026-08-09 | 同步 01 Product Specification v3.4、02 MVP Development v3.0、04 Development Guidelines v4.4、05 Database Design v2.0、06 API Design v2.0、09 UI Design v2.0；移除 Workspace 作為有效架構，新增 User Account、Trial、Access Status、Billing Boundary、Webhook Error Handling 與 90 天資料保留規則。 |
 | Draft | 2026-08-01 | Initial MVP Task List |
