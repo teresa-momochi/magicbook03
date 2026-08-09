@@ -1,6 +1,6 @@
 # MagicBook 3.0 API Design
 
-Version: 1.1
+Version: 1.2
 Status: Draft
 Document Owner: Teresa Su
 Product Manager: ChatGPT
@@ -764,6 +764,10 @@ Re-Quality Check
 ↓
 OCR
 ↓
+Text + Bounding Box
+↓
+Coordinate Transformation
+↓
 Hotspot Generator
 ↓
 HTML Overlay
@@ -1347,6 +1351,8 @@ Re-Quality Check
 OCR
 ↓
 Text + Bounding Box
+↓
+Coordinate Transformation
 ↓
 Hotspot Generator
 ↓
@@ -2051,6 +2057,40 @@ Specification Consistency Review（規格一致性檢查）。
 ---
 
 # 35. Change Log
+
+## Version 1.2
+
+### Hotspot Coordinate Transformation Synchronization
+
+本版本同步目前已確認的 AI Automation（AI 自動化）流程順序。
+
+正式流程為：
+
+Image Import（圖片匯入）
+↓
+Image Quality Check（圖片品質檢查）
+↓
+必要時 Auto Correction（自動修正）
+↓
+Re-Quality Check（重新品質檢查）
+↓
+OCR（光學字元辨識）
+↓
+Text + Bounding Box（文字＋邊界框）
+↓
+Coordinate Transformation（座標轉換）
+↓
+Hotspot Generator（Hotspot 產生器）
+↓
+HTML Overlay（HTML 疊加層）
+↓
+Hotspot（熱點）
+
+Coordinate Transformation（座標轉換）必須在 Hotspot Generator（Hotspot 產生器）建立最終 Hotspot（熱點）之前完成。
+
+本次只同步既有已確認規則，不新增產品功能、不新增 API Scope、不新增資料模型。
+
+---
 
 ## Version 1.1
 
