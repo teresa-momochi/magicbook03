@@ -1,6 +1,6 @@
 # MagicBook 3.0 Editor Design
 
-Version: 1.0
+Version: 1.1
 Status: Draft
 Document Owner: Teresa Su
 Product Manager: ChatGPT
@@ -696,9 +696,9 @@ OCR
 ↓
 Text + Bounding Box
 ↓
-Hotspot Generator
-↓
 Coordinate Transformation（必要時）
+↓
+Hotspot Generator
 ↓
 HTML Overlay
 ↓
@@ -1376,6 +1376,26 @@ Editor Design 更新後必須重新檢查：
 ---
 
 # 29. Change Log
+
+## Version 1.1
+
+Status: Draft
+
+Last Update: 2026-08-09
+
+同步 Hotspot Coordinate Transformation（熱點座標轉換）與既有 AI Automation / Database / API 架構的正式流程順序。
+
+本次只修正既有流程的文件表述，不新增產品功能、不新增 API、不新增 Database Schema、不改變 Editor Scope。
+
+正式流程由：
+
+> Text + Bounding Box → Hotspot Generator → Coordinate Transformation（必要時）
+
+同步為：
+
+> Text + Bounding Box → Coordinate Transformation（必要時） → Hotspot Generator
+
+---
 
 ## Version 1.0
 
