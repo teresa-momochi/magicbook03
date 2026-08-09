@@ -1,6 +1,6 @@
 # MagicBook 3.0 Product Specification
 
-Version: 3.1
+Version: 3.2
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-08
+Last Update: 2026-08-09
 
 ---
 
@@ -91,7 +91,18 @@ MagicBook 不綁定單一教材格式。
 - JPG
 - JPEG
 - PDF
-- Camera（拍照）
+
+圖片來源統一透過 Image Import（圖片匯入）進入 MagicBook。
+
+Image Import 包含：
+
+- 使用者已拍攝之照片
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
+
+MagicBook 不建立專用 Camera System（相機系統）。
+拍照由裝置原生相機完成。
+MagicBook 的責任從 Image Import 開始。
 
 教材內容保持原貌。
 
@@ -131,6 +142,7 @@ MagicBook 所有產品設計皆遵循：
 - Replaceable Service（服務可替換）
 - Consistent User Experience（一致使用者體驗）
 - Performance（效能）
+- Reuse Before Reinvent（先利用，再重新發明）
 
 所有新功能皆建立於既有產品架構。
 
@@ -225,6 +237,7 @@ MagicBook 所有產品功能皆遵循：
 - Context Toolbar（共用浮動工具列）
 - Performance（效能）
 - Background Processing（背景處理）
+- Reuse Before Reinvent（先利用，再重新發明）
 
 所有產品皆採統一操作邏輯。
 
@@ -409,6 +422,108 @@ MagicBook 將 Performance（效能）視為產品基本要求。
 - 使用者誤認系統停止
 
 需要等待時，應提供 Brand Loading Animation（品牌載入動畫）。
+
+---
+
+## 3.8 Reuse Before Reinvent
+
+MagicBook 3.0 所有產品功能皆應遵循：
+
+**Reuse Before Reinvent（先利用，再重新發明）**
+
+在開發任何新功能之前，
+必須先確認是否已有成熟且可直接使用的技術能力。
+
+優先評估順序：
+
+1. Operating System（作業系統）既有能力
+2. Browser（瀏覽器）既有能力
+3. HTML / CSS / JavaScript 原生能力
+4. Mature Open Source Library（成熟開源函式庫）
+5. Mature Third-party Tool / Service（成熟第三方工具／服務）
+6. 以上皆無法滿足需求時，才評估 Custom Development（自行開發）
+
+### Engineering Rule
+
+不要因為「可以自己做」，
+就直接自行建立新的系統。
+
+在提出 Custom Development（自行開發）之前，
+必須先確認：
+
+> 「這個功能是否已經有現成技術可以直接使用？」
+
+如果已有成熟方案：
+
+→ 優先 Reuse / Integration（重用／整合）
+
+只有在現有技術確實無法滿足 MagicBook 的產品需求時：
+
+→ 才進入 Custom Development（自行開發）評估。
+
+### Example — Camera
+
+Camera（相機）是本原則的代表案例。
+
+MagicBook 不建立自己的 Camera System（相機系統）。
+
+老師使用裝置原生相機取得照片，
+MagicBook 只負責：
+
+Image Import（圖片匯入）
+
+MagicBook 不因為需要照片，
+而自行建立：
+
+- Camera System
+- Camera Preview
+- Exposure Control
+- Focus Control
+- ImageCapture
+- getUserMedia
+
+MagicBook 應優先使用裝置、作業系統與瀏覽器已提供的能力。
+
+### Applicability
+
+Reuse Before Reinvent 不只適用於 Camera。
+
+所有新功能皆適用。
+
+例如：
+
+- Camera → 使用裝置原生相機
+- File Import → 使用瀏覽器原生檔案選擇
+- Image Editing → 優先使用成熟影像處理能力
+- Image Processing → 優先使用成熟函式庫
+- PDF Processing → 優先使用成熟 PDF 工具
+- AI / OCR → 採 Replaceable Service Architecture（可替換服務架構）
+- Browser Features → 優先使用瀏覽器既有能力
+
+MagicBook 的責任不是重新發明已經存在的工具，
+而是把成熟技術組合成：
+
+簡單、穩定、容易使用的教師工具。
+
+### Product Principle
+
+MagicBook 應將複雜度藏在系統內部。
+
+使用者不需要理解：
+
+- Operating System
+- Browser
+- API
+- Camera
+- OCR
+- AI
+- Image Processing
+
+使用者只需要完成自己的工作。
+
+因此：
+
+> **先使用世界已經發明好的東西，再決定 MagicBook 真正需要自己發明什麼。**
 
 ---
 
@@ -1132,7 +1247,17 @@ Image Area 負責教材視覺內容。
 - JPG
 - JPEG
 - PDF
-- Camera（拍照）
+
+圖片來源統一透過 Image Import（圖片匯入）進入 MagicBook。
+
+Image Import 包含：
+
+- 使用者已拍攝之照片
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
+
+MagicBook 不建立專用 Camera System（相機系統）。
+拍照由裝置原生相機完成。
 
 系統提供：
 
@@ -1167,7 +1292,6 @@ HTML Overlay 為教材互動層（Interaction Layer）。
 
 - Image
 - PDF
-- Camera
 
 教材內容保持原貌。
 
@@ -1238,9 +1362,9 @@ Image Area 為教材圖片工作區。
 
 負責：
 
+- Image Import（圖片匯入）
 - 圖片管理
 - PDF 管理
-- Camera 拍照
 - 圖片呈現
 - 圖片最佳化
 - 圖片壓縮
@@ -1251,7 +1375,12 @@ Image Area 為教材圖片工作區。
 - JPG
 - JPEG
 - PDF
-- Camera
+- 使用者已拍攝之照片
+- 使用者截圖
+- 使用者從裝置選取之圖片／檔案
+
+MagicBook 不建立專用 Camera 功能。
+拍照由裝置原生相機完成。
 
 系統自動執行：
 
@@ -1294,7 +1423,6 @@ HTML Overlay 為教材互動層（Interaction Layer）。
 
 - Image
 - PDF
-- Camera
 
 HTML Overlay 負責：
 
@@ -1595,7 +1723,6 @@ Background Processing（背景處理）負責耗時工作。
 
 - 匯入圖片
 - 匯入 PDF
-- Camera 拍照
 - 圖片最佳化
 - 圖片壓縮
 - AI 處理
@@ -2072,7 +2199,6 @@ Toolbar 每次皆由 Search Icon 展開。
 
 - 匯入圖片
 - 匯入 PDF
-- Camera 拍照
 - 圖片最佳化
 - 圖片壓縮
 - AI 處理
@@ -2176,6 +2302,7 @@ MagicBook 採長期演進（Long-term Evolution）策略。
 - Replaceable Service
 - Consistent User Experience
 - Performance
+- Reuse Before Reinvent
 
 未來版本可持續增加新的模組與服務，
 
@@ -2195,6 +2322,33 @@ Future Expansion 不代表 MVP 自動包含未確認功能。
 ---
 
 # 14. Change Log
+
+## Version 3.2
+### Synchronization with Image Import Architecture and Reuse Before Reinvent
+
+本版本依據目前已確認之 02_MVP_Development.md、03_Roadmap.md、04_Development_Guidelines.md、05_Database_Design.md、06_API_Design.md 與 07_AI_Design.md 進行產品規格同步。
+
+本次同步僅整理既有已確認產品行為與共通開發原則，不新增產品功能、不擴大 MVP Scope。
+
+### Image Import / No Camera System
+
+統一 Image Area 相關用詞與架構：
+
+- Image Import（圖片匯入）為 MagicBook 的圖片輸入責任邊界
+- 使用者已拍攝之照片、截圖、裝置選取之圖片／檔案與 PDF 均透過 Image Import 進入 MagicBook
+- MagicBook 不建立專用 Camera System（相機系統）
+- 拍照由裝置原生相機完成
+- HTML Overlay 不再將 Camera 視為獨立教材來源類型
+- Background Processing 不再將「Camera 拍照」視為 MagicBook 內部處理項目
+
+### Reuse Before Reinvent
+
+正式納入產品核心原則：
+
+- Reuse Before Reinvent（先利用，再重新發明）
+- 優先使用 Operating System、Browser、HTML / CSS / JavaScript、成熟開源函式庫與成熟第三方工具／服務
+- 只有現有技術無法滿足產品需求時，才評估 Custom Development（自行開發）
+- Camera 為代表案例：使用裝置原生相機，MagicBook 從 Image Import 開始處理
 
 ## Version 3.1
 
