@@ -1,6 +1,6 @@
 # MagicBook 3.0 Editor Design
 
-Version: 1.1
+Version: 1.2
 Status: Draft
 Document Owner: Teresa Su
 Product Manager: ChatGPT
@@ -599,6 +599,10 @@ Quality Check
 Re-Quality Check
 ↓
 OCR
+↓
+Text + Bounding Box
+↓
+Coordinate Transformation（必要時）
 ↓
 Hotspot Generator
 
@@ -1376,6 +1380,21 @@ Editor Design 更新後必須重新檢查：
 ---
 
 # 29. Change Log
+
+## Version 1.2
+
+Status: Draft
+
+同步 AI Generated Hotspot（AI 產生 Hotspot）流程摘要，使其與 §12.1 Official Flow（正式流程）、AI Design 及 API Design 的正式流程一致。
+
+本次只修正既有流程的文件表述，不新增產品功能、不新增 API、不新增 Database Schema、不改變 Editor Scope。
+
+正式流程為：
+
+> Text + Bounding Box → Coordinate Transformation（必要時） → Hotspot Generator
+
+---
+
 
 ## Version 1.1
 
