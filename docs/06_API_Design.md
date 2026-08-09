@@ -1,6 +1,6 @@
 # MagicBook 3.0 API Design
 
-Version: 1.0
+Version: 1.1
 Status: Draft
 Document Owner: Teresa Su
 Product Manager: ChatGPT
@@ -83,11 +83,20 @@ API Design 必須遵循以下正式文件：
 4. Development Guidelines（開發規範）
 5. Database Design（資料庫設計）
 
-如果 API Design 與上述文件產生衝突：
+如果 API Design 與上述文件產生衝突，依以下優先順序處理：
 
-> Product Specification → MVP Development → Database Design → API Design
+> Product Specification → MVP Development → Roadmap → Development Guidelines → Database Design → API Design
 
-API Design 不得自行覆寫產品需求。
+各文件依其職責提供正式約束：
+
+- Product Specification（產品規格）：產品功能與產品行為
+- MVP Development（MVP 開發規格）：MVP 範圍與已確認開發行為
+- Roadmap（開發路線圖）：開發階段、順序與依賴
+- Development Guidelines（開發規範）：工程共通原則與開發規則
+- Database Design（資料庫設計）：資料架構與資料關係
+- API Design（API 設計）：將上述已確認內容轉換為 API Boundary（API 邊界）
+
+API Design 不得自行覆寫任何較高優先級的正式文件。
 
 ---
 
@@ -476,11 +485,19 @@ Request：
 
 `DELETE /folders/{folderId}`
 
-Folder Delete Behavior（資料夾刪除行為）必須遵循 Database Design。
+Folder Delete Behavior（資料夾刪除行為）必須遵循 Database Design 與既有 PM Decision。
 
-刪除 Folder 不應直接等同於刪除其中 Book。
+### Confirmed Folder Delete Rule
 
-實際刪除策略若尚未核定，不得自行擴充。
+- Folder 只有在完全為空時才能刪除。
+- 如果 Folder 內仍有 Book 或 Child Folder，禁止刪除。
+- 不得 Cascade Delete（級聯刪除）。
+- 不得因刪除 Folder 自動搬移其中的 Book 或 Child Folder。
+- API 必須先檢查 Folder 是否為空，再決定是否允許刪除。
+
+因此，本 API 不得把「非空 Folder」視為可刪除資源。
+
+UI 提示文字沿用既有 PM Decision／已確認實作內容；API Design 不重新定義 UI 文案。
 
 ---
 
@@ -2018,6 +2035,9 @@ Development
 
 API Design 更新後，必須進行：
 
+Folder Delete Rule 等既有 PM Decision 已確認規則，也必須在 API Change 時保持一致，不得重新標記為「尚未核定」。
+
+
 Specification Consistency Review（規格一致性檢查）。
 
 至少檢查：
@@ -2031,6 +2051,30 @@ Specification Consistency Review（規格一致性檢查）。
 ---
 
 # 35. Change Log
+
+## Version 1.1
+
+### Specification Consistency Synchronization
+
+本版本同步修正兩項文件一致性問題：
+
+1. 更新 §0.2 Source of Truth 的衝突處理優先順序，納入：
+   - Product Specification
+   - MVP Development
+   - Roadmap
+   - Development Guidelines
+   - Database Design
+   - API Design
+
+2. 同步既有 PM Decision 已確認的 Folder Delete Rule：
+   - 空 Folder 才可刪除
+   - 非空 Folder 禁止刪除
+   - 不得 Cascade Delete
+   - 不得自動搬移內容
+
+本次只同步既有已確認規則，不新增產品功能，不新增 API Scope。
+
+---
 
 ## Version 1.0
 
