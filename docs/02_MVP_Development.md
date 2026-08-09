@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.6
+Version: 2.7
 
 Status: Draft
 
@@ -747,6 +747,15 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Video
 - Navigation
 
+Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
+
+Edit Button：
+
+- 位於 Reading Mode
+- 作為 Editor Mode 的單一進入入口
+- 使用者可由 Reading Mode 進入既有 Editor Mode
+- 不建立另一套 Editor 流程或資料模型
+
 Reading Mode 不可修改教材內容。
 
 
@@ -1239,6 +1248,10 @@ Text + Bounding Box
 
 ↓
 
+Coordinate Transformation（必要時）
+
+↓
+
 Hotspot Generator
 
 ↓
@@ -1326,6 +1339,18 @@ Open Reading
 
 Reading Mode
 
+可選擇：
+
+↓
+
+Edit Button
+
+↓
+
+Editor Mode
+
+或
+
 ↓
 
 Click Hotspot
@@ -1385,6 +1410,8 @@ Reading Mode 不可修改教材內容。
 - Audio
 - Video
 - Navigation
+
+Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
@@ -1739,6 +1766,10 @@ Context Toolbar：
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
+Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
+
+Edit Button 不建立另一套 Editor 架構或資料模型，只負責進入既有 Editor Mode。
+
 閱讀模式隱藏：
 
 - Header
@@ -2047,6 +2078,9 @@ Search Toolbar 採 Floating Toolbar。
 - Audio
 - Video
 - Navigation
+- Reading Mode → Editor Mode 的單一 Edit Button 入口
+
+Edit Button 僅負責進入既有 Editor Mode，不建立另一套 Editor 流程或資料模型。
 
 Reading Mode 不修改教材。
 
@@ -2325,6 +2359,9 @@ Provider 必須可替換。
 - Audio
 - Video
 - Navigation
+- 單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口
+
+Edit Button 不得建立另一套 Editor 流程或資料模型。
 
 Reading Mode 不得修改教材。
 
@@ -2564,6 +2601,10 @@ OCR
 ↓
 
 Text + Bounding Box
+
+↓
+
+Coordinate Transformation（必要時）
 
 ↓
 
@@ -2980,7 +3021,7 @@ Processed Coordinates
 
 ↓
 
-Coordinate Transform
+Coordinate Transformation
 
 ↓
 
@@ -3246,6 +3287,23 @@ Technical Evidence（技術證據）。
 所有需求變更皆應先更新本文件，
 
 再同步更新相關設計文件。
+
+
+## Version 2.7
+
+### Reading Mode Entry + AI Automation Flow Synchronization
+
+本版本只同步既有已確認產品規格，不新增產品功能，不新增資料模型，不擴大 MVP Scope。
+
+正式同步：
+
+- Reading Mode 提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口
+- Edit Button 不建立另一套 Editor 流程或資料模型
+- Reading Mode 與 Editor Mode 繼續共用同一份教材資料
+- AI Automation Pipeline 中 Coordinate Transformation（必要時）位於 Hotspot Generator 之前
+- 相關 User Flow、Screen Specification、Core Module、Acceptance Criteria 與 AI Automation 描述同步更新
+
+上述內容皆為既有已確認規格之同步，不代表新增 Scope。
 
 
 ## Version 2.6
