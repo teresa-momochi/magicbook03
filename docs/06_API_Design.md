@@ -1,10 +1,15 @@
 # MagicBook 3.0 API Design
 
-Version: 1.2
+Version: 2.0
+
 Status: Draft
+
 Document Owner: Teresa Su
+
 Product Manager: ChatGPT
+
 Technical Lead: 阿德
+
 Last Update: 2026-08-09
 
 ---
@@ -15,7 +20,7 @@ Last Update: 2026-08-09
 1. API Design Principles
 2. API Architecture
 3. Authentication API
-4. Workspace API
+4. User Account / Access API
 5. Book Library API
 6. Folder API
 7. Book API
@@ -163,7 +168,7 @@ API 不得因為互動功能而直接破壞正式教材資料。
 
 例如：
 
-- Workspace API
+- User Account API
 - Book API
 - Lesson API
 - Page API
@@ -221,8 +226,7 @@ API 以 Resource-oriented Architecture（資源導向架構）組織。
 
 核心資源：
 
-- User（使用者）
-- Workspace（工作空間）
+- User Account（使用者帳號）
 - Folder（資料夾）
 - Book（教材）
 - Lesson（課程章節）
@@ -241,7 +245,7 @@ API 以 Resource-oriented Architecture（資源導向架構）組織。
 
 核心資料階層：
 
-Workspace
+User Account
 ↓
 Book Library
 ↓
@@ -261,15 +265,15 @@ API 必須尊重此資料階層。
 
 ---
 
-## 2.3 Workspace Boundary
+## 2.3 User Account Boundary
 
 每一個教材相關 API Request（API 請求）都必須能確認：
 
 - User Identity（使用者身分）
-- Workspace Identity（工作空間身分）
+- User Account Identity（使用者帳號身分）
 - Permission（權限）
 
-不得依前端傳入的 Workspace ID（工作空間識別碼）直接信任資料權限。
+不得依前端傳入的任何 User ID 或 Resource ID 直接信任資料權限。
 
 ---
 
@@ -293,7 +297,8 @@ Authentication API（身分驗證 API）負責：
 - Logout（登出）
 - Session Management（工作階段管理）
 - User Identity Verification（使用者身分驗證）
-- Workspace Authentication（工作空間驗證）
+- Email Verification（Email 驗證）
+- Access Status（使用權狀態）
 
 ---
 
@@ -311,7 +316,8 @@ Response：
 
 - Authenticated User（已驗證使用者）
 - Session（工作階段）
-- Available Workspace（可用工作空間）
+- Access Status（使用權狀態）
+- Trial Used（試用狀態）
 
 實際 Credential Format（憑證格式）依正式 Authentication Provider（身分驗證服務）決定。
 
@@ -339,62 +345,57 @@ Logical operation：
 Response 至少需要讓系統知道：
 
 - User Identity
-- Current Workspace
-- Permission
+- Access Status
+- Trial Used
 
 ---
 
-# 4. Workspace API
+# 4. User Account / Access API
 
 ## 4.1 Responsibility
 
-Workspace API 負責：
+User Account / Access API（使用者帳號／使用權 API）負責：
 
-- Workspace Information（工作空間資訊）
-- Workspace Settings（工作空間設定）
-- Workspace Selection（工作空間選擇）
-- User Management（使用者管理）
-- Permission Management（權限管理）
-- Data Ownership（資料歸屬）
+- User Identity（使用者身分）
+- Email Verification（Email 驗證）
+- Session（工作階段）
+- Access Status（使用權狀態）
+- Trial Used（試用狀態）
+- User Data Ownership（使用者資料歸屬）
 
----
+Billing System（計費系統）不屬於本 API 的資料模型。
 
-## 4.2 List Workspaces
+Billing System 負責付款、續約、到期、團體邀請、團體人數、價格與付款週期等商業規則；MagicBook API 不建立 Group Entity、Group ID、團主或團員資料。
 
-`GET /workspaces`
+## 4.2 Access Status
 
-回傳目前使用者可存取的 Workspace。
+Access Status 只使用已確認的狀態：
 
----
+- Active
+- Inactive
 
-## 4.3 Get Workspace
+Inactive 時不得使用 MagicBook。
 
-`GET /workspaces/{workspaceId}`
+本 API 不建立 Read Only、Archive Mode 或 Temporary Access 等額外使用模式。
 
-只能回傳目前使用者有權限存取的 Workspace。
+## 4.3 Trial Status
 
----
+Trial Used 用於記錄每個 User Account 是否已使用一次免費試用。
 
-## 4.4 Update Workspace
+- 每個 User Account 一生一次
+- Trial Used 不因重新登入而重置
+- 試用內容與期限遵循 Product Specification 與 MVP Development
 
-`PATCH /workspaces/{workspaceId}`
+## 4.4 User Data Isolation
 
-可更新已核定的 Workspace Settings（工作空間設定）。
+所有教材相關 API 都必須依目前已驗證的 User Account Identity 執行 Data Isolation（資料隔離）。
 
-第一版包含的基本設定以 Product Specification 為準。
-
----
-
-## 4.5 Workspace Isolation
-
-Workspace API 必須執行 Data Isolation（資料隔離）。
-
-不同 Workspace：
+不同 User Account：
 
 - 不得讀取彼此教材
 - 不得修改彼此教材
-- 不得讀取彼此權限
-- 不得讀取彼此設定
+- 不得搜尋彼此教材
+- 不得取得彼此 Processing Data（處理資料）
 
 ---
 
@@ -416,7 +417,7 @@ Book Library 不直接負責教材內容編輯。
 
 ## 5.2 List Books
 
-`GET /workspaces/{workspaceId}/books`
+`GET /books`
 
 支援：
 
@@ -428,9 +429,9 @@ Book Library 不直接負責教材內容編輯。
 
 ## 5.3 Recently Used
 
-`GET /workspaces/{workspaceId}/books/recent`
+`GET /books/recent`
 
-只回傳目前 Workspace 可存取的最近使用教材。
+只回傳目前 User Account 可存取的最近使用教材。
 
 ---
 
@@ -454,7 +455,7 @@ Folder API（資料夾 API）負責教材分類。
 
 ## 6.2 Create Folder
 
-`POST /workspaces/{workspaceId}/folders`
+`POST /folders`
 
 Request：
 
@@ -519,7 +520,7 @@ Book API（教材 API）負責：
 
 ## 7.2 Create Book
 
-`POST /workspaces/{workspaceId}/books`
+`POST /books`
 
 建立 Book。
 
@@ -551,7 +552,7 @@ Book API（教材 API）負責：
 
 建立 Book Duplicate（教材複製品）。
 
-Duplicate 行為必須遵循資料歸屬與 Workspace Isolation。
+Duplicate 行為必須遵循資料歸屬與 User Data Isolation。
 
 ---
 
@@ -562,10 +563,10 @@ Duplicate 行為必須遵循資料歸屬與 Workspace Isolation。
 必須檢查：
 
 - User Permission
-- Workspace Ownership
+- User Account Ownership
 - Related Data
 
-不得因刪除錯誤造成其他 Workspace 資料受影響。
+不得因刪除錯誤造成其他 User Account 資料受影響。
 
 ---
 
@@ -671,7 +672,7 @@ Page 是 Editor Mode（編輯模式）與 Reading Mode（閱讀模式）共用�
 
 Duplicate 必須保持：
 
-- Workspace Ownership
+- User Account Ownership
 - Book Relationship
 - Lesson Relationship
 
@@ -1198,7 +1199,7 @@ Request：
 
 - Keyword（關鍵字）
 - Scope（搜尋範圍）
-- Workspace
+- User Account
 
 ---
 
@@ -1310,7 +1311,7 @@ Request 至少需要：
 
 - Processing Type（處理類型）
 - Source Resource（來源資源）
-- Workspace Context（工作空間上下文）
+- User Account Context（工作空間上下文）
 
 ---
 
@@ -1583,7 +1584,7 @@ API Response（API 回應）必須保持一致。
 
 Authentication
 ↓
-Workspace Resolution
+User Account Resolution
 ↓
 Permission Check
 ↓
@@ -1591,31 +1592,30 @@ Data Access
 
 ---
 
-## 26.2 Workspace Ownership
+## 26.2 User Account Ownership
 
-所有核心教材資料必須可追溯至 Workspace。
+所有核心教材資料必須可追溯至 User Account。
 
 ---
 
-## 26.3 Cross Workspace Access
+## 26.3 Cross User Account Access
 
 API 不得允許：
 
-- Workspace A 讀取 Workspace B
-- Workspace A 修改 Workspace B
-- Workspace A 搜尋 Workspace B
-- Workspace A 取得 Workspace B 的 Processing Data
+- User Account A 讀取 User Account B
+- User Account A 修改 User Account B
+- User Account A 搜尋 User Account B
+- User Account A 取得 User Account B 的 Processing Data
 
 ---
 
 ## 26.4 Permission
 
-至少區分已確認的：
+API Authorization（API 授權）以已驗證的 User Account Identity 與 Resource Ownership（資源所有權）為基礎。
 
-- Administrator
-- Teacher
+本版本不建立 Workspace Role（工作空間角色）、團主、團員或 Teacher Account（教師帳號）資料模型。
 
-具體 Permission Matrix（權限矩陣）於實作階段依產品規格確認。
+具體 Permission Matrix（權限矩陣）僅在產品規格明確核定後才可增加。
 
 ---
 
@@ -1805,14 +1805,14 @@ User Identity 必須由 Authentication Layer（驗證層）確認。
 
 ---
 
-## 31.2 No Trust in Client Workspace
+## 31.2 No Trust in Client Resource Scope
 
-API 不得只依賴前端提供的 Workspace ID 判斷資料權限。
+API 不得只依賴前端提供的 User Account ID 判斷資料權限。
 
 必須重新驗證：
 
-- User
-- Workspace
+- Authenticated User
+- User Account
 - Permission
 - Resource Ownership
 
@@ -1904,7 +1904,25 @@ MagicBook 從 Image Import 開始。
 
 ---
 
-## 32.5 No Unapproved Threshold
+## 32.5 Billing Webhook Boundary
+
+Billing System 與 Supabase 的使用權同步透過 Webhook（網路回呼）進行。
+
+API Design 只定義邊界，不鎖定實際 Webhook URL 或第三方 Billing Provider 的內部格式。
+
+Webhook 處理原則：
+
+1. Billing 通知 User ID 的使用權狀態。
+2. Supabase 無回應時，第一次失敗後 10 分鐘重試。
+3. 第二次仍無回應時通知管理者／PM。
+4. Database Internal Error 不要求使用者重新付款。
+5. 使用者看到的錯誤訊息為可理解的系統處理中提示。
+
+Billing 的價格、付款、付款週期、團體人數與邀請規則不進入 MagicBook API 資料模型。
+
+---
+
+## 32.6 No Unapproved Threshold
 
 API Layer 不得自行決定正式：
 
@@ -1916,7 +1934,7 @@ API Layer 不得自行決定正式：
 
 ---
 
-## 32.6 No Direct OCR-to-Text Replacement
+## 32.7 No Direct OCR-to-Text Replacement
 
 OCR Result 不得直接覆蓋正式 Text Block。
 
@@ -1934,7 +1952,7 @@ API Design 完成與否至少檢查：
 ## 33.1 Core Architecture
 
 - [ ] Authentication API
-- [ ] Workspace API
+- [ ] User Account / Access API
 - [ ] Book Library API
 - [ ] Folder API
 - [ ] Book API
@@ -2057,6 +2075,29 @@ Specification Consistency Review（規格一致性檢查）。
 ---
 
 # 35. Change Log
+
+## Version 2.0
+
+### Account / Billing Architecture Synchronization
+
+本版本同步 Product Specification v3.4、MVP Development v3.0、Development Guidelines v4.4 與 Database Design v2.0 已正式確認的 Account / Billing 架構。
+
+正式變更：
+
+- 移除 Workspace 作為 API 資料根層級。
+- 移除 Workspace API、Workspace ID 與 Workspace Permission 模型。
+- 核心教材資料改由 User Account 直接歸屬。
+- Authentication API 同步 Email Verification、Access Status、Trial Used。
+- Book / Folder API 不再以 Workspace ID 作為路徑層級。
+- Permission 與 Data Isolation 改以已驗證的 User Account Identity 與 Resource Ownership 為基礎。
+- Billing System 與 MagicBook API 分離。
+- Billing → Supabase 使用 Webhook 同步 Active / Inactive。
+- 不在 API 建立 Group Entity、Group ID、團主、團員、價格或付款資料。
+- 不新增未經 PM 核定的產品功能或 API Scope。
+
+本版本只做規格同步，不要求立即修改實際 API Implementation（API 實作）。
+
+---
 
 ## Version 1.2
 
