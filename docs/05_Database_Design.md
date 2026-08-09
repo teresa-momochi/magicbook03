@@ -1,6 +1,6 @@
 # MagicBook 3.0 Database Design
 
-Version: 1.2
+Version: 2.0
 
 Status: Draft
 
@@ -20,7 +20,7 @@ Last Update: 2026-08-09
 1. Database Design Principles
 2. Data Architecture Overview
 3. Core Data Hierarchy
-4. Workspace
+4. User Account and Access
 5. Book Library
 6. Folder
 7. Book
@@ -90,7 +90,7 @@ MVP 開發範圍以 MVP Development（MVP 開發規格）為準。
 
 核心教材架構：
 
-Workspace（工作空間）
+User Account（使用者帳號）
 ↓
 Book Library（教材庫）
 ↓
@@ -131,13 +131,13 @@ Image Area（圖片區）與 HTML Overlay（HTML 疊加層）屬於不同資料�
 
 HTML Overlay（HTML 疊加層）不應直接修改教材底圖資料。
 
-## 1.5 Workspace Data Ownership
+## 1.5 User Account Data Ownership
 
 所有使用者資料必須具有明確的 Data Ownership（資料歸屬）。
 
-資料必須可以判斷屬於哪一個 Workspace（工作空間）。
+資料必須可以判斷屬於哪一個 User Account（使用者帳號）。
 
-不同 Workspace（工作空間）的資料不得互相混用。
+不同 User Account（使用者帳號）的資料不得互相混用。
 
 ## 1.6 Reuse Before Reinvent
 
@@ -160,7 +160,7 @@ Database Design（資料庫設計）亦遵循 Reuse Before Reinvent（先利用�
 
 MagicBook 3.0 的核心教材資料關係：
 
-Workspace（工作空間）
+User Account（使用者帳號）
 ↓
 Book Library（教材庫）
 ↓
@@ -219,11 +219,11 @@ Processing Data（處理資料）主要服務於：
 
 # 3. Core Data Hierarchy
 
-## 3.1 Workspace
+## 3.1 User Account
 
-Workspace（工作空間）是資料歸屬的最上層。
+User Account（使用者帳號）是 MagicBook 個人教材資料的最上層歸屬單位。
 
-Workspace（工作空間）可以包含：
+User Account（使用者帳號）可以對應：
 
 - Book Library（教材庫）
 - Folder（資料夾）
@@ -232,6 +232,8 @@ Workspace（工作空間）可以包含：
 - Page（頁面）
 - Related Content（相關內容）
 - Related Interaction Data（相關互動資料）
+
+每一份正式教材資料都必須能追溯至所屬 User Account（使用者帳號）。
 
 ## 3.2 Book Library
 
@@ -284,24 +286,19 @@ Page（頁面）可以包含：
 
 ---
 
-# 4. Workspace
+# 4. User Account and Access
 
 ## 4.1 Purpose
 
-Workspace（工作空間）用於管理 Workspace-level Data（工作空間層級資料）。
+User Account（使用者帳號）是 MagicBook 個人教材資料的資料歸屬邊界。
 
-Workspace（工作空間）是資料隔離與資料歸屬的核心邊界。
+Supabase 負責 User Account（使用者帳號）、Authentication（身分驗證）、Session（工作階段）、User ID（使用者識別碼）與個人教材資料。
 
-## 4.2 Workspace Types
+MagicBook 不使用 Workspace（工作空間）作為資料根層級。
 
-目前確認：
+## 4.2 User Account Ownership
 
-- Personal Workspace（個人工作空間）
-- Organization Workspace（組織工作空間）
-
-## 4.3 Workspace Ownership
-
-每一筆核心教材資料都必須能追溯至所屬 Workspace（工作空間）。
+核心教材資料必須直接歸屬於 User Account（使用者帳號）。
 
 主要教材資料包括：
 
@@ -312,25 +309,65 @@ Workspace（工作空間）是資料隔離與資料歸屬的核心邊界。
 - Content（內容）
 - Interaction（互動）
 
-## 4.4 Workspace Isolation
+不同 User Account（使用者帳號）的教材資料不得互相混用。
 
-不同 Workspace（工作空間）之間必須保持 Data Isolation（資料隔離）。
+## 4.3 Access Status
 
-使用者只能存取自己有權限使用的 Workspace（工作空間）資料。
+User Account（使用者帳號）需要具有 Access Status（使用權狀態）。
 
-## 4.5 Workspace and Authentication
+目前只確認：
 
-Authentication（身分驗證）負責確認：
+- Active（有效）
+- Inactive（無效）
 
-「誰正在使用系統。」
+Active（有效）時，使用者可以使用 MagicBook。
 
-Workspace（工作空間）負責確認：
+Inactive（無效）時，使用者不能使用 MagicBook。
 
-「資料屬於哪一個工作空間。」
+本文件不建立 Read Only（唯讀模式）、Archive Mode（封存模式）或 Temporary Access（臨時使用權）等額外狀態。
 
-兩者責任必須分離。
+## 4.4 Trial Used
 
----
+每一個 User Account（使用者帳號）一生只能使用一次 Free Trial（免費試用）。
+
+Trial Used（試用已使用）屬於 Supabase 管理的使用者資料。
+
+Trial（試用）完成後，系統應能判斷該 User Account（使用者帳號）是否已使用過試用。
+
+## 4.5 Billing Boundary
+
+Billing System（計費系統）與 Supabase 的資料責任必須分離。
+
+Supabase 不負責保存或管理：
+
+- 個人／團體方案細節
+- Group（團體）
+- Group ID（團體識別碼）
+- 團主
+- 團員
+- 邀請
+- 價格
+- 付款
+- 付款週期
+- 付款來源
+
+Billing System（計費系統）負責上述商業規則，並透過 Webhook（網路回呼）通知 Supabase 使用權狀態。
+
+Supabase 最終只需要知道 User ID（使用者識別碼）對應的 Active / Inactive（有效／無效）狀態。
+
+同一 User Account（使用者帳號）不因個人方案或團體方案而建立新的資料根層級。
+
+## 4.6 Data Retention After Expiration
+
+Access（使用權）到期後，User Account（使用者帳號）進入 Inactive（無效）狀態。
+
+正式教材資料自到期日起保留 90 天。
+
+如果使用者在 90 天內重新取得使用權，原有資料仍然存在並可繼續使用。
+
+90 天內未重新取得使用權，系統才可清除該使用者的正式教材資料。
+
+本文件不建立 Temporary Access（臨時使用權）。
 
 # 5. Book Library
 
@@ -466,11 +503,11 @@ Page（頁面）
 
 Book（教材）建立後可以立即具有可使用的 Lesson（課程）。
 
-## 7.5 Book and Workspace
+## 7.5 Book and User Account
 
-每一個 Book（教材）必須屬於一個 Workspace（工作空間）。
+每一個 Book（教材）必須屬於一個 User Account（使用者帳號）。
 
-Book（教材）不得跨 Workspace（工作空間）共用同一筆核心資料。
+Book（教材）不得跨 User Account（使用者帳號）共用同一筆核心資料。
 
 ## 7.6 Book and Folder
 
@@ -517,7 +554,8 @@ Page（頁面）
 每一個 Lesson（課程）必須屬於：
 
 - 一個 Book（教材）
-- 一個 Workspace（工作空間）
+
+Lesson（課程）的 User Account（使用者帳號）歸屬可由其 Book（教材）關聯取得。
 
 Lesson（課程）不應脫離 Book（教材）獨立存在。
 
@@ -555,7 +593,8 @@ Page（頁面）可以包含：
 
 - 一個 Lesson（課程）
 - 一個 Book（教材）
-- 一個 Workspace（工作空間）
+
+Page（頁面）的 User Account（使用者帳號）歸屬可由其 Book（教材）關聯取得。
 
 這些關係可以由資料關聯取得。
 
@@ -958,17 +997,17 @@ Processing Status（處理狀態）需要能讓系統知道：
 
 # 16. Relationship Rules
 
-## 16.1 Workspace → Folder
+## 16.1 User Account → Folder
 
-一個 Workspace（工作空間）可以包含多個 Folder（資料夾）。
+一個 User Account（使用者帳號）可以包含多個 Folder（資料夾）。
 
-Folder（資料夾）必須屬於一個 Workspace（工作空間）。
+Folder（資料夾）必須屬於一個 User Account（使用者帳號）。
 
-## 16.2 Workspace → Book
+## 16.2 User Account → Book
 
-一個 Workspace（工作空間）可以包含多個 Book（教材）。
+一個 User Account（使用者帳號）可以包含多個 Book（教材）。
 
-Book（教材）必須屬於一個 Workspace（工作空間）。
+Book（教材）必須屬於一個 User Account（使用者帳號）。
 
 ## 16.3 Folder → Folder
 
@@ -1024,9 +1063,9 @@ Text Block（文字區塊）不應脫離 Page（頁面）成為獨立教材內�
 
 # 17. Data Ownership and Isolation
 
-## 17.1 Workspace Ownership
+## 17.1 User Account Ownership
 
-核心教材資料必須具有 Workspace Ownership（Workspace 資料歸屬）。
+核心教材資料必須具有 User Account Ownership（使用者帳號資料歸屬）。
 
 包括：
 
@@ -1041,27 +1080,15 @@ Text Block（文字區塊）不應脫離 Page（頁面）成為獨立教材內�
 
 Authentication（身分驗證）確認使用者身分。
 
-Authorization（授權）確認使用者是否可以存取特定 Workspace（工作空間）與其資料。
+Authorization（授權）確認使用者是否可以存取自己的 User Account（使用者帳號）與其資料。
 
 ## 17.3 Data Isolation
 
-不同 Workspace（工作空間）的資料必須保持 Data Isolation（資料隔離）。
+不同 User Account（使用者帳號）的資料必須保持 Data Isolation（資料隔離）。
 
-使用者不得透過一般產品操作取得沒有權限的其他 Workspace（工作空間）資料。
+使用者不得透過一般產品操作取得其他 User Account（使用者帳號）的資料。
 
-## 17.4 Organization Workspace
-
-Organization Workspace（組織工作空間）的資料歸屬於組織 Workspace（工作空間）。
-
-個別使用者只是 Workspace Member（Workspace 成員）。
-
-資料本身不應因使用者離開而失去 Workspace Ownership（Workspace 資料歸屬）。
-
-## 17.5 Personal Workspace
-
-Personal Workspace（個人工作空間）的資料歸屬於個人 Workspace（工作空間）。
-
-實際帳號與 Workspace（工作空間）生命周期於 Authentication（身分驗證）／Workspace（工作空間）實作階段確認。
+Billing System（計費系統）中的團體關係不建立 MagicBook Database（MagicBook 資料庫）的 Group Entity（團體實體）。
 
 ---
 
@@ -1162,7 +1189,7 @@ Database Schema（資料庫結構）必須反映已確認產品需求。
 
 - Page（頁面）不應存在於不存在的 Lesson（課程）。
 - Lesson（課程）不應存在於不存在的 Book（教材）。
-- Book（教材）不應存在於不存在的 Workspace（工作空間）。
+- Book（教材）不應存在於不存在的 User Account（使用者帳號）。
 
 ## 19.5 Delete Behavior
 
@@ -1191,7 +1218,7 @@ Database Migration（資料庫遷移）若會影響既有正式資料，必須�
 
 ## 19.7 RLS
 
-Row Level Security（資料列層級安全性）應用於需要 Workspace Data Isolation（Workspace 資料隔離）的資料。
+Row Level Security（資料列層級安全性）應用於需要 User Account Data Isolation（使用者帳號資料隔離）的資料。
 
 實際 Policy（政策）於 Database Implementation（資料庫實作）階段依實際 Schema（資料庫結構）確認。
 
@@ -1240,6 +1267,31 @@ Provider-specific Data（Provider 專用資料）應與核心教材資料保持�
 ---
 
 # 21. Change Log
+
+## Version 2.0
+
+### Account / Billing Architecture Synchronization
+
+本版本同步 01_Product_Specification v3.4、02_MVP_Development v3.0 與 04_Development_Guidelines v4.4 已正式確認的 Account（帳號）與 Billing（計費）架構。
+
+本版本正式確認：
+
+- 移除 Workspace（工作空間）作為資料根層級。
+- 核心教材資料改由 User Account（使用者帳號）直接歸屬。
+- 核心教材階層為 User Account（使用者帳號） → Book Library（教材庫） → Folder（資料夾） → Book（教材） → Lesson（課程） → Page（頁面）。
+- Supabase 負責 User Account（使用者帳號）、Authentication（身分驗證）、Session（工作階段）、User ID（使用者識別碼）、個人教材資料、Access Status（使用權狀態）與 Trial Used（試用已使用）。
+- Supabase 不建立 Group Entity（團體實體）、Group ID（團體識別碼）、團主、團員、邀請、價格、付款或付款週期等 Billing（計費）資料。
+- Billing System（計費系統）負責個人／團體方案與商業規則，並透過 Webhook（網路回呼）通知 Supabase 使用權狀態。
+- Access Status（使用權狀態）只確認 Active（有效）與 Inactive（無效）。
+- Free Trial（免費試用）每一個 User Account（使用者帳號）一生一次。
+- 使用權到期後，正式教材資料保留 90 天；90 天內重新取得使用權則保留原資料，超過 90 天未恢復才清除資料。
+- 不建立 Temporary Access（臨時使用權）、Read Only（唯讀模式）或 Archive Mode（封存模式）。
+
+本次只同步既有已確認規則，不新增產品功能，不提前鎖定未確認的 Database Schema（資料庫結構）。
+
+---
+
+
 
 ## Version 1.2
 
