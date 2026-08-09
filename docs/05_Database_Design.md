@@ -1,6 +1,6 @@
 # MagicBook 3.0 Database Design
 
-Version: 1.0
+Version: 1.1
 
 Status: Draft
 
@@ -513,9 +513,21 @@ Folder → Book
 
 Folder 與 Book 的資料責任必須分離。
 
-刪除 Folder 不應直接等同於刪除其中的 Book。
+刪除 Folder 不等同於刪除其中的 Book。
 
-實際 Delete Behavior（刪除行為）依 MVP 開發階段確認。
+### Confirmed Folder Delete Rule
+
+Folder Delete Behavior（資料夾刪除行為）已由既有 PM Decision 確認：
+
+- Folder 只有在完全為空時才能刪除。
+- 如果 Folder 內仍有 Book 或 Child Folder，禁止刪除。
+- 不得使用 Cascade Delete（級聯刪除）。
+- 不得因刪除 Folder 自動搬移其中的 Book 或 Child Folder。
+- Delete API / UI 必須先檢查 Folder 是否為空，再決定是否允許刪除。
+
+本規則屬於既有已確認產品行為，不再視為「待確認」。
+
+UI 提示文字沿用既有 PM Decision／已確認實作內容；本 Database Design 不重新定義 UI 文案。
 
 
 # 7. Book
@@ -1451,7 +1463,16 @@ Book 不應存在於不存在的 Workspace。
 
 Delete Behavior（刪除行為）
 
-必須在實作階段明確確認。
+原則上於實作階段依已確認產品規格確認。
+
+但既有 PM Decision 已確認的刪除規則，不得重新視為未核定。
+
+目前已確認的 Folder Delete Rule：
+
+- Folder 只有在完全為空時才能刪除。
+- 非空 Folder 禁止刪除。
+- 不得 Cascade Delete。
+- 不得自動搬移 Folder 內的 Book 或 Child Folder。
 
 不得因資料庫預設行為，自動刪除大量教材資料而未經產品規格確認。
 
@@ -1528,6 +1549,24 @@ Provider-specific Data（Provider 專用資料）應與核心教材資料保持�
 
 # 21. Change Log
 
+
+## Version 1.1
+
+### Folder Delete Rule Synchronization
+
+同步既有 PM Decision 已確認的 Folder Delete Rule。
+
+本版本正式確認：
+
+- Folder 只有在完全為空時才能刪除。
+- 非空 Folder 禁止刪除。
+- 不得 Cascade Delete。
+- 不得自動搬移 Book 或 Child Folder。
+- Delete 行為必須先檢查 Folder 是否為空。
+
+本次只同步既有已確認規則，不新增產品功能，不新增 Database Schema。
+
+---
 
 ## Version 1.0
 
