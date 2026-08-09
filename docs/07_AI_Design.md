@@ -1,188 +1,97 @@
 # MagicBook 3.0 AI Design
 
-Version: 1.2
+Version: 1.3
+
 Status: Draft
+
 Document Owner: Teresa Su
+
 Product Manager: ChatGPT
+
 Technical Lead: 阿德
+
 Last Update: 2026-08-09
-
----
-
-# Table of Contents
-
-0. AI Design Purpose
-1. AI Design Principles
-2. AI Scope
-3. AI Architecture
-4. AI Module
-5. AI Provider Architecture
-6. AI Conversation
-7. Prompt Manager
-8. AI History
-9. AI Settings
-10. AI Automation
-11. Image Quality Check
-12. Auto Correction
-13. Re-Quality Check
-14. OCR
-15. OCR Provider
-16. OCR Result
-17. Hotspot Generator
-18. Hotspot Coordinate Transformation
-19. Reliable Failure
-20. Image Processing Data
-21. Processing Job
-22. Background Processing
-23. AI and Teaching Material Separation
-24. AI and Text Area Boundary
-25. AI and HTML Overlay
-26. AI and Reading Mode
-27. AI User Experience
-28. AI Security
-29. AI Performance
-30. Provider Replacement
-31. Reuse Before Reinvent
-32. AI Development Boundaries
-33. AI Testing and Validation
-34. AI Completion Criteria
-35. AI Change Control
-36. Change Log
 
 ---
 
 # 0. AI Design Purpose
 
-## 0.1 Purpose
+本文件定義 MagicBook 3.0 的 AI Architecture（AI 架構）、AI Scope（AI 範圍）、AI Processing（AI 處理流程）、AI Data Access（AI 資料存取）、AI Provider（AI 服務供應商）、AI Security（AI 安全）與 AI Failure Handling（AI 失敗處理）。
 
-本文件定義 MagicBook 3.0 的 AI Design（AI 設計）。
+本文件為工程實作依據。
 
-AI 在 MagicBook 3.0 中包含兩個不同層次：
+AI 不得自行擴張產品功能。
 
-1. AI Module（AI 模組）
-2. AI Automation（AI 自動化流程）
+AI 不得自行改變 Product Specification（產品規格）、Database Design（資料庫設計）或 API Design（API 設計）。
 
-兩者都屬於產品工具（Tool），不是教材本身。
-
----
-
-## 0.2 AI Module
-
-AI Module 負責使用者主動使用的 AI 工具，包括：
-
-- AI Panel（AI 面板）
-- Prompt Manager（提示管理器）
-- Conversation（對話）
-- History（歷史）
-- AI Settings（AI 設定）
-- AI Provider Interface（AI 服務供應商介面）
+如本文件與 Product Specification（產品規格）衝突，以 Product Specification（產品規格）為最高依據。
 
 ---
 
-## 0.3 AI Automation
+# 1. Core AI Principles
 
-AI Automation 負責教材匯入後的自動化處理流程。
+## 1.1 AI Is a Tool
 
-目前已確認流程：
+AI 是 MagicBook 的工具，不是產品資料的擁有者。
 
-Image Import
-↓
-Image Quality Check
-↓
-必要時 Auto Correction
-↓
-Re-Quality Check
-↓
-OCR
-↓
-Text + Bounding Box
-↓
-Coordinate Transformation（必要時）
-↓
-Hotspot Generator
-↓
-HTML Overlay
-↓
-Hotspot
+AI 的責任：
 
-這條流程屬於已確認的 MVP Engineering Architecture（MVP 工程架構）。
+- 理解使用者要求
+- 分析教材內容
+- 執行已定義的 AI Processing（AI 處理）
+- 產生 Processing Result（處理結果）
+- 協助建立互動內容
+- 協助搜尋、理解與整理教材
+
+AI 不得：
+
+- 自行建立未授權教材
+- 自行改變教材結構
+- 自行取得未授權資料
+- 自行跨 User Account（使用者帳戶）取得資料
+- 自行改變產品權限
+- 自行改變 Database Model（資料模型）
+- 自行改變 API Contract（API 契約）
 
 ---
 
-## 0.4 Source of Truth
+## 1.2 User Account Boundary
 
-AI Design 必須遵循以下正式文件：
+MagicBook 的資料歸屬與權限邊界為：
 
-1. Product Specification（產品規格）
-2. MVP Development（MVP 開發規格）
-3. Roadmap（開發路線圖）
-4. Development Guidelines（開發規範）
-5. Database Design（資料庫設計）
-6. API Design（API 設計）
+User Account（使用者帳戶）
+↓
+Book Library（教材庫）
+↓
+Folder（資料夾）
+↓
+Book（教材）
+↓
+Lesson（課程）
+↓
+Page（頁面）
+↓
+Content（內容）
 
-衝突處理優先順序：
+AI 必須遵循 User Account Boundary（使用者帳戶邊界）。
 
-> Product Specification → MVP Development → Roadmap → Development Guidelines → Database Design → API Design → AI Design
-
-AI Design 不得自行覆寫較高優先級的正式文件。
+AI 不得跨 User Account（使用者帳戶）取得資料。
 
 ---
 
-# 1. AI Design Principles
+## 1.3 AI Permission
 
-## 1.1 Teaching Material First
+AI 所有資料存取必須經過：
 
-Teaching Material（教材）永遠是產品核心。
-
-AI：
-
-- 不取代教材
-- 不擁有教材
-- 不應破壞教材
-- 不應自行改變教材原始內容
-
-AI 是協助教材使用的 Tool（工具）。
-
----
-
-## 1.2 AI Is a Tool
-
-AI 不應成為產品資料架構的最高層級。
-
-核心資料仍然屬於：
-
-Workspace
+Authentication（身份驗證）
 ↓
-Book
+User Account Resolution（使用者帳戶解析）
 ↓
-Lesson
+Permission Check（權限檢查）
 ↓
-Page
-↓
-Content
+Data Access（資料存取）
 
-AI Processing Data（AI 處理資料）屬於處理流程中的資料。
-
----
-
-## 1.3 Replaceable Provider
-
-AI Provider（AI 服務供應商）必須可替換。
-
-核心架構不得直接綁定：
-
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future Providers
-
-更換 Provider 不應改變：
-
-- 教材資料
-- Workspace
-- 核心 API
-- 使用者操作流程
+未通過 Permission Check（權限檢查）的資料不得提供給 AI。
 
 ---
 
@@ -190,256 +99,230 @@ AI Provider（AI 服務供應商）必須可替換。
 
 如果 AI 或自動化流程無法可靠完成：
 
-> Reliable Failure（可靠失敗）優於錯誤成功。
+> Reliable Failure（可控失敗）優於錯誤成功。
 
 系統不得：
 
-- 猜測內容
-- 建立猜測性 Hotspot
-- 把不可靠結果標記為 SUCCESS
-- 用錯誤結果覆蓋正式教材
-
----
-
-## 1.5 Minimum Necessary Processing
-
-AI Automation 不應對所有圖片執行所有處理。
-
-只執行必要處理。
-
-目的：
-
-- 降低 Processing Time（處理時間）
-- 降低 Background Processing（背景處理）負擔
-- 避免不必要影像處理
-- 維持結果可靠性
-
----
-
-## 1.6 Background Processing
-
-耗時工作應使用 Background Processing。
-
-包括：
-
-- Denoise（去雜訊）
-- OCR
-- AI
-- Image Processing（影像處理）
-- Compression（壓縮）
-- Optimization（最佳化）
-
-不得因耗時 AI / Image Processing 工作造成主要 UI Flow（使用者流程）阻塞。
-
----
-
-## 1.7 Reuse Before Reinvent
-
-AI 相關工程同樣遵循：
-
-Reuse Before Reinvent（先利用現有技術，再考慮自行開發）。
-
-優先順序：
-
-1. OS / Device Existing Capability（作業系統／裝置既有能力）
-2. Browser Existing Capability（瀏覽器既有能力）
-3. HTML / CSS / JavaScript Native Capability（原生能力）
-4. Mature Open Source Library（成熟開源函式庫）
-5. Mature Third-party Tool / Service（成熟第三方工具／服務）
-6. 最後才評估 Custom Development（自行開發）
-
-不得因 AI 功能而自行重新發明已存在的成熟技術。
+- 假裝 AI 已完成
+- 產生未確認資料
+- 覆蓋原始教材
+- 自動建立錯誤教材內容
+- 將 Processing Result（處理結果）直接視為正式教材資料
 
 ---
 
 # 2. AI Scope
 
-## 2.1 MVP AI Scope
+## 2.1 In Scope
 
-MVP 包含：
+MagicBook 3.0 MVP（最小可行產品）目前 AI 範圍包括：
 
-- AI Module
-- AI Provider Interface
-- AI Conversation
-- Prompt Manager
-- AI History
-- AI Settings
-- AI Automation
-- Image Quality Check
-- Auto Correction
-- Re-Quality Check
-- OCR
-- OCR Provider Adapter
-- Hotspot Generator
-- Background Processing
-- Reliable Failure
-- Processing Image Rule
-- Hotspot Coordinate Transformation
+- Image Quality Check（圖片品質檢查）
+- Auto Correction（自動修正）
+- OCR（光學字元辨識）
+- Text Detection（文字偵測）
+- Bounding Box Detection（文字區域偵測）
+- Coordinate Transformation（座標轉換）
+- Hotspot Generation（互動熱點產生）
+- Document Text Detection（文件文字偵測）
+- AI Context（AI 上下文）
+- AI Conversation（AI 對話）
+- AI History（AI 歷史紀錄）
+- Processing Job（處理工作）
+- AI Provider（AI 服務供應商）
 
 ---
 
-## 2.2 AI Provider Types
-
-目前產品規格已確認的 AI Provider 類型：
-
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future Providers
-
-本文件不提前鎖定：
-
-- API Key implementation（API 金鑰實作）
-- Provider-specific request schema（Provider 專用請求結構）
-- Model-specific prompt format（模型專用提示格式）
-- Provider-specific database schema（Provider 專用資料庫結構）
-
----
-
-## 2.3 OCR Scope
-
-OCR 是 AI Automation Pipeline 的正式部分。
-
-MVP 已核定：
-
-Google Cloud Vision API
-+
-DOCUMENT_TEXT_DETECTION
-
-OCR 必須透過 Replaceable Provider Adapter（可替換服務供應商介面層）。
-
----
-
-## 2.4 Out of Scope
+## 2.2 Out of Scope
 
 目前不建立：
 
 - MagicBook Camera System（MagicBook 專用相機系統）
 - 自製 OCR Algorithm（自製 OCR 演算法）
 - 自製 AI Model（自製 AI 模型）
-- 未核定的新 Image Editor（圖片編輯器）
-- 未核定的新 Image Processing Algorithm（影像處理演算法）
-- 未核定的新 Threshold（門檻）
-- 未核定的新 AI Provider
-- 未核定的新 AI Product Feature（AI 產品功能）
+- 未確認的新 Image Editor（圖片編輯器）
+- 未確認的新 Image Processing Algorithm（影像處理演算法）
+- 未確認的新 AI Provider（AI 服務供應商）
+- 未確認的新 AI Product
+- AI 自動創作完整教材
+- AI 自動改寫正式教材
+- AI 自動建立未經使用者確認的 Teaching Material（教學教材）
 
 ---
 
 # 3. AI Architecture
 
-## 3.1 Two AI Layers
+## 3.1 High-Level Architecture
 
-MagicBook AI Architecture（AI 架構）分成：
+MagicBook AI Architecture（AI 架構）：
 
-### Layer A — User AI
-
-使用者主動呼叫：
-
-AI Panel
+User
 ↓
-Prompt Manager
+MagicBook UI（使用者介面）
 ↓
-AI Provider
+AI Request（AI 請求）
 ↓
-Response
-
-### Layer B — AI Automation
-
-系統自動處理：
-
-Image Import
+Permission Check（權限檢查）
 ↓
-Quality Check
+Context Builder（上下文建立）
 ↓
-Auto Correction
+AI Module（AI 模組）
 ↓
-Re-Quality Check
+AI Provider Adapter（AI 服務供應商介面）
 ↓
-OCR
+AI Provider（AI 服務供應商）
 ↓
-Hotspot Generator
+Processing Result（處理結果）
 ↓
-HTML Overlay
-↓
-Hotspot
-
-兩者共享 Provider Architecture（服務供應商架構），但責任不同。
+MagicBook
 
 ---
 
-## 3.2 Core Architecture
+## 3.2 AI Module
 
-AI Architecture 不得成為教材資料架構。
+AI Module（AI 模組）負責：
 
-核心關係：
+- Request Routing（請求路由）
+- Context Preparation（上下文準備）
+- Prompt Management（提示管理）
+- Provider Selection（服務供應商選擇）
+- Provider Call（服務供應商呼叫）
+- Result Validation（結果驗證）
+- Error Handling（錯誤處理）
+- History Recording（歷史紀錄）
 
-Teaching Material
-+
-AI Tool
-+
-AI Processing
-
-三者保持責任分離。
+AI Module 不直接負責資料庫結構設計。
 
 ---
 
-## 3.3 AI Provider Adapter
+## 3.3 Replaceable Provider
 
-架構：
+AI Provider（AI 服務供應商）必須可替換。
 
-Core AI API
+核心架構不得直接綁定單一 Provider。
+
+可能的 Provider 包括：
+
+- GPT
+- Claude
+- Gemini
+- OpenRouter
+- Future Providers（未來服務供應商）
+
+更換 Provider 不應影響：
+
+- Teaching Material（教學教材）
+- User Account Data（使用者帳戶資料）
+- Data Model（資料模型）
+- API Contract（API 契約）
+- UI
+- User Flow（使用者流程）
+
+---
+
+# 4. AI Processing Pipeline
+
+## 4.1 Image Processing Pipeline
+
+正式流程：
+
+Image Import（圖片匯入）
 ↓
-Provider Adapter
+Image Quality Check（圖片品質檢查）
 ↓
-Provider
-
-Provider Adapter 負責：
-
-- Provider Request Mapping（請求轉換）
-- Provider Response Mapping（回應轉換）
-- Provider Error Mapping（錯誤轉換）
-
-Core AI API 不直接依賴 Provider-specific implementation。
-
----
-
-# 4. AI Module
-
-## 4.1 Responsibility
-
-AI Module 負責：
-
-- AI Panel
-- Conversation
-- Prompt
-- History
-- Settings
-- Provider Interface
+必要時 Auto Correction（自動修正）
+↓
+Re-Quality Check（重新品質檢查）
+↓
+OCR（光學字元辨識）
+↓
+Text + Bounding Box（文字與文字區域）
+↓
+Coordinate Transformation（座標轉換）
+↓
+Hotspot Generator（互動熱點產生）
+↓
+HTML Overlay（HTML 疊加層）
+↓
+Hotspot（互動熱點）
 
 ---
 
-## 4.2 AI Panel
+## 4.2 Image Quality Check
 
-AI Panel 是使用者主動使用 AI 的主要入口。
+Image Quality Check（圖片品質檢查）負責確認：
 
-AI Panel 不應直接修改教材。
-
----
-
-## 4.3 Conversation
-
-Conversation（對話）保存使用者與 AI 的對話上下文。
-
-Conversation 不等於 Teaching Material。
+- 圖片是否可處理
+- 圖片解析度是否足夠
+- 圖片方向是否正常
+- 圖片是否需要修正
+- 圖片是否適合 OCR
 
 ---
 
-## 4.4 History
+## 4.3 Auto Correction
 
-History（歷史）保存已確認的 AI Conversation History（AI 對話歷史）。
+Auto Correction（自動修正）只在必要時執行。
 
-History 不應自動變成教材內容。
+可能處理：
+
+- Rotation（旋轉）
+- Crop（裁切）
+- Basic Image Correction（基本圖片修正）
+
+Auto Correction 不得改變教材原始內容。
+
+---
+
+## 4.4 OCR
+
+OCR（光學字元辨識）負責取得：
+
+- Text（文字）
+- Bounding Box（文字區域）
+- Confidence（辨識信心值）
+
+OCR Result（OCR 結果）屬於 Processing Result（處理結果）。
+
+OCR Result 不直接等於正式教材內容。
+
+---
+
+## 4.5 Coordinate Transformation
+
+Coordinate Transformation（座標轉換）負責將 OCR 座標轉換為 MagicBook Image Area（圖片區域）使用的座標系統。
+
+座標轉換必須保留：
+
+- 原始圖片尺寸
+- OCR 座標
+- 顯示尺寸
+- Hotspot 座標
+
+不得因 UI 尺寸改變而破壞原始座標資料。
+
+---
+
+## 4.6 Hotspot Generation
+
+Hotspot Generation（互動熱點產生）依 OCR Result（OCR 結果）建立可互動區域。
+
+Hotspot 不得直接修改原始圖片。
+
+Hotspot 屬於 Image Area（圖片區域）的互動資料。
+
+---
+
+## 4.7 HTML Overlay
+
+HTML Overlay（HTML 疊加層）負責將互動元素疊加在圖片上。
+
+HTML Overlay 不得破壞：
+
+- 原始圖片
+- 原始座標
+- Page（頁面）
+- Image Asset（圖片資產）
 
 ---
 
@@ -452,10 +335,10 @@ History 不應自動變成教材內容。
 Provider 可以被替換，而不應影響：
 
 - 教材
-- Workspace
+- User Account Data（使用者帳戶資料）
 - API
 - UI
-- Data Model
+- Data Model（資料模型）
 
 ---
 
@@ -463,105 +346,124 @@ Provider 可以被替換，而不應影響：
 
 Provider Interface（服務供應商介面）提供共同能力。
 
-實際 Provider-specific implementation 於工程階段處理。
+Provider-specific Implementation（供應商專用實作）集中於 Adapter Layer（介面轉接層）。
 
----
+架構：
 
-## 5.3 Provider Failure
-
-Provider 發生：
-
-- Timeout（逾時）
-- Network Failure（網路失敗）
-- Rate Limit（速率限制）
-- Service Failure（服務失敗）
-
-不得造成正式教材資料損壞。
-
----
-
-# 6. AI Conversation
-
-## 6.1 Conversation Flow
-
-User
+AI Module
 ↓
-AI Panel
-↓
-Prompt Manager
+Provider Interface
 ↓
 Provider Adapter
 ↓
-AI Provider
-↓
-Response
-↓
-Conversation History
+Provider API
 
 ---
 
-## 6.2 Context
+## 5.3 Provider Credential
+
+Provider Credential（服務供應商憑證）不得暴露給一般使用者。
+
+API Key（API 金鑰）不得：
+
+- 寫入前端程式碼
+- 暴露給瀏覽器
+- 回傳給一般使用者
+- 儲存在公開 Repository（儲存庫）
+
+---
+
+# 6. AI Context
+
+## 6.1 Context Definition
+
+Context（上下文）是 AI 執行任務時允許使用的資訊集合。
+
+Context 可能包含：
+
+- User Account Context（使用者帳戶上下文）
+- Book Context（教材上下文）
+- Lesson Context（課程上下文）
+- Page Context（頁面上下文）
+- Content Context（內容上下文）
+- User Request（使用者要求）
+
+---
+
+## 6.2 Context Permission
 
 AI 可以取得已授權的 Context（上下文）。
 
-Context 必須遵循 Workspace Permission（工作空間權限）。
+Context 必須遵循 User Account Permission（使用者帳戶權限）。
 
-不得跨 Workspace 取得資料。
+不得跨 User Account（使用者帳戶）取得資料。
 
 ---
 
-## 6.3 Response
+## 6.3 Context Minimization
+
+AI 只應取得完成目前任務所必要的 Context（上下文）。
+
+不得因方便而取得整個 User Account（使用者帳戶）的全部資料。
+
+---
+
+# 7. AI Conversation
+
+## 7.1 Conversation
+
+AI Conversation（AI 對話）用於：
+
+- 使用者提問
+- AI 回應
+- 教材理解
+- AI 輔助操作
+
+---
+
+## 7.2 Conversation Context
+
+每次 AI Conversation 必須使用目前已授權的 Context（上下文）。
+
+不得自動加入：
+
+- 未授權教材
+- 其他 User Account（使用者帳戶）資料
+- 未確認的 Teaching Material（教學教材）
+
+---
+
+## 7.3 Response
 
 AI Response（AI 回應）首先屬於 Tool Output（工具輸出）。
 
-除非使用者明確將內容加入教材，否則不得自動成為 Teaching Material。
-
----
-
-# 7. Prompt Manager
-
-## 7.1 Responsibility
-
-Prompt Manager 負責：
-
-- Prompt Management（提示管理）
-- Prompt Organization（提示整理）
-- Prompt Execution Context（提示執行上下文）
-
----
-
-## 7.2 Prompt Separation
-
-Prompt 不等於教材資料。
-
-Prompt 可以引用教材 Context，但不得改變教材原始資料。
-
----
-
-## 7.3 Provider Independence
-
-Prompt Manager 不應把 Prompt 永久綁定單一 Provider。
-
-Provider 更換後，核心 Prompt Management 架構仍應存在。
+除非使用者明確確認內容加入教材，否則不得自動成為 Teaching Material（教學教材）。
 
 ---
 
 # 8. AI History
 
-## 8.1 Responsibility
+## 8.1 History Purpose
 
-AI History 負責：
+AI History（AI 歷史紀錄）用於記錄 AI 使用相關資訊。
 
-- Conversation History
-- AI Interaction Record（AI 互動紀錄）
+可包含：
+
+- User Request（使用者要求）
+- AI Request（AI 請求）
+- AI Response（AI 回應）
+- Provider（服務供應商）
+- Processing Result（處理結果）
+- Error（錯誤）
+- Timestamp（時間）
 
 ---
 
 ## 8.2 Data Ownership
 
-AI History 屬於目前 Workspace 的 AI 使用資料。
+AI History（AI 歷史紀錄）屬於 User Account（使用者帳戶）的 AI 使用資料。
 
-不得跨 Workspace 讀取。
+不得讓其他 User Account（使用者帳戶）讀取。
 
 ---
 
@@ -569,1296 +471,769 @@ AI History 屬於目前 Workspace 的 AI 使用資料。
 
 AI History 不應自動成為：
 
-- Book
-- Lesson
-- Page
-- Text Block
-- Image Asset
+- Book（教材）
+- Lesson（課程）
+- Page（頁面）
+- Text Block（文字區塊）
+- Image Asset（圖片資產）
+
+AI History 與 Teaching Material（教學教材）必須分離。
 
 ---
 
-# 9. AI Settings
+# 9. Prompt Management
 
-## 9.1 Responsibility
+## 9.1 Prompt Manager
 
-AI Settings（AI 設定）負責已確認的 AI 使用設定。
+Prompt Manager（提示管理器）負責管理 AI Prompt（AI 提示）。
 
-包括：
-
-- AI Provider
-- AI-related Preferences（AI 相關偏好）
-- AI Usage Configuration（AI 使用設定）
+Prompt 不得直接散落於各個 UI Component（介面元件）中。
 
 ---
 
-## 9.2 Provider Setting
+## 9.2 Prompt Version
 
-使用者可以依產品規格使用已支援的 Provider。
+Prompt 可以具有 Version（版本）。
 
-實際 Provider Credential（服務憑證）管理依 Authentication / Security Architecture 執行。
+Prompt Version 不得改變：
 
----
-
-# 10. AI Automation
-
-## 10.1 Purpose
-
-AI Automation 的目的：
-
-將使用者提供的教材圖片，轉換為：
-
-- 可讀取
-- 可辨識
-- 可建立互動內容
-
-的教材處理結果。
+- User Account Permission（使用者帳戶權限）
+- Data Ownership（資料歸屬）
+- API Contract（API 契約）
+- Database Schema（資料庫結構）
 
 ---
 
-## 10.2 Official Pipeline
+## 9.3 Prompt Input
 
-正式流程：
+Prompt Input（提示輸入）必須經過：
 
-Image Import
-↓
-Image Quality Check
-↓
-必要時 Auto Correction
-↓
-Re-Quality Check
-↓
-OCR
-↓
-Hotspot Generator
-↓
-HTML Overlay
-↓
-Hotspot
-
-這條 Pipeline 是已確認的產品行為。
+- Permission Check（權限檢查）
+- Context Validation（上下文驗證）
+- Input Validation（輸入驗證）
 
 ---
 
-## 10.3 Quality Check Is Not Reject-only
+# 10. AI Tool Architecture
 
-Quality Check 不只是 Reject System（拒絕系統）。
+## 10.1 Tool
 
-如果圖片可以透過 Auto Correction 改善：
+AI Tool（AI 工具）是 AI 可以呼叫的明確能力。
 
-Quality Check
-↓
-Auto Correction
-↓
-Re-Quality Check
+Tool 必須具有：
 
-而不是直接：
-
-Quality Check
-↓
-Reject
+- Tool Name（工具名稱）
+- Input Schema（輸入結構）
+- Permission Rule（權限規則）
+- Processing Rule（處理規則）
+- Output Schema（輸出結構）
+- Error Handling（錯誤處理）
 
 ---
 
-## 10.4 Full Pipeline Principle
+## 10.2 Tool Output
 
-Technical Benchmark 已確認：
+Tool Output（工具輸出）必須經過 Result Validation（結果驗證）。
 
-| Pipeline | SUCCESS | PARTIAL | FAIL |
-| --- | ---: | ---: | ---: |
-| Baseline | 40.0% | 33.3% | 26.7% |
-| Quality Check Only | 33.3% | 26.7% | 40.0% |
-| Full Pipeline | 73.3% | 13.3% | 13.3% |
-
-因此正式產品方向為：
-
-> Quality Check 與 Auto Correction 應視為同一套自動化 Pipeline。
-
-Benchmark 數字是 Technical Evidence（技術證據），不得直接被當成正式 Threshold。
+Tool Output 不得直接視為正式教材資料。
 
 ---
 
-# 11. Image Quality Check
+## 10.3 Tool Permission
 
-## 11.1 Responsibility
+每個 Tool 都必須檢查：
 
-Image Quality Check（圖片品質檢查）負責判斷：
-
-- 是否需要修正
-- 是否可以繼續
-- 是否需要重新檢查
-- 是否已經無法可靠處理
+- User Account（使用者帳戶）
+- Permission（權限）
+- Resource Ownership（資源歸屬）
+- Resource Scope（資源範圍）
 
 ---
 
-## 11.2 Quality States
+# 11. Processing Job
 
-目前使用：
+## 11.1 Processing Job
 
-- SUCCESS
-- PARTIAL
-- FAIL
-
-Quality State 不得被誤解為單純的 UI 狀態。
-
----
-
-## 11.3 Blur
-
-Severe Blur（嚴重模糊）目前視為：
-
-不可可靠救援。
-
-因此：
-
-> 嚴重模糊可以成為 FAIL 情境。
-
-Sharpen 不能被宣稱可以恢復嚴重模糊。
-
----
-
-## 11.4 Skew
-
-Skew（傾斜）應進入：
-
-Skew Detection
-↓
-Deskew
-↓
-Re-Quality Check
-
-目前實測 Deskew 可以救回部分中高角度傾斜情境。
-
----
-
-## 11.5 Noise
-
-Noise（雜訊）判斷不得只依賴 Contrast（對比度）。
-
-Denoise Trigger 必須同時具備：
-
-Low Quality Evidence
-+
-Independent Noise Evidence
-
-才可觸發。
-
----
-
-## 11.6 Brightness and Contrast
-
-Brightness（亮度）與 Contrast（對比度）不得單獨作為 Reject Condition（拒絕條件）。
-
-Contrast 偏低不得單獨觸發 Denoise。
-
----
-
-## 11.7 Quality Check Output
-
-Quality Check Result（品質檢查結果）應能支持後續決策：
-
-- Continue
-- Auto Correction
-- Re-Quality Check
-- Partial
-- Fail
-
-Threshold 的正式數值若尚未核定，不得在 AI Design 中自行決定。
-
----
-
-# 12. Auto Correction
-
-## 12.1 Responsibility
-
-Auto Correction（自動修正）負責必要的影像修正。
-
-目前正式保留：
-
-- Deskew
-- Denoise
-- Sharpen
-
----
-
-## 12.2 Deskew
-
-Deskew 用於修正影像傾斜。
-
-流程：
-
-Skew Detection
-↓
-Deskew
-↓
-Re-Quality Check
-
-如果修正後仍不可靠：
-
-FAIL。
-
----
-
-## 12.3 Denoise
-
-Denoise 用於改善雜訊。
-
-實測：
-
-- 低光源＋雜訊情境可顯著改善
-- 約 1360ms / 張
-
-因此：
-
-> Denoise 必須使用 Background Processing。
-
----
-
-## 12.4 Sharpen
-
-Sharpen：
-
-- 可改善輕微模糊
-- 無法恢復嚴重模糊
-- 成本低
-- 約 16ms 的技術測試結果
-
-不得宣稱 Sharpen 已證實能提升整體 End-to-End Success。
-
----
-
-## 12.5 CLAHE
-
-CLAHE（對比度受限自適應直方圖均衡化）目前不列入主要 Auto Correction Pipeline。
-
-原因：
-
-本次低光源＋雜訊測試沒有實質改善。
-
----
-
-## 12.6 Minimum Necessary Correction
-
-不得對所有圖片固定執行：
-
-Deskew
-+
-Denoise
-+
-Sharpen
-
-應根據 Quality Check 結果只執行必要修正。
-
----
-
-# 13. Re-Quality Check
-
-## 13.1 Mandatory
-
-Auto Correction 完成後：
-
-> 必須執行 Re-Quality Check（重新品質檢查）。
-
-不得：
-
-Auto Correction
-↓
-直接假設 SUCCESS。
-
----
-
-## 13.2 Decision
-
-Re-Quality Check 結果：
-
-### SUCCESS
-
-可以進入下一階段。
-
-### PARTIAL
-
-可以回傳部分結果，但不得假裝完全可靠。
-
-### FAIL
-
-不得繼續建立猜測性 Hotspot。
-
----
-
-## 13.3 User Adjustment
-
-如果使用者：
-
-- 調整圖片
-- 重新拍攝
-- 重新選擇圖片
-
-完成後必須重新進入完整 Quality Check Pipeline。
-
----
-
-# 14. OCR
-
-## 14.1 Responsibility
-
-OCR（Optical Character Recognition，光學字元辨識）負責：
-
-- Text Recognition（文字辨識）
-- Bounding Box（文字邊界框）
-
----
-
-## 14.2 OCR Position in Pipeline
-
-OCR 必須發生在：
-
-Quality Check
-↓
-Auto Correction（必要時）
-↓
-Re-Quality Check
-↓
-OCR
-
-不得在圖片品質仍不可靠時直接進入正式 OCR 流程。
-
----
-
-## 14.3 OCR Does Not Replace Text Area
-
-OCR Result 不得自動寫入 Text Area。
-
-Text Area 是獨立的 Text-only Editing Area（純文字編輯區）。
-
----
-
-## 14.4 OCR Result
-
-OCR Result 至少提供：
-
-- Text
-- Bounding Box
-
-後續 Hotspot Generator 使用 OCR Result 建立互動內容。
-
----
-
-# 15. OCR Provider
-
-## 15.1 Confirmed Provider
-
-MVP 已核定：
-
-Google Cloud Vision API
-
-使用：
-
-DOCUMENT_TEXT_DETECTION
-
----
-
-## 15.2 Provider Adapter
-
-架構：
-
-OCR Core
-↓
-OCR Provider Adapter
-↓
-Google Cloud Vision API
-
-未來可以替換 Provider。
-
----
-
-## 15.3 Provider Independence
-
-核心資料不得直接綁死：
-
-Google API
-
-Provider 更換不得造成：
-
-- 教材資料損壞
-- Workspace 資料損壞
-- Hotspot 資料損壞
-- API Architecture 破壞
-
----
-
-# 16. OCR Result
-
-## 16.1 Intermediate Result
-
-OCR Result 屬於 Processing Result（處理結果）。
-
-不是正式教材資產。
-
----
-
-## 16.2 Text
-
-Text 是 OCR 辨識結果。
-
----
-
-## 16.3 Bounding Box
-
-Bounding Box 是 OCR 辨識出的文字位置。
-
-它主要提供給：
-
-Hotspot Generator
-
-使用。
-
----
-
-## 16.4 Reliability
-
-OCR 如果無法可靠辨識：
-
-- 不得猜測
-- 不得產生錯誤 Hotspot
-- 應回傳 PARTIAL 或 FAIL
-
----
-
-# 17. Hotspot Generator
-
-## 17.1 Responsibility
-
-Hotspot Generator（熱點產生器）負責：
-
-根據：
-
-- OCR Text
-- Bounding Box
-- Page / Image Context
-
-建立 Hotspot。
-
----
-
-## 17.2 Generator Flow
-
-OCR
-↓
-Text + Bounding Box
-↓
-Coordinate Transformation（必要時）
-↓
-Hotspot Generator
-↓
-HTML Overlay
-↓
-Hotspot
-
----
-
-## 17.3 Reliable Generation
-
-Hotspot Generator 只有在結果可靠時才能建立正式 Hotspot。
-
-不可靠時：
-
-> Reliable Failure 優於錯誤成功。
-
----
-
-## 17.4 No Guessing
-
-不得：
-
-- 猜測文字位置
-- 猜測文字內容
-- 猜測 Hotspot
-- 以不可靠結果標記 SUCCESS
-
----
-
-# 18. Hotspot Coordinate Transformation
-
-## 18.1 Problem
-
-Auto Correction 可能改變圖片幾何。
+Processing Job（處理工作）用於執行可能需要時間的 AI Processing（AI 處理）。
 
 例如：
 
-Deskew。
-
-OCR 在 Processed Image（處理後圖片）上取得的座標，不一定等於：
-
-Final Display Coordinates（最終顯示座標）。
-
----
-
-## 18.2 Required Flow
-
-Processed Coordinates
-↓
-Coordinate Transform
-↓
-Final Display Coordinates
-↓
-Hotspot
-
----
-
-## 18.3 Requirement
-
-Hotspot 必須正確對應使用者實際看到的教材圖片。
-
-不得出現：
-
-圖片已修正
-+
-Hotspot 位置錯誤
-
----
-
-# 19. Reliable Failure
-
-## 19.1 Principle
-
-MagicBook 的 AI Automation 採：
-
-> Reliable Failure 優於錯誤成功。
-
----
-
-## 19.2 Failure Conditions
-
-如果：
-
-- OCR 不可靠
-- Image Quality 不可靠
-- Auto Correction 後仍不可靠
-- Hotspot Coordinate 無法可靠轉換
-- Provider 發生不可恢復錯誤
-
-不得產生猜測性結果。
-
----
-
-## 19.3 Result States
-
-可以使用：
-
-- SUCCESS
-- PARTIAL
-- FAIL
-
-實際 API Error Code（錯誤代碼）依 API Design。
-
----
-
-## 19.4 Manual Fallback
-
-自動化失敗時：
-
-使用者可以：
-
-- 重新拍攝
-- 重新選擇圖片
-- 手動建立互動內容
-
-MagicBook 不因 AI Automation 失敗而阻止使用者手動完成教材。
-
----
-
-# 20. Image Processing Data
-
-## 20.1 Processing Image
-
-Processed Image（處理後圖片）是中間資料。
-
-用途：
-
 - OCR
-- AI
-- Hotspot Generator
+- Image Processing（圖片處理）
+- AI Analysis（AI 分析）
+- Document Text Detection（文件文字偵測）
 
 ---
 
-## 20.2 No Second Teaching Asset
-
-Processed Image：
-
-不得形成第二份教材圖片資產。
-
-不得自動建立新的 Page Image。
-
----
-
-## 20.3 Rejected Image
-
-如果 Quality Check 判定：
-
-FAIL
-+
-不可可靠處理
-
-不得因處理流程建立永久教材資產。
-
-MagicBook 不是使用者照片倉庫。
-
----
-
-## 20.4 Teaching Material Asset
-
-只有使用者真正確認為教材內容的圖片：
-
-才成為 Page 的 Teaching Material Asset（教材資產）。
-
----
-
-# 21. Processing Job
-
-## 21.1 Responsibility
-
-AI Processing Job（AI 處理工作）負責追蹤耗時自動化工作。
-
----
-
-## 21.2 Job States
-
-目前使用：
-
-- Pending
-- Processing
-- Completed
-- Failed
-
----
-
-## 21.3 Job Context
+## 11.2 Job Context
 
 Processing Job 必須具有：
 
-- Workspace Context
-- Source Resource
-- Processing Type
+- User Account Context（使用者帳戶上下文）
+- Source Resource（來源資源）
+- Processing Type（處理類型）
 
 ---
 
-## 21.4 Processing Type
+## 11.3 Processing Type
 
 已確認的處理類型包括：
 
-- Image Quality Check
-- Auto Correction
-- OCR
-- AI
-- Image Optimization
-- Image Compression
-
-實際 Job Type 於 API Implementation（API 實作）階段統一。
+- Image Quality Check（圖片品質檢查）
+- Auto Correction（自動修正）
+- OCR（光學字元辨識）
+- AI Processing（AI 處理）
+- Document Text Detection（文件文字偵測）
 
 ---
 
-# 22. Background Processing
+## 11.4 Job Status
 
-## 22.1 Required Background Work
+Processing Job 可以具有：
 
-以下工作應使用 Background Processing：
-
-- Denoise
-- OCR
-- AI
-- Image Processing
-- Compression
-- Optimization
+- Pending（等待中）
+- Processing（處理中）
+- Completed（完成）
+- Failed（失敗）
 
 ---
 
-## 22.2 UI
+## 11.5 Job Isolation
 
-長時間工作應提供：
+Processing Job 必須遵循 User Account Data Isolation（使用者帳戶資料隔離）。
 
-- Pending
-- Processing
-- Completed
-- Failed
-
-等可理解的狀態。
+Job 不得讀取其他 User Account（使用者帳戶）的資料。
 
 ---
 
-## 22.3 No UI Blocking
+# 12. OCR Architecture
 
-AI Automation 不得讓主要 Editor / Reading Flow 長時間 Freeze（凍結）。
+## 12.1 OCR Provider
 
----
+OCR Provider（OCR 服務供應商）必須可替換。
 
-# 23. AI and Teaching Material Separation
-
-## 23.1 Separation
-
-AI Processing Data 與 Teaching Material Data 必須分離。
+OCR Architecture（OCR 架構）不得綁定單一 OCR Provider。
 
 ---
 
-## 23.2 AI Cannot Rewrite Material
+## 12.2 OCR Input
 
-AI 不得直接：
+OCR Input（OCR 輸入）可能包含：
 
-- 修改 Original Teaching Material
-- 覆蓋 Image Asset
-- 覆蓋 Text Block
-- 修改 Page Structure
-
-除非未來另有正式 PM Decision。
+- Image Asset（圖片資產）
+- PDF Page（PDF 頁面）
+- Document Image（文件圖片）
 
 ---
 
-## 23.3 User Confirmation
+## 12.3 OCR Result
 
-AI Result 如果要成為正式教材內容：
+OCR Result（OCR 結果）屬於 Processing Result（處理結果）。
 
-必須經過已確認的使用者操作流程。
+OCR Result 包含：
 
----
+- Text（文字）
+- Bounding Box（文字區域）
+- Confidence（辨識信心值）
 
-# 24. AI and Text Area Boundary
-
-## 24.1 Text Area
-
-Text Area 是：
-
-Text-only Editing Area（純文字編輯區）。
+OCR Result 不等於正式教材資料。
 
 ---
 
-## 24.2 OCR Boundary
+## 12.4 OCR Failure
 
-OCR 不屬於 Text Area。
+OCR 失敗時：
 
-OCR 由 AI Automation / OCR Module 處理。
-
----
-
-## 24.3 No Automatic Replacement
-
-OCR / AI Result 不得自動取代正式 Text Block。
+- 不得覆蓋原始圖片
+- 不得建立錯誤 Hotspot（互動熱點）
+- 必須保留 Error State（錯誤狀態）
+- 必須允許重新處理
 
 ---
 
-# 25. AI and HTML Overlay
+# 13. Document Text Detection
 
-## 25.1 Overlay Responsibility
+## 13.1 Purpose
 
-HTML Overlay 是：
-
-Interactive Layer（互動層）。
+Document Text Detection（文件文字偵測）用於從文件內容取得可處理的文字資訊。
 
 ---
 
-## 25.2 AI Result
+## 13.2 Provider
 
-AI Automation 可以產生：
-
-Hotspot
-
-Hotspot 最終建立於：
-
-HTML Overlay Layer。
+Document Text Detection 必須透過 Replaceable Provider Adapter（可替換服務供應商介面）處理。
 
 ---
 
-## 25.3 Material Protection
+## 13.3 Result
 
-HTML Overlay 不得直接修改：
+Document Text Detection Result（文件文字偵測結果）屬於 Processing Result（處理結果）。
 
-Original Teaching Material。
-
-AI 產生互動內容必須保持：
-
-Material
-≠
-Interaction Data
+不得直接覆蓋正式教材。
 
 ---
 
-# 26. AI and Reading Mode
+# 14. AI Data Access
 
-## 26.1 Reading Mode
-
-Reading Mode（閱讀模式）可以使用：
-
-- Hotspot
-- Dictionary
-- AI
-- Audio
-- Video
-- Navigation
-
----
-
-## 26.2 AI Does Not Modify Material
-
-Reading Mode 中的 AI 使用：
-
-不得直接修改正式教材。
-
----
-
-## 26.3 Same Data Model
-
-Editor Mode 與 Reading Mode 使用同一份教材資料。
-
-AI 不得建立第二套教材資料模型。
-
----
-
-# 27. AI User Experience
-
-## 27.1 User Should Not Need Technical Knowledge
-
-使用者不需要知道：
-
-- AI
-- OCR
-- Confidence
-- Bounding Box
-- Model
-- Provider
-- Quality Check
-
-等技術細節。
-
----
-
-## 27.2 Photo Quality Failure
-
-已確認 UX 文案：
-
-「⚠️ 照片品質不足」
-
-「請重新拍攝清晰、光線充足的照片」
-
-「[知道了]」
-
----
-
-## 27.3 Automatic Interaction Failure
-
-已確認 UX 文案：
-
-「⚠️ 無法自動建立互動內容」
-
-「你可以重新拍攝，或直接手動建立互動內容」
-
-「[重新拍攝] [手動建立]」
-
----
-
-## 27.4 Simple Experience
-
-AI Automation 的複雜度應留在系統內部。
-
-使用者看到的是：
-
-Import
-↓
-Processing
-↓
-Result
-
-而不是：
-
-Quality Metric
-↓
-Model
-↓
-Provider
-↓
-Confidence
-↓
-Algorithm
-
----
-
-# 28. AI Security
-
-## 28.1 Workspace Isolation
-
-AI Request（AI 請求）必須遵守 Workspace Isolation（工作空間隔離）。
-
----
-
-## 28.2 Provider Credential
-
-Provider Credential 不得暴露給一般使用者。
-
----
-
-## 28.3 AI Data Access
+## 14.1 Access Rule
 
 AI 只能取得：
 
 - 已授權資料
-- 當前 Workspace 資料
-- 已確認可供 AI 使用的 Context
+- 屬於目前 User Account（使用者帳戶）的資料
+- 已確認供 AI 使用的 Context（上下文）
 
 ---
 
-## 28.4 Error Security
+## 14.2 No Cross Account Access
 
-錯誤不得洩漏：
+AI 不得：
 
-- API Key
-- Secret
-- Internal Stack Trace
-- Provider Secret
-- Internal Database Structure
-
----
-
-# 29. AI Performance
-
-## 29.1 Background Processing
-
-AI / OCR / Denoise 等耗時工作應在背景執行。
+- 取得其他 User Account（使用者帳戶）資料
+- 搜尋其他 User Account（使用者帳戶）教材
+- 取得其他 User Account（使用者帳戶）AI History（AI 歷史紀錄）
+- 取得未授權 Resource（資源）
 
 ---
 
-## 29.2 Minimum Necessary Processing
+## 14.3 Resource Ownership
 
-不要對所有圖片執行所有 Auto Correction。
-
----
-
-## 29.3 Processing Time
-
-已知技術測試：
-
-- Denoise 約 1360ms / 張
-- Sharpen 約 16ms
-
-這些數字屬於 Technical Evidence。
-
-不得直接視為未來正式 SLA（服務等級協議）。
+AI 讀取 Resource（資源）前必須確認 Resource Ownership（資源歸屬）。
 
 ---
 
-## 29.4 Performance Optimization
+# 15. AI Security
 
-優化方向：
+## 15.1 User Account Data Isolation
 
-- 避免不必要處理
-- Background Processing
-- Provider Adapter
-- Processing Job
-- Cache / Reuse 已存在結果時的能力
-
-任何新的 Cache Behavior（快取行為）若涉及產品資料或資料生命週期，仍需依正式規格確認。
+AI Request（AI 請求）必須遵守 User Account Data Isolation（使用者帳戶資料隔離）。
 
 ---
 
-# 30. Provider Replacement
+## 15.2 Provider Credential
 
-## 30.1 General Architecture
+Provider Credential（服務供應商憑證）不得暴露給一般使用者。
 
-Core AI
+---
+
+## 15.3 AI Data Access
+
+AI Data Access（AI 資料存取）必須受到 Permission Check（權限檢查）控制。
+
+---
+
+## 15.4 Error Security
+
+錯誤資訊不得洩漏：
+
+- Provider Credential（服務供應商憑證）
+- API Key（API 金鑰）
+- Database Credential（資料庫憑證）
+- Other User Account Data（其他使用者帳戶資料）
+
+---
+
+# 16. AI Failure Handling
+
+## 16.1 Provider Failure
+
+Provider Failure（服務供應商失敗）時：
+
+- 保留原始資料
+- 保留 Job Status（工作狀態）
+- 記錄 Error（錯誤）
+- 不產生假成功結果
+
+---
+
+## 16.2 OCR Failure
+
+OCR Failure（OCR 失敗）時：
+
+- 不建立錯誤 Hotspot（互動熱點）
+- 不覆蓋原始資料
+- 保留原始 Image Asset（圖片資產）
+- 允許重新處理
+
+---
+
+## 16.3 AI Failure
+
+AI Failure（AI 失敗）時：
+
+- 保留 User Data（使用者資料）
+- 保留原始 Teaching Material（教學教材）
+- 回傳可理解的 Error State（錯誤狀態）
+- 不自動建立錯誤教材
+
+---
+
+# 17. Result Validation
+
+## 17.1 Validation
+
+AI Result（AI 結果）必須經過 Result Validation（結果驗證）。
+
+驗證包括：
+
+- Schema Validation（結構驗證）
+- Permission Validation（權限驗證）
+- Resource Validation（資源驗證）
+- Data Integrity Check（資料完整性檢查）
+
+---
+
+## 17.2 Invalid Result
+
+如果 AI Result 不符合規格：
+
+- 不寫入正式教材
+- 不覆蓋原始資料
+- 標記 Processing Failed（處理失敗）
+- 保留錯誤資訊
+
+---
+
+# 18. Teaching Material Protection
+
+## 18.1 Original Material
+
+Original Teaching Material（原始教材）必須受到保護。
+
+AI 不得直接覆蓋：
+
+- Book（教材）
+- Lesson（課程）
+- Page（頁面）
+- Text Block（文字區塊）
+- Image Asset（圖片資產）
+
+---
+
+## 18.2 AI Generated Result
+
+AI Generated Result（AI 產生結果）與正式 Teaching Material（教學教材）必須分離。
+
+只有符合產品流程的結果才能進入正式教材。
+
+---
+
+# 19. Image Area Boundary
+
+## 19.1 Image Area
+
+Image Area（圖片區域）負責：
+
+- Image（圖片）
+- PDF（PDF）
+- Hotspot（互動熱點）
+- Image Asset（圖片資產）
+- Image Processing（圖片處理）
+- Coordinate Transformation（座標轉換）
+
+---
+
+## 19.2 Text Area Boundary
+
+Text Area（文字區域）是文字編輯區域。
+
+Text Area 不負責：
+
+- PDF Processing（PDF 處理）
+- Image Processing（圖片處理）
+- Hotspot Processing（互動熱點處理）
+
+AI 不得混合 Image Area 與 Text Area 的責任。
+
+---
+
+# 20. PDF Boundary
+
+## 20.1 PDF Role
+
+PDF 的主要責任是 Fixed Presentation（固定呈現）。
+
+PDF 不應被 AI 任意改寫。
+
+---
+
+## 20.2 AI Processing
+
+如果 PDF 需要 OCR 或文字偵測：
+
+PDF
 ↓
-Provider Adapter
+Processing Layer（處理層）
 ↓
-Provider
+OCR / Document Text Detection
+↓
+Processing Result
+
+不得直接破壞原始 PDF。
 
 ---
 
-## 30.2 AI Provider
+# 21. AI and TTS
 
-目前支援類型：
+## 21.1 Speech Responsibility
 
-- Claude
-- GPT
-- Gemini
-- OpenRouter
-- Future Providers
+MagicBook MVP（最小可行產品）不建立自製 TTS Engine（文字轉語音引擎）。
 
 ---
 
-## 30.3 OCR Provider
+## 21.2 Device TTS
 
-目前 MVP 已核定：
+Pronunciation（發音）使用 Device / Browser TTS（裝置／瀏覽器文字轉語音）。
 
-Google Cloud Vision API
-+
-DOCUMENT_TEXT_DETECTION
+MagicBook AI 不負責自行建立完整語音生成系統。
 
 ---
 
-## 30.4 Replacement Requirement
+# 22. AI and Hotspot
 
-Provider 更換不得影響：
+## 22.1 Hotspot
 
+Hotspot（互動熱點）是 Image Area（圖片區域）的互動資料。
+
+---
+
+## 22.2 AI Hotspot Generation
+
+AI 可以協助：
+
+- 找出文字
+- 找出文字區域
+- 建立候選 Hotspot
+- 建立相關 Context
+
+但正式 Hotspot Data（互動熱點資料）仍必須符合系統資料規則。
+
+---
+
+# 23. AI and Navigation
+
+## 23.1 Navigation Context
+
+AI 可以在已授權 Context（上下文）內協助：
+
+- 搜尋教材
+- 搜尋 Lesson（課程）
+- 搜尋 Page（頁面）
+- 搜尋 Content（內容）
+
+---
+
+## 23.2 Navigation Boundary
+
+AI Navigation（AI 導航）不得跨 User Account（使用者帳戶）。
+
+---
+
+# 24. AI and User Request
+
+## 24.1 Request
+
+User Request（使用者要求）必須先判斷：
+
+- 使用者身份
+- User Account（使用者帳戶）
+- Resource（資源）
+- Permission（權限）
+- Task Type（任務類型）
+
+---
+
+## 24.2 Ambiguous Request
+
+如果要求無法確認：
+
+AI 不得自行猜測並修改正式資料。
+
+應要求使用者確認。
+
+---
+
+# 25. AI Automation
+
+## 25.1 Automation Rule
+
+AI Automation（AI 自動化）只能執行已定義的 Processing Type（處理類型）。
+
+不得自行新增產品功能。
+
+---
+
+## 25.2 Background Processing
+
+需要較長時間的 AI Processing（AI 處理）可以使用 Background Processing（背景處理）。
+
+Background Processing 不得阻塞主要 UI Flow（使用者介面流程）。
+
+---
+
+## 25.3 Processing Result
+
+Background Processing 完成後：
+
+Processing Result
+↓
+Validation
+↓
+可用結果
+
+失敗：
+
+Processing Result
+↓
+Error State
+
+---
+
+# 26. AI Performance
+
+## 26.1 Background Processing
+
+較長時間的 AI Processing 應優先使用 Background Processing（背景處理）。
+
+---
+
+## 26.2 Caching
+
+可重複使用且安全的 AI Processing Result（AI 處理結果）可以使用 Cache（快取）。
+
+Cache 不得造成：
+
+- User Account Data Leakage（使用者帳戶資料洩漏）
+- Cross Account Access（跨帳戶存取）
+- Stale Result（過期結果）誤用
+
+---
+
+## 26.3 Optimization
+
+AI Processing 應優先：
+
+- Optimize Input（最佳化輸入）
+- Reduce Duplicate Processing（減少重複處理）
+- Cache Safe Results（快取安全結果）
+- Background Processing（背景處理）
+
+---
+
+# 27. AI Cost Control
+
+## 27.1 Provider Usage
+
+AI Provider 使用應避免：
+
+- 不必要的重複請求
+- 重複 OCR
+- 重複 AI Analysis（AI 分析）
+- 不必要的大型 Context（上下文）
+
+---
+
+## 27.2 Context Size
+
+Context（上下文）應保持在完成任務所需的最小範圍。
+
+---
+
+# 28. AI Change Control
+
+## 28.1 PM Review
+
+任何 AI Architecture Change（AI 架構變更）若影響：
+
+- Product Function（產品功能）
+- User Flow（使用者流程）
+- Data Model（資料模型）
+- API
+- Permission
 - Teaching Material
-- Workspace
-- Data Model
-- API Contract
-- User Flow
+
+必須先經 PM Review（產品經理審查）。
 
 ---
 
-# 31. Reuse Before Reinvent
+## 28.2 Provider Replacement
 
-## 31.1 Engineering Rule
+更換 Provider 不得影響：
+
+- Teaching Material（教學教材）
+- User Account Data（使用者帳戶資料）
+- Data Model（資料模型）
+- API Contract（API 契約）
+- User Flow（使用者流程）
+
+---
+
+# 29. Reuse Before Reinvent
+
+## 29.1 Engineering Rule
 
 遇到 AI 相關新需求：
 
 先確認現有技術。
 
-優先順序：
+優先使用：
 
-1. OS / Device Existing Capability
-2. Browser Existing Capability
-3. HTML / CSS / JavaScript Native Capability
-4. Mature Open Source Library
-5. Mature Third-party Tool / Service
-6. Custom Development
+- Existing Provider（現有服務供應商）
+- Existing API（現有 API）
+- Existing Processing Pipeline（現有處理流程）
+- Existing Component（現有元件）
+- Existing Data Model（現有資料模型）
 
----
-
-## 31.2 Image Example
-
-如果需求是：
-
-- 拍照
-- 圖片調整
-- 圖片裁切
-- 圖片處理
-
-不得直接建立新的：
-
-- Camera System
-- Image Editor
-- Image Processing Algorithm
-
-必須先確認現有能力。
+不得因為新需求就直接建立新的 AI System（AI 系統）。
 
 ---
 
-## 31.3 AI Example
+# 30. Integration Checklist
 
-如果需求已存在成熟：
+## 30.1 AI Integration
 
-- OCR Service
-- AI Provider
-- Image Processing Library
-
-不得先自行重建同類能力。
-
----
-
-# 32. AI Development Boundaries
-
-## 32.1 No Camera System
-
-AI Design 不授權建立：
-
-- getUserMedia()
-- ImageCapture
-- Exposure Control
-- Focus Control
-- HDR Control
-- Camera Preview
-- MagicBook Camera System
-
-使用者拍照由裝置既有相機完成。
-
-MagicBook 從 Image Import 開始。
+- [ ] User Account Permission（使用者帳戶權限）
+- [ ] Context Validation（上下文驗證）
+- [ ] Provider Adapter（服務供應商介面）
+- [ ] Provider Credential Security（服務供應商憑證安全）
+- [ ] Result Validation（結果驗證）
+- [ ] Error Handling（錯誤處理）
+- [ ] Background Processing（背景處理）
+- [ ] Cache Safety（快取安全）
+- [ ] User Account Data Isolation（使用者帳戶資料隔離）
 
 ---
 
-## 32.2 No Custom OCR Algorithm
-
-MVP 使用：
-
-Google Cloud Vision API
-
-不得因為 OCR 需求自行建立完整 OCR Engine（OCR 引擎）。
-
----
-
-## 32.3 No Unapproved Threshold
-
-不得自行決定：
-
-- Blur Threshold
-- Skew Threshold
-- Noise Threshold
-- Contrast Threshold
-- Auto Correction Trigger Threshold
-
-正式數值必須經 PM Decision 核定。
-
----
-
-## 32.4 No Scope Expansion
-
-不得因 AI Design 自行新增：
-
-- 新 AI Feature
-- 新 Provider
-- 新 Processing Pipeline
-- 新 Database Schema
-- 新 UI Flow
-- 新 Image Editor
-- 新 Camera System
-
----
-
-## 32.5 No Production Assumption From Benchmark
-
-Benchmark 可以提供 Technical Evidence。
-
-但：
-
-Benchmark Result
-≠
-Production Threshold
-
-Benchmark Result
-≠
-Production SLA
-
-Benchmark Result
-≠
-未經核定的產品規則。
-
----
-
-# 33. AI Testing and Validation
-
-## 33.1 Testing Principle
-
-AI Testing（AI 測試）必須驗證：
-
-- Correctness（正確性）
-- Reliability（可靠性）
-- Failure Handling（失敗處理）
-- Processing Flow（處理流程）
-- Provider Failure
-- Data Protection
-- Coordinate Accuracy
-
----
-
-## 33.2 Pipeline Testing
-
-至少驗證：
-
-Image Import
-↓
-Quality Check
-↓
-Auto Correction
-↓
-Re-Quality Check
-↓
-OCR
-↓
-Hotspot Generator
-
----
-
-## 33.3 Quality Testing
-
-測試情境包括已實測的：
-
-- Skew
-- Blur
-- Noise
-- Low Light
-- Mixed Chinese / English
-- Table + Text
-- Shadow Occlusion
-
----
-
-## 33.4 Failure Testing
-
-必須確認：
-
-- Severe Blur 不被錯誤救援
-- 不可靠 OCR 不建立猜測性 Hotspot
-- Provider Failure 不破壞教材
-- Re-Quality Check 失敗不標記 SUCCESS
-- Processing Image 不形成第二份教材資產
-
----
-
-## 33.5 Coordinate Testing
-
-如果 Deskew 改變影像幾何：
-
-必須測試：
-
-Processed Coordinates
-→
-Coordinate Transform
-→
-Final Display Coordinates
-→
-Hotspot
-
----
-
-# 34. AI Completion Criteria
-
-## 34.1 AI Module
-
-- [ ] AI Panel
-- [ ] Prompt Manager
-- [ ] Conversation
-- [ ] History
-- [ ] AI Settings
-- [ ] AI Provider Interface
-
----
-
-## 34.2 AI Automation
+## 30.2 Image Processing Integration
 
 - [ ] Image Quality Check
 - [ ] Auto Correction
-- [ ] Re-Quality Check
 - [ ] OCR
-- [ ] Hotspot Generator
-- [ ] Reliable Failure
-- [ ] Background Processing
-
----
-
-## 34.3 Image Processing
-
-- [ ] Deskew
-- [ ] Denoise
-- [ ] Sharpen
-- [ ] CLAHE excluded from main pipeline
-- [ ] Minimum Necessary Processing
-- [ ] Processing Image separation
-
----
-
-## 34.4 OCR
-
-- [ ] Google Cloud Vision API
-- [ ] DOCUMENT_TEXT_DETECTION
-- [ ] Replaceable Provider Adapter
-- [ ] Text Result
-- [ ] Bounding Box
-
----
-
-## 34.5 Integration
-
-- [ ] HTML Overlay integration
-- [ ] Hotspot Coordinate Transformation
+- [ ] Text + Bounding Box
+- [ ] Coordinate Transformation
+- [ ] Hotspot Generation
+- [ ] HTML Overlay
 - [ ] Image Storage Rule
-- [ ] Workspace Isolation
 - [ ] Error Handling
-- [ ] Provider Failure Handling
+
+---
+
+# 31. AI Security Checklist
+
+- [ ] User Account Boundary（使用者帳戶邊界）
+- [ ] Permission Check（權限檢查）
+- [ ] Resource Ownership（資源歸屬）
+- [ ] No Cross Account Access（禁止跨帳戶存取）
+- [ ] Provider Credential Protection（服務供應商憑證保護）
+- [ ] API Key Protection（API 金鑰保護）
+- [ ] AI History Isolation（AI 歷史紀錄隔離）
+- [ ] Processing Job Isolation（處理工作隔離）
+- [ ] Error Information Protection（錯誤資訊保護）
+
+---
+
+# 32. AI Data Ownership Rules
+
+## 32.1 User Data
+
+User Data（使用者資料）屬於 User Account（使用者帳戶）。
+
+---
+
+## 32.2 Teaching Material
+
+Teaching Material（教學教材）屬於其資料擁有者。
+
+AI 不得因為處理教材而取得教材所有權。
+
+---
+
+## 32.3 AI History
+
+AI History（AI 歷史紀錄）屬於對應 User Account（使用者帳戶）的 AI 使用資料。
+
+---
+
+## 32.4 Processing Result
+
+Processing Result（處理結果）在通過驗證與正式流程前，不得視為正式教材。
+
+---
+
+# 33. AI Architecture Boundaries
+
+AI 不負責：
+
+- User Account Authentication（使用者帳戶身份驗證）的核心實作
+- Database Schema（資料庫結構）的自行設計
+- Product Permission Model（產品權限模型）的自行修改
+- UI Design（介面設計）的自行決定
+- Teaching Material Ownership（教材所有權）的自行決定
+- API Contract（API 契約）的自行修改
+
+AI 必須透過既有 Architecture Boundary（架構邊界）工作。
+
+---
+
+# 34. AI Development Rules
+
+## 34.1 No Scope Expansion
+
+AI Developer 不得自行新增：
+
+- 新產品功能
+- 新 AI Feature（AI 功能）
+- 新資料表
+- 新 API
+- 新權限
+- 新 User Flow（使用者流程）
+
+除非已經由 PM 確認。
+
+---
+
+## 34.2 Existing Technology First
+
+任何新 AI 需求：
+
+先確認現有技術
+↓
+確認是否可以重用
+↓
+確認是否需要新增 Adapter
+↓
+確認是否需要新增 Processing Type
+↓
+PM Review
+
+---
+
+## 34.3 Architecture Consistency
+
+AI Design 必須與以下文件保持一致：
+
+- Product Specification（產品規格）
+- MVP Development（MVP 開發規格）
+- Database Design（資料庫設計）
+- API Design（API 設計）
+- Editor Design（編輯器設計）
+- UI Design（UI 設計）
+
+---
+
+## 34.4 Integration
+
+AI Integration（AI 整合）必須確認：
+
+- [ ] User Account Data Isolation
+- [ ] Permission Check
+- [ ] Provider Adapter
+- [ ] Processing Job
+- [ ] Result Validation
+- [ ] Error Handling
+- [ ] Background Processing
+- [ ] Cache Safety
+- [ ] Teaching Material Protection
 
 ---
 
@@ -1868,163 +1243,69 @@ Hotspot
 
 任何 AI Architecture Change（AI 架構變更）若影響：
 
-- Product Function
-- User Flow
-- Data Model
-- Processing Flow
-- Provider
+- Product Function（產品功能）
+- User Flow（使用者流程）
+- Data Model（資料模型）
+- API
 - Permission
-- Storage
+- Teaching Material
 
-必須先進行 PM Review。
-
----
-
-## 35.2 Specification First
-
-正式流程：
-
-PM Decision
-↓
-Update Specification
-↓
-Update AI Design
-↓
-Update API Design
-↓
-Update Database Design（若需要）
-↓
-Development
-↓
-Testing
+必須先經 PM Review（產品經理審查）。
 
 ---
 
-## 35.3 No Engineer-first AI Development
+## 35.2 Documentation Update
 
-不得：
+AI Architecture 發生正式變更時，必須同步更新：
 
-Development
-↓
-再補 AI Specification
-
-工程師發現需要新 AI 技術時，必須先依：
-
-Reuse Before Reinvent
-+
-PM Review
-+
-Specification Consistency
-
-處理。
-
----
-
-## 35.4 Consistency Review
-
-AI Design 更新後，必須檢查：
-
-- Product Specification
-- MVP Development
-- Roadmap
-- Development Guidelines
-- Database Design
+- AI Design
 - API Design
+- Database Design
+- MVP Development
+- Change Log
 
-不得讓正式文件互相矛盾。
+不得只修改程式碼而不更新文件。
 
 ---
 
 # 36. Change Log
 
-## Version 1.2
+## Version 1.3
 
-Status: Draft
+Date: 2026-08-09
 
-同步 AI Automation（AI 自動化）在文件開頭的正式流程摘要，使其與 §17.2 Generator Flow（產生流程）、§18 Hotspot Coordinate Transformation（熱點座標轉換）及已確認的 API / Editor 流程一致。
+本版本重新整理 AI Design（AI 設計）全文，統一目前 MagicBook 3.0 架構。
 
-本版本：
-- 修正 §0.3 AI Automation 流程摘要
-- 明確加入 Text + Bounding Box（文字＋邊界框）
-- Coordinate Transformation（座標轉換）位於 Hotspot Generator（熱點產生器）之前
-- 不新增產品功能
-- 不新增 AI Scope
-- 不新增 API Scope
-- 不新增 Database Schema
+主要變更：
 
----
+- 移除 Workspace 作為 AI 資料歸屬與權限邊界的舊架構
+- 統一 User Account（使用者帳戶）為資料歸屬與隔離邊界
+- 統一 User Account Permission（使用者帳戶權限）
+- 統一 AI Context（AI 上下文）規則
+- 統一 AI History（AI 歷史紀錄）資料歸屬
+- 統一 Processing Job（處理工作）資料隔離
+- 統一 AI Data Access（AI 資料存取）
+- 統一 AI Security（AI 安全）
+- 統一 Provider Replacement（服務供應商替換）規則
+- 統一 OCR Processing（OCR 處理）流程
+- 加入 Text + Bounding Box（文字與文字區域）
+- 加入 Coordinate Transformation（座標轉換）
+- 統一 Hotspot Generation（互動熱點產生）
+- 明確區分 Processing Result（處理結果）與 Teaching Material（教學教材）
+- 明確區分 Image Area（圖片區域）與 Text Area（文字區域）
+- 明確定義 PDF（固定呈現）與 AI Processing（AI 處理）的責任邊界
+- 明確定義 AI Failure（AI 失敗）與 Reliable Failure（可控失敗）
+- 明確定義 Background Processing（背景處理）與 Cache（快取）
+- 明確禁止 AI 自行擴張產品 Scope（範圍）
+- 明確加入 PM Review（產品經理審查）
+- 移除舊版本中重複、矛盾及過時的 Workspace 規則
 
-## Version 1.1
+本版本不新增產品功能。
 
-Status: Draft
+本版本不新增 Database Schema（資料庫結構）。
 
-同步 Hotspot Coordinate Transformation（熱點座標轉換）與 Hotspot Generator（熱點產生器）的正式流程順序，使其與 Database Design、API Design 及已確認的 AI Automation Architecture（AI 自動化架構）一致。
+本版本不新增 API Scope（API 範圍）。
 
-本版本：
-- 修正 §17.2 Generator Flow 的流程順序
-- Coordinate Transformation 位於 Hotspot Generator 之前
-- HTML Overlay 建立於 Hotspot Generator 之後
-- 不新增產品功能
-- 不新增 AI Scope
-- 不新增 API Scope
-- 不新增 Database Schema
+本版本主要目的為：
 
----
-
-
-## Version 1.0
-
-Status: Draft
-
-建立 MagicBook 3.0 AI Design 基礎文件。
-
-本版本整理已確認的：
-
-- AI Module
-- AI Provider Architecture
-- AI Conversation
-- Prompt Manager
-- AI History
-- AI Settings
-- AI Automation
-- Image Quality Check
-- Auto Correction
-- Re-Quality Check
-- OCR
-- Google Cloud Vision API
-- DOCUMENT_TEXT_DETECTION
-- Replaceable Provider Adapter
-- OCR Result
-- Hotspot Generator
-- Hotspot Coordinate Transformation
-- Reliable Failure
-- Processing Image Rule
-- Background Processing
-- Teaching Material Separation
-- Text Area Boundary
-- HTML Overlay Boundary
-- Reading Mode Boundary
-- AI UX
-- AI Security
-- AI Performance
-- Reuse Before Reinvent
-- Development Boundaries
-- Testing and Validation
-- Completion Criteria
-- Change Control
-
-本版本不新增未核定產品功能。
-
-本版本不鎖定：
-
-- 未核定 AI Provider
-- 未核定 Threshold
-- 未核定 Database Schema
-- Provider-specific Database Schema
-- 未核定 AI Model
-- 未核定新的 Image Processing Algorithm
-- 未核定新的 Camera System
-
----
-
-END OF DOCUMENT
+**使 AI Design 與 MagicBook 3.0 現行產品、資料庫、API 及使用者權限架構保持一致。**
