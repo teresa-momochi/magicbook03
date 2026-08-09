@@ -1,6 +1,6 @@
 # MagicBook 3.0 AI Design
 
-Version: 1.1
+Version: 1.2
 Status: Draft
 Document Owner: Teresa Su
 Product Manager: ChatGPT
@@ -94,6 +94,10 @@ Image Quality Check
 Re-Quality Check
 ↓
 OCR
+↓
+Text + Bounding Box
+↓
+Coordinate Transformation（必要時）
 ↓
 Hotspot Generator
 ↓
@@ -1932,6 +1936,24 @@ AI Design 更新後，必須檢查：
 ---
 
 # 36. Change Log
+
+## Version 1.2
+
+Status: Draft
+
+同步 AI Automation（AI 自動化）在文件開頭的正式流程摘要，使其與 §17.2 Generator Flow（產生流程）、§18 Hotspot Coordinate Transformation（熱點座標轉換）及已確認的 API / Editor 流程一致。
+
+本版本：
+- 修正 §0.3 AI Automation 流程摘要
+- 明確加入 Text + Bounding Box（文字＋邊界框）
+- Coordinate Transformation（座標轉換）位於 Hotspot Generator（熱點產生器）之前
+- 不新增產品功能
+- 不新增 AI Scope
+- 不新增 API Scope
+- 不新增 Database Schema
+
+---
+
 ## Version 1.1
 
 Status: Draft
