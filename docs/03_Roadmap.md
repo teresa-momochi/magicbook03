@@ -241,6 +241,10 @@ Phase 8 — Optimization（最佳化）
 | Phase 3 | Editor | 建立教材編輯能力 |
 | Phase 4 | Interaction | 建立教材互動能力 |
 | Phase 5 | AI | 建立 AI / Automation 能力 |
+| Phase 6 | Reading | 建立閱讀模式 |
+| Phase 7 | System Services | 建立共用系統服務 |
+| Phase 8 | Optimization | 完成最佳化與 MVP 驗收 |
+
 
 # 3. Phase 1 — System Foundation
 
@@ -599,6 +603,7 @@ Toolbar：
 9. 儲存教材。
 10. 重新開啟後內容保持一致。
 
+
 # 6. Phase 4 — Interaction
 
 
@@ -808,7 +813,7 @@ Text + Bounding Box
 
 ↓
 
-Coordinate Transformation（必要時）
+Coordinate Transformation
 
 ↓
 
@@ -1017,10 +1022,11 @@ AI Automation 與 Image Processing 優先使用：
 5. Auto Correction 可依正式規則觸發。
 6. Auto Correction 後重新 Quality Check。
 7. OCR 可透過 Adapter 串接。
-8. OCR 結果經 Coordinate Transformation（必要時）後，再交給 Hotspot Generator。
+8. OCR 結果經 Coordinate Transformation 後交給 Hotspot Generator。
 9. Hotspot Generator 可建立 HTML Overlay Hotspot。
 10. 失敗時不得產生猜測性 Hotspot。
 11. Background Processing 不得阻塞 UI。
+
 
 # 8. Phase 6 — Reading
 
@@ -1039,7 +1045,7 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Reading Mode
 - Navigation
 - Reading UI
-- Single Edit Button（單一編輯按鈕）Editor Entry
+- Edit Button
 
 
 ## 8.3 Reading Mode
@@ -1055,10 +1061,6 @@ Reading Mode 提供：
 - Navigation
 
 Reading Mode 不得修改教材。
-
-Reading Mode 提供單一 Edit Button（編輯按鈕）作為 Editor Mode（編輯模式）入口。
-
-使用者透過 Edit Button 進入既有 Editor，不建立第二套 Editor 流程、資料模型或編輯架構。
 
 
 ## 8.4 Default First
@@ -1101,7 +1103,18 @@ Same Data Model（同一份資料模型）。
 不得建立兩套教材資料。
 
 
-## 8.6 Deliverables
+## 8.6 Reading Mode → Editor Mode
+
+Reading Mode 提供：
+
+單一 Edit Button（編輯按鈕）作為 Editor Mode（編輯模式）的入口。
+
+使用者可由 Reading Mode 進入 Editor Mode。
+
+此入口不建立第二套 Editor Flow（編輯流程）。
+
+
+## 8.7 Deliverables
 
 本階段交付：
 
@@ -1109,10 +1122,10 @@ Same Data Model（同一份資料模型）。
 - Reading Mode
 - Reading Navigation
 - Hotspot Interaction
-- Single Edit Button Editor Entry
+- Edit Button
 
 
-## 8.7 Completion Criteria
+## 8.8 Completion Criteria
 
 本階段完成時必須：
 
@@ -1125,7 +1138,7 @@ Same Data Model（同一份資料模型）。
 7. 可以播放 Audio。
 8. 可以播放 Video。
 9. 可以進行 Page Navigation。
-10. 可以透過單一 Edit Button 進入 Editor Mode。
+10. 可以透過單一 Edit Button 從 Reading Mode 進入 Editor Mode。
 11. Reading Mode 不得修改教材。
 
 
@@ -1363,6 +1376,7 @@ Specification Consistency Review（規格一致性檢查）。
 
 MagicBook 3.0 MVP 完成。
 
+
 # 11. Phase Dependencies
 
 
@@ -1462,6 +1476,7 @@ AI Automation 的：
 - Background Processing
 - OCR
 - Image Processing
+- Coordinate Transformation
 - Hotspot Generation
 
 必須於最終 Optimization 階段完成整體驗證。
@@ -1720,15 +1735,54 @@ Roadmap 必須永遠反映：
 
 ## Version 1.1
 
-### Specification Consistency Synchronization
+### Synchronization with Confirmed Product and AI Design
 
-本版本僅同步既有已確認產品規格，不新增產品功能、不新增資料模型、不擴大 MVP Scope。
+本版本以 Version 1.0 為基準。
 
-同步內容：
+本版本僅同步已確認的跨文件規格，不新增產品功能、不新增資料模型、不擴大 MVP Scope。
 
-1. Reading Mode → 單一 Edit Button → Editor Mode 入口，與 01 Product Specification v3.3、08 Editor Design v1.1 一致。
-2. AI Automation 中 Coordinate Transformation（必要時）移至 Hotspot Generator 之前，與 05 Database Design、06 API Design、07 AI Design 及 08 Editor Design 的已確認流程一致。
-3. Phase Completion Criteria 與上述正式流程同步。
+### Reading Mode → Editor Mode
+
+同步已確認的 Reading Mode（閱讀模式）進入 Editor Mode（編輯模式）規格。
+
+Reading Mode 提供：
+
+- 單一 Edit Button（編輯按鈕）
+
+作為進入 Editor Mode 的入口。
+
+此變更僅同步既有確認的 User Flow（使用者流程）。
+
+
+### AI Automation Coordinate Transformation
+
+同步 AI Automation（AI 自動化）流程中的 Coordinate Transformation（座標轉換）順序。
+
+正式流程更新為：
+
+OCR
+
+↓
+
+Text + Bounding Box
+
+↓
+
+Coordinate Transformation
+
+↓
+
+Hotspot Generator
+
+↓
+
+HTML Overlay
+
+↓
+
+Hotspot
+
+Coordinate Transformation 必須在 Hotspot Generator 建立最終 Hotspot 之前完成。
 
 
 ## Version 1.0
@@ -1816,6 +1870,3 @@ Roadmap 必須永遠反映：
 
 
 # END OF DOCUMENT
-| Phase 6 | Reading | 建立閱讀模式 |
-| Phase 7 | System Services | 建立共用系統服務 |
-| Phase 8 | Optimization | 完成最佳化與 MVP 驗收 |
