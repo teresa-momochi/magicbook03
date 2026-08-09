@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Task List
 
-Version: 2.0
+Version: 2.1
 
 Status: In Progress
 
@@ -120,6 +120,9 @@ Page
 - [ ] Book List
 - [ ] Create Book
 - [ ] Edit Book
+- [ ] Rename Book
+- [ ] Duplicate Book
+- [ ] Move Book
 - [ ] Delete Book
 - [ ] Search Book
 - [ ] Recently Used
@@ -268,6 +271,7 @@ Trial：
 - [ ] Trial Used 狀態
 - [ ] 每個 User Account 一生一次
 - [ ] 一張圖片
+- [ ] Trial → Purchase 後保留 Trial Content
 - [ ] Image Area 互動
 - [ ] Text Area 輸入文字
 
@@ -430,5 +434,6 @@ GitHub `main` 上最新正式文件為開發依據。
 
 | Version | Date | Description |
 |---|---|---|
+| 2.1 | 2026-08-09 | Cross-Document Consistency Check 後補齊已確認的 Rename / Duplicate / Move Book、Trial → Purchase 保留 Trial Content、團體邀請互斥與換團規則；不新增產品功能。 |
 | 2.0 | 2026-08-09 | 同步 01 Product Specification v3.4、02 MVP Development v3.0、04 Development Guidelines v4.4、05 Database Design v2.0、06 API Design v2.0、09 UI Design v2.0；移除 Workspace 作為有效架構，新增 User Account、Trial、Access Status、Billing Boundary、Webhook Error Handling 與 90 天資料保留規則。 |
 | Draft | 2026-08-01 | Initial MVP Task List |
