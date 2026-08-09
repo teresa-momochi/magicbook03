@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.8
+Version: 3.0
 
 Status: Draft
 
@@ -49,63 +49,14 @@ MagicBook 3.0 為 MagicBook 2 的下一代版本（Next Generation）。
 
 # 1. System Architecture
 
-MagicBook 3.0 採用 Workspace（工作空間）架構。
 
-Workspace 為整個系統最高層級（Root Entity）。
+## 1.1 User Account and Access Architecture
 
-所有教材、使用者、設定、媒體、AI 使用紀錄與權限皆隸屬於 Workspace。
+MagicBook 3.0 不採用 Workspace（工作空間）作為系統資料根層級。
 
+正式資料架構為：
 
-## 1.1 Workspace Types
-
-MagicBook 提供兩種 Workspace。
-
-
-### Personal Workspace（個人工作空間）
-
-適用：
-
-- 個人教師
-- 家教老師
-- 自學使用者
-
-特色：
-
-- 一位使用者擁有一個 Workspace
-- 教材歸屬個人
-- 採個人訂閱（Personal Subscription）
-
-
-### Organization Workspace（機構工作空間）
-
-適用：
-
-- 補習班
-- 學校
-- 教育機構
-- 公司
-
-特色：
-
-- 一個 Workspace 可包含多位使用者
-- 教材歸屬 Workspace
-- 採 Workspace 授權（Workspace License）
-- 使用者依角色（Role）取得權限
-
-預設角色：
-
-- Owner
-- Administrator
-- Teacher
-
-保留未來擴充更多角色。
-
-
-## 1.2 Teaching Material Hierarchy
-
-教材固定採用以下架構：
-
-Workspace
+User Account
 
 ↓
 
@@ -135,7 +86,48 @@ Text Area
 +
 HTML Overlay
 
+User Account（使用者帳號）為使用者資料與教材資料的直接歸屬單位。
 
+Supabase 僅負責 User Account、Authentication、Session、User ID、個人教材資料、Access Status 與 Trial Used。
+
+Billing System（計費系統）負責個人／團體方案及其商業規則，不作為教材資料層級。
+
+不建立 Workspace、Group Entity、Group ID、團主、團員等 MagicBook 核心資料實體。
+
+
+## 1.2 Teaching Material Hierarchy
+
+教材固定採用以下架構：
+
+User Account
+
+↓
+
+Book Library
+
+↓
+
+Folder
+
+↓
+
+Book
+
+↓
+
+Lesson
+
+↓
+
+Page
+
+↓
+
+Image Area
++
+Text Area
++
+HTML Overlay
 ## 1.3 Book Library
 
 Book Library 為教材管理中心。
@@ -452,36 +444,162 @@ MagicBook 的責任從 Image Import 開始。
 第三方服務可使用 Placeholder、Mock Data 或正式 API，不得因此破壞產品架構。
 
 
-## 5.1 Authentication
+## 5.1 Authentication / User Account
 
 完成：
 
+- Email Verification（Email 驗證）
+- User Account（使用者帳號）
 - Login
 - Logout
 - Session Management
-- User Authentication
-- Workspace Authentication
+- User Identity Verification
 
-登入後依使用者權限進入對應 Workspace。
+第一次使用流程：
+
+加入主畫面／桌面／書籤
+
+↓
+
+Email Verification
+
+↓
+
+建立 User Account
+
+登入後由 Browser/App Session 維持登入狀態。
+
+正常情況不需要每次重新輸入 Email。
+
+Supabase 負責 Authentication、Session、User ID 與 User Account。
+
+不建立 Workspace Authentication。
+
+### Trial
+
+每個 User Account 一生一次免費試用。
+
+Trial Used 用於記錄是否已使用過免費試用。
+
+試用可實際使用：
+
+- 一張圖片
+- Image Area 互動
+- Text Area 文字輸入
+
+### Access Status
+
+使用權狀態至少包含：
+
+- Active
+- Inactive
+
+Inactive 時不得使用 MagicBook。
+
+不建立 Read Only、Archive Mode 或 Temporary Access。
+
+### Data Retention
+
+使用權到期後保留資料 90 天。
+
+90 天內重新取得使用權：
+
+- 原資料仍存在
+- 可繼續使用
+
+90 天後仍未恢復使用權：
+
+- 清除相關教材資料
+
+試用後購買產品：
+
+- 保留試用內容
+
+### Billing Integration
+
+Billing System 負責：
+
+- 個人方案
+- 團體方案
+- 付款
+- 續約
+- 到期
+- 團體邀請
+- 團體人數
+- 價格
+- 付款週期
+- 付款來源
+
+價格尚未決定，不得在 MVP 文件、程式或資料模型中寫死任何金額。
+
+Billing 不屬於 Supabase 的資料模型。
+
+Billing 僅透過 Webhook 通知 Supabase 使用權狀態：
+
+User ID → Active / Inactive
+
+### Billing Webhook Error Handling
+
+Billing → Supabase 使用 Webhook（網路回呼）同步。
+
+若 Supabase 無回應：
+
+第一次失敗
+
+↓
+
+10 分鐘後重試
+
+↓
+
+第二次仍無回應
+
+↓
+
+通知管理者／PM
+
+使用者顯示：
+
+「工程忙線中，系統正在處理中，請稍候再試。」
+
+若為 User / Email 對應問題，請使用者重新輸入購買時使用的 Email。
+
+若為 Supabase Database Internal Error，不得要求使用者重新付款，也不得要求重新輸入 Email；應視為系統異常，進行重試並通知管理者。
+
+使用者自行換 Email 或重新註冊時，視為新的 User Account，不做自動帳號合併或資料搬移。
+
+不處理 User 主動刪除帳號的特殊流程。
 
 
-## 5.2 Workspace
+## 5.2 Billing Boundary
 
-完成：
+Billing System 僅負責商業與團體關係，不建立 MagicBook 教材資料層級。
 
-- Personal Workspace
-- Organization Workspace
-- Workspace Selector
-- Workspace Information
-- Basic Workspace Settings
+方案只有：
 
-第一版不包含：
+- 個人
+- 團體
 
-- Workspace Invitation
-- Workspace Billing
-- Workspace Analytics
+「補習班／機構」不作為第三種產品分類，均歸入團體。
 
+團體相關資訊完全由 Billing 管理，包括邀請、團體人數、團體成員關係與方案規則。
 
+同一 User 同時間不能接受兩個團體邀請。
+
+若要更換團體，下個月再接受新的邀請；User Account 永遠維持原帳號。
+
+個人方案轉團體方案由 Billing 處理，Supabase 不需要知道轉換細節。
+
+Supabase 不建立：
+
+- Group Entity
+- Group ID
+- 團主
+- 團員
+- Invitation Record
+- 團體方案資料
+- 價格資料
+- 付款週期資料
 ## 5.3 Book Library
 
 完成：
@@ -770,29 +888,48 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 - Scalable（可擴充）
 
 
-## 6.1 Authentication Module
+## 6.1 Authentication / Account Module
 
 負責：
 
-- User Login
-- User Logout
+- User Account
+- Email Verification
+- Login
+- Logout
 - Session Management
-- Workspace Authentication
-- Permission Verification
+- User Identity Verification
+- Access Status
+- Trial Used
+
+Supabase 負責上述使用者身份與使用權同步所需資料。
+
+不負責 Billing 商業規則。
 
 
-## 6.2 Workspace Module
+## 6.2 Billing Integration Boundary
 
-負責：
+Billing System 負責：
 
-- Workspace Management
-- Workspace Settings
-- User Role
-- Data Ownership
+- Personal Plan（個人方案）
+- Group Plan（團體方案）
+- Payment
+- Renewal
+- Expiration
+- Group Invitation
+- Group Size
+- Pricing
+- Billing Cycle
+- Payment Source
 
-Workspace 為所有教材之最高資料歸屬。
+Billing 不屬於 MagicBook 教材資料模型。
 
+Billing 與 Supabase 透過 Webhook 同步使用權。
 
+正式同步結果：
+
+User ID → Active / Inactive
+
+Supabase 不建立 Workspace 或 Group Entity。
 ## 6.3 Book Library Module
 
 負責：
@@ -1129,20 +1266,32 @@ Reading Mode 僅提供閱讀與互動。
 
 # 7. User Flow
 
-MagicBook 3.0 提供兩種使用模式：
+MagicBook 3.0 的使用者核心流程不依賴 Workspace。
 
-- Personal Workspace（個人工作空間）
-- Organization Workspace（機構工作空間）
+User Account 建立後，使用者直接管理自己的 Book Library 與教材資料。
 
-兩種模式共用相同產品架構。
+第一次使用：
 
-差異僅在於：
+加入主畫面／桌面／書籤
 
-- Workspace
-- Data Ownership（資料歸屬）
-- Permission（權限）
+↓
 
-教材操作流程保持一致。
+Email Verification
+
+↓
+
+建立 User Account
+
+↓
+
+Home
+
+Home 提供：
+
+- 🆓 免費試用一次
+- ✨ 購買產品
+
+試用或取得使用權後，使用者可進入 Book Library。
 
 
 ## 7.1 Login Flow
@@ -1151,7 +1300,7 @@ MagicBook 3.0 提供兩種使用模式：
 
 ↓
 
-Login
+Email Verification / Login
 
 ↓
 
@@ -1159,21 +1308,30 @@ Authentication
 
 ↓
 
-選擇 Workspace（若使用者擁有多個 Workspace）
+User Account Session
+
+↓
+
+Access Status Check
 
 ↓
 
 Home
+
+正常情況由 Browser/App Session 維持登入狀態。
+
+不建立 Workspace Selector。
 
 
 ## 7.2 Home Flow
 
 Home 提供：
 
+- 🆓 免費試用一次
+- ✨ 購買產品
 - Create Book
 - Open Book Library
 - Recently Used Books
-- Workspace Information
 - Settings
 
 使用者可：
@@ -1190,7 +1348,7 @@ Create Book
 
 Book Library
 
-
+使用權為 Inactive 時，不得進入 MagicBook 使用流程。
 ## 7.3 Book Editing Flow
 
 Home
@@ -1504,59 +1662,57 @@ MagicBook 3.0 所有畫面皆遵循一致設計原則：
 
 ## 8.1 Login
 
-MagicBook 提供兩種登入模式。
+MagicBook 使用 User Account 登入。
 
-### Personal Workspace
+第一次使用：
 
-提供：
+- Email Verification
+- 建立 User Account
+
+可使用：
 
 - Email Login
-- Google Login
-- Password Login
-- Forgot Password
-- Remember Me
+- Session Management
 
-第一次登入：
+登入後由 Browser/App Session 維持登入狀態。
 
-系統自動建立 Personal Workspace。
+正常情況不需要每次重新輸入 Email。
 
-登入成功後進入 Home。
+不建立：
 
-
-### Organization Workspace
-
-Workspace Administrator 建立：
-
+- Workspace Login
+- Workspace Selector
 - Teacher Account
-- Password
-
-教師使用：
-
-- Account
-- Password
-
-登入。
-
-登入成功後直接進入所屬 Organization Workspace。
+- Organization Workspace Login
 
 
+## 8.1.1 First Use Entry
+
+第一次進入 MagicBook：
+
+1. 加入主畫面／桌面／書籤
+2. Email Verification
+3. 建立 User Account
+4. 進入 Home
+5. 選擇免費試用或購買產品
+
+不支援安裝時，可使用書籤作為替代方式。
 ## 8.2 Home
 
 Home 為產品入口畫面。
 
 提供：
 
+- 🆓 免費試用一次
+- ✨ 購買產品
 - Create Book
 - Open Book Library
 - Recently Used Books
-- Workspace Information
 - Settings
 
 Home 不負責教材管理。
 
 教材管理由 Book Library 負責。
-
-
 ## 8.3 Book Library
 
 Book Library 為教材管理中心。
@@ -1795,21 +1951,33 @@ Reading Mode 僅提供閱讀與互動。
 
 提供：
 
-### Workspace
-
-- Workspace Information
-- Workspace Settings
-
-### User
+### User Account
 
 - Account
-- Password
-- Language
+- Email
+- Session
+
+### Access
+
+- Access Status
+- Trial Status
 
 ### AI
 
 - AI Provider
 - AI Settings
+
+### Billing Entry
+
+如需方案、付款或團體相關操作，進入 Billing System。
+
+MagicBook 本身不管理：
+
+- 價格
+- 付款
+- 付款週期
+- 團體成員關係
+- 團體邀請
 
 所有第三方服務皆採 Replaceable Service Architecture。
 
@@ -1834,36 +2002,52 @@ MagicBook 3.0 採模組化架構（Modular Architecture）。
 各模組透過統一資料架構協同運作。
 
 
-## 9.1 Authentication Module
+## 9.1 Authentication / Account Module
 
 負責：
 
+- User Account
 - Login
 - Logout
 - Authentication
+- Email Verification
 - Session Management
 - User Identity Verification
-
-支援：
-
-- Personal Workspace
-- Organization Workspace
+- Access Status
+- Trial Used
 
 
-## 9.2 Workspace Module
+## 9.2 Billing Integration Boundary
 
-Workspace 為系統最高管理單位。
+Billing System 負責：
 
-負責：
+- 個人方案
+- 團體方案
+- Payment
+- Renewal
+- Expiration
+- Group Invitation
+- Group Size
+- Pricing
+- Billing Cycle
+- Payment Source
 
-- Workspace Information
-- Workspace Settings
-- User Management
-- Teacher Account Management
-- Permission Management
-- Data Ownership
+Billing 與 Supabase 透過 Webhook 同步使用權。
 
+Supabase 最終接收：
 
+User ID → Active / Inactive
+
+Supabase 不建立：
+
+- Workspace
+- Group Entity
+- Group ID
+- 團主
+- 團員
+- 團體方案資料
+- 價格資料
+- 付款資料
 ## 9.3 Book Library Module
 
 Book Library 為教材管理中心。
@@ -2138,27 +2322,51 @@ MagicBook 3.0 MVP 完成後，應符合以下驗收標準。
 第三方服務可採 Placeholder 或 Mock Data，正式 API 可於後續串接，但不得影響產品架構。
 
 
-## 11.1 Authentication
+## 11.1 Authentication / User Account
 
 必須：
 
+- 可以完成 Email Verification
+- 可以建立 User Account
 - 可以登入
 - 可以登出
 - 可以維持 Session
-- 可以辨識 Workspace
-- 可以依權限進入對應 Workspace
+- 可以辨識 User ID
+- 可以辨識 Access Status
+- 可以記錄 Trial Used
+
+不得建立 Workspace Authentication 或 Workspace Selector。
 
 
-## 11.2 Workspace
+## 11.2 Billing Integration
 
 必須：
 
-- 支援 Personal Workspace
-- 支援 Organization Workspace
-- 正確管理 Data Ownership
-- 正確管理基本 Permission
+- 個人／團體方案由 Billing System 管理
+- Billing 可透過 Webhook 通知 Supabase
+- Supabase 可接收 User ID → Active / Inactive
+- Webhook 第一次失敗後 10 分鐘重試
+- 第二次仍失敗時通知管理者／PM
+- Database Internal Error 不要求使用者重新付款
+- Email 對應問題可要求重新輸入購買 Email
+- 不寫死價格
 
+資料生命週期必須符合：
 
+- Trial 一生一次
+- 試用後購買保留內容
+- 到期後保留 90 天
+- 90 天內恢復使用權可繼續使用原資料
+- 90 天後未恢復則清除資料
+- Inactive 不可使用 MagicBook
+
+不建立：
+
+- Read Only
+- Archive Mode
+- Temporary Access
+- Workspace Entity
+- Group Entity
 ## 11.3 Book Library
 
 必須：
@@ -2440,10 +2648,19 @@ MagicBook 3.0 採模組化開發（Modular Development）。
 
 System Foundation
 
+- User Account
+- Email Verification
 - Authentication
-- Workspace
+- Session
+- Access Status
+- Trial Used
 - Database
 - Book Library
+- Billing Integration Boundary
+
+Supabase 建立使用者身份、Session、使用權與個人教材資料所需基礎。
+
+Billing System 僅建立與 MagicBook 的同步邊界，不將 Billing 商業資料建立於 Supabase。
 
 
 ## Phase 2
@@ -3295,6 +3512,45 @@ Technical Evidence（技術證據）。
 所有需求變更皆應先更新本文件，
 
 再同步更新相關設計文件。
+
+
+## Version 3.0
+### Account / Billing Architecture Synchronization
+
+本版本同步 01_Product_Specification v3.4 已正式核定之 Account / Billing 架構。
+
+本版本只進行正式規格同步，不新增產品功能，不新增未核定資料模型，不擴大 MVP Scope。
+
+正式變更：
+
+- 移除 Workspace 作為系統根資料架構
+- 移除 Personal Workspace
+- 移除 Organization Workspace
+- 教材資料改由 User Account 直接歸屬
+- Authentication 改為 User Account 架構
+- Supabase 僅負責 User Account、Authentication、Session、User ID、個人教材資料、Access Status、Trial Used
+- Billing System 負責個人／團體方案及付款、續約、到期、團體邀請、團體人數與商業規則
+- Billing 與 Supabase 透過 Webhook 同步使用權
+- 新增 Active / Inactive 使用權狀態
+- 新增 Trial Used
+- 每個 User Account 一生一次免費試用
+- 新增到期後 90 天資料保留規則
+- 新增 Webhook Retry 與系統錯誤處理規則
+- 價格欄位保留，但不得在 MVP 文件或程式中寫死任何金額
+- 個人／團體方案由 Billing 管理，不建立 Group Entity、Group ID、團主、團員等 MagicBook 核心資料實體
+
+正式保留：
+
+- User Account → Book Library → Folder → Book → Lesson → Page
+- Image Area / Text Area / HTML Overlay 分離架構
+- Reading Mode / Editor Mode 共用同一份教材資料
+- 單一 Edit Button 進入 Editor Mode
+- Image Import / Image Optimization / Image Compression / Background Processing
+- AI Automation / OCR / Hotspot / HTML Overlay
+- Reuse Before Reinvent
+
+本版本不代表 Billing System 已完成正式串接。
+本版本僅定義 MVP 所需之產品邊界、資料責任與同步規則。
 
 
 ## Version 2.8
