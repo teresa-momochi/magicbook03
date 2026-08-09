@@ -1,6 +1,6 @@
 # MagicBook 3.0 Development Guidelines
 
-Version: 4.2
+Version: 4.3
 
 Status: Draft
 
@@ -835,6 +835,7 @@ Popup 應採一致設計。
 例如：
 
 - Search Icon 固定顯示於畫面右上角
+- Reading Mode 提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode（編輯模式）的明確入口
 - 主要功能應於適當位置提供明確入口
 - 常用功能不得被完全隱藏而無明確入口
 
@@ -1405,6 +1406,7 @@ main branch
 | Version | Date | Description |
 |----------|------------|------------------------------------------------|
 
+| 4.3 Draft | 2026-08-09 | Synchronized the confirmed Reading Mode → Editor Mode single Edit Button entry; no new feature, data model, or scope added |
 | 4.2 Draft | 2026-08-09 | Synchronized Camera terminology with the confirmed Image Import architecture; retained Reuse Before Reinvent and existing development principles |
 | 4.1 Draft | 2026-08-08 | Added Reuse Before Reinvent as a Core Development Principle |
 | 4.0 Draft | 2026-08-08 | Synchronized Development Guidelines with MVP 2.1 and Product Specification 3.1 |
