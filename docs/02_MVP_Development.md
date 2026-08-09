@@ -1,6 +1,6 @@
 # MagicBook 3.0 MVP Development
 
-Version: 2.7
+Version: 2.8
 
 Status: Draft
 
@@ -2660,9 +2660,17 @@ Re-Quality Check
 
 照片可可靠進入 OCR。
 
-直接：
+正式流程：
 
 OCR
+
+↓
+
+Text + Bounding Box
+
+↓
+
+Coordinate Transformation（必要時）
 
 ↓
 
@@ -3287,6 +3295,21 @@ Technical Evidence（技術證據）。
 所有需求變更皆應先更新本文件，
 
 再同步更新相關設計文件。
+
+
+## Version 2.8
+
+### AI Automation Flow Internal Consistency Synchronization
+
+本版本只同步既有已確認 AI Automation Pipeline，不新增產品功能，不新增資料模型，不擴大 MVP Scope。
+
+正式同步：
+
+- Layer 3 Quality 正常流程補齊 Text + Bounding Box
+- Coordinate Transformation（必要時）明確位於 Hotspot Generator 之前
+- 與 §13.1 Confirmed Engineering Architecture、Roadmap、API Design、AI Design、Editor Design 的正式流程一致
+
+上述內容皆為既有已確認規格之文件一致性同步，不代表新增 Scope。
 
 
 ## Version 2.7
