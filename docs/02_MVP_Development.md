@@ -1,5 +1,4 @@
-# MagicBook 3.0 MVP Development
-
+# MagicBook 3.0 MVP Development - Version 3.0
 Version: 3.0
 
 Status: Draft
