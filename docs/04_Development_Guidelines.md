@@ -1,6 +1,6 @@
-# MagicBook 3.0 Development Guidelines
+# MagicBook 3.0 Development Guidelines — Version 4.5
 
-Version: 4.4
+Version: 4.5
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-14
 
 ---
 
@@ -38,14 +38,14 @@ Last Update: 2026-08-09
 
 本文件目的為：
 
-- 建立一致的產品架構
-- 建立一致的開發流程
-- 建立一致的 UI 操作方式
-- 建立一致的資料管理方式
-- 降低模組耦合（Low Coupling）
-- 提高可維護性（Maintainability）
-- 提高可擴充性（Scalability）
-- 避免新增功能時破壞既有架構
+* 建立一致的產品架構
+* 建立一致的開發流程
+* 建立一致的 UI 操作方式
+* 建立一致的資料管理方式
+* 降低模組耦合（Low Coupling）
+* 提高可維護性（Maintainability）
+* 提高可擴充性（Scalability）
+* 避免新增功能時破壞既有架構
 
 MagicBook 採 Complete Product Architecture（完整產品架構）。
 
@@ -83,10 +83,10 @@ MagicBook 提供互動工具，
 
 所有核心模組皆須建立：
 
-- Data Model
-- CRUD
-- User Interface
-- User Flow
+* Data Model
+* CRUD
+* User Interface
+* User Flow
 
 第三方服務可逐步完善，
 
@@ -112,10 +112,10 @@ MagicBook 提供互動工具，
 
 各模組應：
 
-- 可獨立開發
-- 可獨立測試
-- 可獨立維護
-- 可持續擴充
+* 可獨立開發
+* 可獨立測試
+* 可獨立維護
+* 可持續擴充
 
 模組之間應保持低耦合（Low Coupling）。
 
@@ -127,19 +127,19 @@ MagicBook 不綁定任何第三方服務。
 
 包括：
 
-- AI Provider
-- Dictionary Provider
-- Audio Provider
-- Video Provider
+* AI Provider
+* Dictionary Provider
+* Audio Provider
+* Video Provider
 
 所有第三方服務皆可自由替換。
 
 更換服務不得影響：
 
-- 教材資料
-- User Account（使用者帳號）
-- 系統架構
-- 使用者操作流程
+* 教材資料
+* User Account（使用者帳號）
+* 系統架構
+* 使用者操作流程
 
 ---
 
@@ -149,12 +149,12 @@ MagicBook 不綁定任何第三方服務。
 
 例如：
 
-- Context Toolbar
-- Global Search
-- Popup
-- CRUD
-- Selection
-- Navigation
+* Context Toolbar
+* Global Search
+* Popup
+* CRUD
+* Selection
+* Navigation
 
 新增功能不得建立另一套操作模式。
 
@@ -231,12 +231,12 @@ MagicBook 不因為需要照片，
 
 而自行建立：
 
-- Camera System
-- Camera Preview
-- Exposure Control
-- Focus Control
-- ImageCapture
-- getUserMedia
+* Camera System
+* Camera Preview
+* Exposure Control
+* Focus Control
+* ImageCapture
+* getUserMedia
 
 MagicBook 應優先使用裝置、作業系統與瀏覽器已提供的能力。
 
@@ -248,13 +248,13 @@ Reuse Before Reinvent 不只適用於 Camera。
 
 例如：
 
-- Camera → 使用裝置原生相機
-- File Import → 使用瀏覽器原生檔案選擇
-- Image Editing → 優先使用成熟影像處理能力
-- Image Processing → 優先使用成熟函式庫
-- PDF Processing → 優先使用成熟 PDF 工具
-- AI / OCR → 採 Replaceable Service Architecture（可替換服務架構）
-- Browser Features → 優先使用瀏覽器既有能力
+* Camera → 使用裝置原生相機
+* File Import → 使用瀏覽器原生檔案選擇
+* Image Editing → 優先使用成熟影像處理能力
+* Image Processing → 優先使用成熟函式庫
+* PDF Processing → 優先使用成熟 PDF 工具
+* AI / OCR → 採 Replaceable Service Architecture（可替換服務架構）
+* Browser Features → 優先使用瀏覽器既有能力
 
 MagicBook 的責任不是重新發明已經存在的工具，
 
@@ -268,19 +268,215 @@ MagicBook 應將複雜度藏在系統內部。
 
 使用者不需要理解：
 
-- Operating System
-- Browser
-- API
-- Camera
-- OCR
-- AI
-- Image Processing
+* Operating System
+* Browser
+* API
+* Camera
+* OCR
+* AI
+* Image Processing
 
 使用者只需要完成自己的工作。
 
 因此：
 
 > **先使用世界已經發明好的東西，再決定 MagicBook 真正需要自己發明什麼。**
+
+---
+
+## 2.9 Use Existing Human Understanding First
+
+MagicBook 3.0 所有產品與功能開發皆應遵循：
+
+> **Use Existing Human Understanding First（優先利用使用者既有理解）**
+
+MagicBook 不應要求使用者為了使用產品，而重新學習一套完全陌生的操作邏輯。
+
+產品設計應優先利用使用者已經存在的：
+
+* 生活經驗（Life Experience）
+* 操作習慣（Interaction Habits）
+* 心理模型（Mental Model）
+* 常見符號認知（Common Symbol Understanding）
+* 既有軟體使用經驗（Existing Software Experience）
+
+這項原則稱為：
+
+> **借力使力（Use Existing Human Understanding First）**
+
+### Product Principle
+
+MagicBook 的目標不是讓使用者「學會 MagicBook」。
+
+而是：
+
+> **讓使用者利用自己原本就懂的事情，自然地學會使用 MagicBook。**
+
+例如：
+
+* 🔒 Lock（鎖頭）→ Lock / Unlock（鎖定／解鎖）
+* 🗑️ Trash（垃圾桶）→ Delete（刪除）
+* 🔍 Search（放大鏡）→ Search（搜尋）
+* ▶️ Play（播放符號）→ Play（播放）
+* ← Back（返回）→ Back（返回）
+* Drag（拖曳）→ 將物件移動到另一個位置
+
+這些操作不需要重新教育使用者。
+
+MagicBook 應優先借用使用者已經理解的概念，再將 MagicBook 的功能接在這些既有理解之上。
+
+### Human Mental Model First
+
+當設計一項新功能時，應先問：
+
+> **「第一次看到這個功能的使用者，在沒有閱讀說明的情況下，能不能合理猜到下一步怎麼做？」**
+
+如果可以：
+
+→ 優先採用。
+
+如果不可以：
+
+→ 先確認是否存在可以借用的既有生活概念、操作習慣或常見 UI（使用者介面）模式。
+
+只有在沒有適當既有模式可以使用時，才建立新的操作方式。
+
+### UX Guidance: Show the Next Step
+
+MagicBook 的 UX（使用者體驗）不只是「功能可以操作」，而是要讓使用者在操作過程中，**自然知道下一步可以做什麼、應該做什麼**。
+
+UI（使用者介面）的設計應主動提供清楚的操作線索，而不是把功能藏在畫面中，讓使用者自己搜尋「可能在哪裡」「可能要按哪裡」或「這個圖示到底代表什麼」。
+
+因此：
+
+* **UI 應告訴使用者下一步怎麼做，而不是讓使用者猜。**
+* **主要操作應具有清楚的視覺層級（Visual Hierarchy）。**
+* **下一步可以做什麼，應在畫面中容易被發現（Discoverable）。**
+* **重要功能不應依賴使用者到處尋找才能發現。**
+* **操作流程應符合使用者原本的心理模型（Mental Model）。**
+* **如果使用者經常需要問「我要按哪裡？」代表 UX 仍有改善空間。**
+
+### UI and UX Relationship
+
+UI 與 UX 必須一起考慮，但兩者不是同一件事：
+
+**UI（使用者介面）**回答：
+
+> **「畫面上要怎麼呈現，讓使用者看得懂下一步？」**
+
+**UX（使用者體驗）**回答：
+
+> **「整個使用過程是否自然、順暢、可預測，不需要使用者一直猜？」**
+
+因此，MagicBook 的設計標準不是：
+
+> 「使用者最後有沒有找到功能？」
+
+而是：
+
+> **「使用者是否能在正確的時間，自然發現正確的下一步？」**
+
+讓使用者「找得到」只是最低標準；
+
+讓使用者「知道下一步怎麼走」，才是 MagicBook 應追求的 UX。
+
+### Do Not Create Unnecessary Learning Cost
+
+不得因為工程上可以建立新的操作方式，就要求使用者學習新的操作方式。
+
+應避免：
+
+* 為相同功能建立新的操作模式
+* 使用只有 MagicBook 自己理解的特殊符號
+* 使用不符合一般使用者認知的操作方式
+* 將工程實作概念直接暴露給使用者
+* 要求使用者閱讀說明才能完成基本操作
+
+MagicBook 的技術可以很複雜，
+
+但：
+
+> **使用者不應承擔不必要的技術學習成本。**
+
+### Engineer and User Perspective
+
+MagicBook 的產品開發必須同時考慮兩個不同層次：
+
+**Engineering Perspective（工程視角）**
+
+> 電腦如何完成這項功能？
+
+**User Perspective（使用者視角）**
+
+> 人看到這項功能時，會怎麼理解？
+
+兩者都必須成立。
+
+功能「可以運作」不代表使用者「知道怎麼使用」。
+
+因此：
+
+> **Functional Correctness（功能正確） ≠ Usability（可用性）**
+
+工程師應負責讓系統正確運作。
+
+產品設計則必須確保使用者能夠理解並自然操作。
+
+### Design Decision Rule
+
+任何新功能進入開發前，應依以下順序判斷：
+
+1. **使用者原本是否已經知道這件事情？**
+2. **是否可以借用既有生活經驗？**
+3. **是否可以借用既有操作習慣？**
+4. **是否可以使用常見 UI 模式？**
+5. **如果不能，是否真的有必要建立新的操作方式？**
+
+只有在前面的方法都無法滿足需求時，才建立新的操作邏輯。
+
+### Relationship with Reuse Before Reinvent
+
+**Reuse Before Reinvent（先利用，再重新發明）**主要處理：
+
+> **技術層面的借力。**
+
+例如：
+
+* 作業系統（Operating System）
+* 瀏覽器（Browser）
+* HTML / CSS / JavaScript
+* 成熟函式庫（Mature Library）
+* 第三方服務（Third-party Service）
+
+而：
+
+**Use Existing Human Understanding First（優先利用使用者既有理解）**主要處理：
+
+> **人與產品互動層面的借力。**
+
+兩者共同形成 MagicBook 的「借力使力」原則：
+
+> **技術上，優先使用世界已經發明好的能力。**
+>
+> **操作上，優先使用人已經理解的能力。**
+
+MagicBook 不應重新發明已經存在的技術，
+
+也不應不必要地重新教育已經存在的人類認知。
+
+### Final Principle
+
+> **Behind the interface, technology may be complex.**
+> **In front of the interface, understanding should be simple.**
+
+> **介面背後的技術可以很複雜，**
+> **但介面前面的理解應該很簡單。**
+
+MagicBook 的責任，是將複雜技術與複雜系統整合在背後，
+
+讓使用者可以依照自己原本的理解，自然完成工作。
+
+**借用人已經會的，而不是要求人重新學會。**
 
 ---
 
@@ -326,11 +522,11 @@ Page
 
 Image Area
 
-+
+*
 
 Text Area
 
-+
+*
 
 HTML Overlay
 
@@ -350,8 +546,8 @@ Folder 為 Book Library 的分類工具。
 
 Book 可以：
 
-- 直接存在於 Book Library 根目錄
-- 放入 Folder
+* 直接存在於 Book Library 根目錄
+* 放入 Folder
 
 使用者可自行決定是否使用 Folder。
 
@@ -365,20 +561,20 @@ Folder 不得被視為 Book 存在的必要條件。
 
 教材負責：
 
-- 教材內容
-- 教材版面
-- 教材呈現
+* 教材內容
+* 教材版面
+* 教材呈現
 
 互動負責：
 
-- HTML Overlay
-- Hotspot
-- Popup
-- Dictionary
-- AI
-- Audio
-- Video
-- Navigation
+* HTML Overlay
+* Hotspot
+* Popup
+* Dictionary
+* AI
+* Audio
+* Video
+* Navigation
 
 任何互動功能皆不得修改教材原始內容。
 
@@ -392,8 +588,8 @@ HTML Overlay 為獨立互動層（Interaction Layer）。
 
 可覆蓋：
 
-- Image
-- PDF
+* Image
+* PDF
 
 所有互動皆建立於 HTML Overlay。
 
@@ -407,11 +603,11 @@ HTML Overlay 為獨立互動層（Interaction Layer）。
 
 例如：
 
-- Authentication
-- Context Toolbar
-- Global Search
-- Save
-- Background Processing
+* Authentication
+* Context Toolbar
+* Global Search
+* Save
+* Background Processing
 
 不得於各模組重複開發相同功能。
 
@@ -423,10 +619,10 @@ HTML Overlay 為獨立互動層（Interaction Layer）。
 
 包括：
 
-- AI
-- Dictionary
-- Audio
-- Video
+* AI
+* Dictionary
+* Audio
+* Video
 
 不得直接綁定特定 Provider。
 
@@ -460,10 +656,10 @@ Book Module
 
 不得直接管理：
 
-- AI
-- Dictionary
-- Audio
-- Video
+* AI
+* Dictionary
+* Audio
+* Video
 
 保持模組職責單純。
 
@@ -477,10 +673,10 @@ Book Module
 
 每個模組皆應：
 
-- 可獨立開發
-- 可獨立測試
-- 可獨立維護
-- 可持續擴充
+* 可獨立開發
+* 可獨立測試
+* 可獨立維護
+* 可持續擴充
 
 模組不得因依賴另一個模組的內部實作而失去獨立性。
 
@@ -490,29 +686,29 @@ Book Module
 
 MagicBook 第一版建立以下核心模組：
 
-- Authentication
-- User Account
-- Book Library
-- Folder
-- Book
-- Lesson
-- Page
-- Image Area
-- Text Area
-- HTML Overlay
-- Hotspot
-- Popup
-- Dictionary
-- AI
-- Audio
-- Video
-- Navigation
-- Reading Mode
-- Global Search
-- Context Toolbar
-- Save
-- Background Processing
-- Brand Loading Animation
+* Authentication
+* User Account
+* Book Library
+* Folder
+* Book
+* Lesson
+* Page
+* Image Area
+* Text Area
+* HTML Overlay
+* Hotspot
+* Popup
+* Dictionary
+* AI
+* Audio
+* Video
+* Navigation
+* Reading Mode
+* Global Search
+* Context Toolbar
+* Save
+* Background Processing
+* Brand Loading Animation
 
 所有核心模組皆須完成基本資料架構。
 
@@ -524,11 +720,11 @@ MagicBook 第一版建立以下核心模組：
 
 例如：
 
-- Context Toolbar
-- Popup
-- Search Toolbar
-- Search Icon
-- Loading Animation
+* Context Toolbar
+* Popup
+* Search Toolbar
+* Search Icon
+* Loading Animation
 
 不得建立不同操作方式。
 
@@ -540,11 +736,11 @@ MagicBook 第一版建立以下核心模組：
 
 包括：
 
-- Authentication Service
-- Global Search Service
-- Save Service
-- Background Processing Service
-- Loading Animation Service
+* Authentication Service
+* Global Search Service
+* Save Service
+* Background Processing Service
+* Loading Animation Service
 
 所有模組共用相同 Service。
 
@@ -574,10 +770,10 @@ MagicBook 第一版建立以下核心模組：
 
 新增：
 
-- Dictionary Provider
-- AI Provider
-- Audio Provider
-- Video Provider
+* Dictionary Provider
+* AI Provider
+* Audio Provider
+* Video Provider
 
 皆應建立於既有模組。
 
@@ -591,24 +787,24 @@ MagicBook 第一版建立以下核心模組：
 
 例如：
 
-- User Account Module
-- Book Library Module
-- Folder Module
-- Book Module
-- Lesson Module
-- Page Module
-- Image Area Module
-- Text Area Module
-- HTML Overlay Module
-- Hotspot Module
-- Popup Module
-- Dictionary Module
-- AI Module
-- Audio Module
-- Video Module
-- Navigation Module
-- Reading Module
-- Global Search Module
+* User Account Module
+* Book Library Module
+* Folder Module
+* Book Module
+* Lesson Module
+* Page Module
+* Image Area Module
+* Text Area Module
+* HTML Overlay Module
+* Hotspot Module
+* Popup Module
+* Dictionary Module
+* AI Module
+* Audio Module
+* Video Module
+* Navigation Module
+* Reading Module
+* Global Search Module
 
 避免使用不同命名方式造成混淆。
 
@@ -646,12 +842,26 @@ Hotspot 仍可正常運作。
 
 包括：
 
-- 一致的版面配置
-- 一致的操作流程
-- 一致的命名方式
-- 一致的互動模式
+* 一致的版面配置
+* 一致的操作流程
+* 一致的命名方式
+* 一致的互動模式
 
 新增功能不得重新建立另一套 UI。
+
+### 5.1.1 Next-Step Guidance
+
+UI（使用者介面）應讓使用者容易理解下一步，而不是要求使用者在畫面中搜尋可能的操作位置。
+
+設計時應優先確認：
+
+* 使用者目前是否知道自己所在的狀態
+* 使用者是否看得到下一步可以做什麼
+* 主要操作是否具有清楚的視覺層級（Visual Hierarchy）
+* 常用功能是否容易被發現（Discoverable）
+* 使用者是否需要依靠猜測才能完成基本操作
+
+> **讓使用者「找得到」只是最低標準；讓使用者「知道下一步怎麼走」，才是 MagicBook 應追求的 UX（使用者體驗）。**
 
 ---
 
@@ -661,13 +871,13 @@ Hotspot 仍可正常運作。
 
 例如：
 
-- Select
-- Move
-- Resize
-- Save
-- Delete
-- Search
-- Navigation
+* Select
+* Move
+* Resize
+* Save
+* Delete
+* Search
+* Navigation
 
 不同模組不得使用不同操作方式完成相同工作。
 
@@ -679,18 +889,18 @@ Context Toolbar 為全系統共用工具列。
 
 所有可編輯物件共用：
 
-- Image
-- Text
-- HTML Overlay
-- Hotspot
+* Image
+* Text
+* HTML Overlay
+* Hotspot
 
 Context Toolbar 應支援：
 
-- Floating
-- Auto Show
-- Auto Hide
-- Draggable
-- Dockable
+* Floating
+* Auto Show
+* Auto Hide
+* Draggable
+* Dockable
 
 Toolbar 不得遮蔽教材主要內容。
 
@@ -716,21 +926,21 @@ Floating Search Toolbar 可整合系統常用導覽功能。
 
 包括：
 
-- Home（首頁）
-- Back（上一頁）
+* Home（首頁）
+* Back（上一頁）
 
 以及搜尋功能：
 
-- Keyword Search
-- Search Scope
-- Search Suggestions
-- Recent Search
-- Search Result Navigation
+* Keyword Search
+* Search Scope
+* Search Suggestions
+* Recent Search
+* Search Result Navigation
 
 其中：
 
-- Home
-- Back
+* Home
+* Back
 
 屬於 Navigation（導覽）功能，
 
@@ -738,16 +948,16 @@ Floating Search Toolbar 可整合系統常用導覽功能。
 
 Search Scope：
 
-- All
-- Folder
-- Book
-- Lesson
-- Page
-- Text
-- Image
-- PDF
-- Hotspot
-- Dictionary
+* All
+* Folder
+* Book
+* Lesson
+* Page
+* Text
+* Image
+* PDF
+* Hotspot
+* Dictionary
 
 搜尋結果可直接開啟對應教材或內容。
 
@@ -781,9 +991,9 @@ Popup 應採一致設計。
 
 預設內容：
 
-- Chinese
-- KK
-- Pronunciation
+* Chinese
+* KK
+* Pronunciation
 
 其他功能皆由 Context Toolbar 開啟。
 
@@ -799,8 +1009,8 @@ Popup 應採一致設計。
 
 自由調整：
 
-- Image Area
-- Text Area
+* Image Area
+* Text Area
 
 工作區大小。
 
@@ -818,11 +1028,11 @@ Popup 應採一致設計。
 
 包括：
 
-- Icon
-- Button
-- Dialog
-- Toolbar
-- Popup
+* Icon
+* Button
+* Dialog
+* Toolbar
+* Popup
 
 避免不同模組出現不同設計風格。
 
@@ -834,10 +1044,10 @@ Popup 應採一致設計。
 
 例如：
 
-- Search Icon 固定顯示於畫面右上角
-- Reading Mode 提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode（編輯模式）的明確入口
-- 主要功能應於適當位置提供明確入口
-- 常用功能不得被完全隱藏而無明確入口
+* Search Icon 固定顯示於畫面右上角
+* Reading Mode 提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode（編輯模式）的明確入口
+* 主要功能應於適當位置提供明確入口
+* 常用功能不得被完全隱藏而無明確入口
 
 降低使用者學習成本。
 
@@ -861,14 +1071,14 @@ Popup 應採一致設計。
 
 以下工作應採 Background Processing：
 
-- 匯入圖片
-- 匯入 PDF
-- 圖片最佳化
-- 圖片壓縮
-- 儲存教材
-- AI 處理
-- 搜尋
-- 其他耗時工作
+* 匯入圖片
+* 匯入 PDF
+* 圖片最佳化
+* 圖片壓縮
+* 儲存教材
+* AI 處理
+* 搜尋
+* 其他耗時工作
 
 不得阻塞使用者介面。
 
@@ -880,9 +1090,9 @@ Popup 應採一致設計。
 
 包括：
 
-- Resize
-- Compression
-- Format Optimization
+* Resize
+* Compression
+* Format Optimization
 
 不得要求使用者自行處理圖片。
 
@@ -894,8 +1104,8 @@ Popup 應採一致設計。
 
 應提供：
 
-- Loading Status
-- Large File Warning
+* Loading Status
+* Large File Warning
 
 不得直接造成系統停止回應。
 
@@ -919,19 +1129,19 @@ MagicBook 使用品牌角色動畫（Brand Loading Animation）。
 
 Loading Animation：
 
-- 顯示於畫面中央
-- 採持續動作動畫
-- 約佔畫面 15%
-- 工作完成後自動消失
+* 顯示於畫面中央
+* 採持續動作動畫
+* 約佔畫面 15%
+* 工作完成後自動消失
 
 品牌角色可依工作內容播放不同動畫。
 
 例如：
 
-- 小松鼠奔跑
-- 小狐狸奔跑
-- 小企鵝搬教材
-- 貓頭鷹飛行
+* 小松鼠奔跑
+* 小狐狸奔跑
+* 小企鵝搬教材
+* 貓頭鷹飛行
 
 品牌角色可依節日、活動或版本更新替換。
 
@@ -947,10 +1157,10 @@ Loading Animation：
 
 所有背景工作皆應遵循：
 
-- Non-blocking UI
-- Background Processing
-- Fast Response
-- Stable Performance
+* Non-blocking UI
+* Background Processing
+* Fast Response
+* Stable Performance
 
 不得因新增功能降低整體系統效能。
 
@@ -964,10 +1174,10 @@ Loading Animation：
 
 包括：
 
-- Unique ID（唯一識別）
-- Data Ownership（資料歸屬）
-- Data Isolation（資料隔離）
-- Data Integrity（資料完整性）
+* Unique ID（唯一識別）
+* Data Ownership（資料歸屬）
+* Data Isolation（資料隔離）
+* Data Integrity（資料完整性）
 
 所有資料皆須具有明確 Owner。
 
@@ -995,9 +1205,9 @@ MagicBook 3.0 不使用 Workspace（工作空間）作為教材資料根層級�
 
 教材資料不得因：
 
-- 登入裝置
-- 登入地點
-- 使用者更換裝置
+* 登入裝置
+* 登入地點
+* 使用者更換裝置
 
 而改變其 User Account（使用者帳號）歸屬。
 
@@ -1009,39 +1219,39 @@ Billing System（計費系統）與 Supabase 的職責必須分離。
 
 Billing System 負責：
 
-- 個人方案
-- 團體方案
-- Payment（付款）
-- Renewal（續約）
-- Expiration（到期）
-- 團體邀請
-- 團體人數
-- Pricing（價格）
-- Payment Cycle（付款週期）
-- 商業規則
+* 個人方案
+* 團體方案
+* Payment（付款）
+* Renewal（續約）
+* Expiration（到期）
+* 團體邀請
+* 團體人數
+* Pricing（價格）
+* Payment Cycle（付款週期）
+* 商業規則
 
 Supabase 負責：
 
-- User Account（使用者帳號）
-- Authentication（驗證）
-- Session（工作階段）
-- User ID（使用者識別）
-- 個人教材資料
-- Access Status（使用權狀態）
-- Trial Used（試用是否已使用）
+* User Account（使用者帳號）
+* Authentication（驗證）
+* Session（工作階段）
+* User ID（使用者識別）
+* 個人教材資料
+* Access Status（使用權狀態）
+* Trial Used（試用是否已使用）
 
 Supabase 不建立或管理：
 
-- Workspace Entity
-- Group Entity（團體實體）
-- Group ID
-- 團主
-- 團員
-- 邀請關係
-- 價格
-- 付款資料
-- 付款週期
-- 付款來源
+* Workspace Entity
+* Group Entity（團體實體）
+* Group ID
+* 團主
+* 團員
+* 邀請關係
+* 價格
+* 付款資料
+* 付款週期
+* 付款來源
 
 Billing System 透過 Webhook（網路回呼）通知 Supabase 使用權狀態：
 
@@ -1049,28 +1259,27 @@ User ID → Active / Inactive
 
 價格不得寫死於程式或本開發規範。
 
-
 ---
 
 ## 7.4 Account Access Lifecycle
 
 Access Status（使用權狀態）僅使用：
 
-- Active
-- Inactive
+* Active
+* Inactive
 
 Inactive 不建立唯讀模式（Read Only Mode）、Archive Mode 或 Temporary Access。
 
 Trial（免費試用）：
 
-- 每個 User Account 一生一次
-- Trial Used 用於記錄是否已使用
+* 每個 User Account 一生一次
+* Trial Used 用於記錄是否已使用
 
 使用權到期後：
 
-- 到期日起保留資料 90 天
-- 90 天內重新取得使用權：原資料保留並可繼續使用
-- 90 天後仍未重新取得使用權：清除資料
+* 到期日起保留資料 90 天
+* 90 天內重新取得使用權：原資料保留並可繼續使用
+* 90 天後仍未重新取得使用權：清除資料
 
 Webhook（網路回呼）同步失敗時：
 
@@ -1092,10 +1301,10 @@ Book Module
 
 不得直接修改：
 
-- AI Data
-- Dictionary Data
-- Audio Data
-- Video Data
+* AI Data
+* Dictionary Data
+* Audio Data
+* Video Data
 
 模組之間應透過公開介面交換資料。
 
@@ -1119,22 +1328,22 @@ Folder 為 Book Library 的分類資料。
 
 Folder 可包含：
 
-- Folder
-- Book
+* Folder
+* Book
 
 Folder 支援：
 
-- Create
-- Rename
-- Delete
-- Move
-- Reorder
+* Create
+* Rename
+* Delete
+* Move
+* Reorder
 
 Book 可：
 
-- 存在於 Book Library 根目錄
-- 放入 Folder
-- 在 Folder 之間移動
+* 存在於 Book Library 根目錄
+* 放入 Folder
+* 在 Folder 之間移動
 
 Folder 不儲存教材內容。
 
@@ -1160,13 +1369,14 @@ Folder 僅負責分類與管理。
 
 新增功能皆應符合：
 
-- Teaching Material First
-- Complete Product Architecture
-- Modular Architecture
-- Replaceable Service
-- Consistent User Experience
-- Reuse Before Reinvent
-- Performance
+* Teaching Material First
+* Complete Product Architecture
+* Modular Architecture
+* Replaceable Service
+* Consistent User Experience
+* Reuse Before Reinvent
+* Use Existing Human Understanding First
+* Performance
 
 不得破壞既有架構。
 
@@ -1208,10 +1418,10 @@ Dictionary / AI / Audio / Video / Navigation
 
 例如：
 
-- Context Toolbar
-- Popup
-- Search Toolbar
-- Search Icon
+* Context Toolbar
+* Popup
+* Search Toolbar
+* Search Icon
 
 不得重複開發。
 
@@ -1225,11 +1435,11 @@ Dictionary / AI / Audio / Video / Navigation
 
 例如：
 
-- Authentication
-- Save
-- Global Search
-- Background Processing
-- Loading Animation
+* Authentication
+* Save
+* Global Search
+* Background Processing
+* Loading Animation
 
 避免重複實作。
 
@@ -1277,10 +1487,10 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 不得直接修改：
 
-- Image Area
-- Text Area
-- PDF
-- Imported Image（已匯入圖片）
+* Image Area
+* Text Area
+* PDF
+* Imported Image（已匯入圖片）
 
 應建立於 HTML Overlay 或既有互動架構。
 
@@ -1304,10 +1514,10 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 所有程式皆應：
 
-- Clear Naming
-- Readability
-- Reusability
-- Maintainability
+* Clear Naming
+* Readability
+* Reusability
+* Maintainability
 
 程式應容易閱讀。
 
@@ -1317,9 +1527,9 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 所有元件皆應：
 
-- Single Responsibility
-- Reusable
-- Independent
+* Single Responsibility
+* Reusable
+* Independent
 
 避免大型元件。
 
@@ -1333,10 +1543,10 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 例如：
 
-- AI Provider
-- Dictionary Provider
-- Audio Provider
-- Video Provider
+* AI Provider
+* Dictionary Provider
+* Audio Provider
+* Video Provider
 
 不得直接寫死於程式。
 
@@ -1346,18 +1556,18 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 所有功能皆應提供：
 
-- Error Message
-- Retry
-- Recovery
+* Error Message
+* Retry
+* Recovery
 
 不得因錯誤造成教材遺失。
 
 若發生：
 
-- Upload Failure
-- Save Failure
-- Network Failure
-- Processing Failure
+* Upload Failure
+* Save Failure
+* Network Failure
+* Processing Failure
 
 系統應盡可能保留目前使用者操作內容。
 
@@ -1369,9 +1579,9 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 應完成：
 
-- Self Review
-- Functional Testing
-- Specification Consistency Review
+* Self Review
+* Functional Testing
+* Specification Consistency Review
 
 確認程式與正式規格一致。
 
@@ -1385,9 +1595,9 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 每次修改皆應保持：
 
-- 可編譯
-- 可執行
-- 可測試
+* 可編譯
+* 可執行
+* 可測試
 
 ---
 
@@ -1409,14 +1619,14 @@ Home、Back 等系統導覽功能屬於 Navigation。
 
 包括視需求涉及：
 
-- Product Specification
-- MVP Development
-- Development Guidelines
-- Database Design
-- API Design
-- AI Design
-- Editor Design
-- UI Design
+* Product Specification
+* MVP Development
+* Development Guidelines
+* Database Design
+* API Design
+* AI Design
+* Editor Design
+* UI Design
 
 尚未進入實際設計或開發階段的文件，
 
@@ -1440,10 +1650,10 @@ Specification Consistency Review。
 
 確認：
 
-- MVP
-- Product Specification
-- Development Guidelines
-- 其他已建立設計文件
+* MVP
+* Product Specification
+* Development Guidelines
+* 其他已建立設計文件
 
 內容一致。
 
@@ -1483,9 +1693,9 @@ main branch
 
 每次正式文件重大更新皆應更新：
 
-- Version
-- Last Update
-- Change Log
+* Version
+* Last Update
+* Change Log
 
 避免工程師無法判斷目前使用版本。
 
@@ -1494,23 +1704,26 @@ main branch
 # 11. Change Log
 
 | Version | Date | Description |
-|----------|------------|------------------------------------------------|
+| ------- | ---- | ----------- |
 
+| 4.5 Draft | 2026-08-14 | Added Use Existing Human Understanding First（優先利用使用者既有理解） as a Core Development Principle; integrated the 借力使力 principle, Mental Model, UI/UX next-step guidance, and reduced learning-cost requirements |
 | 4.4 Draft | 2026-08-09 | Synchronized User Account, Billing, Access Status, Trial, 90-day retention, and Webhook boundaries with Product Specification 3.4 and MVP Development 3.0; removed Workspace as the core data root |
 | 4.3 Draft | 2026-08-09 | Synchronized the confirmed Reading Mode → Editor Mode single Edit Button entry; no new feature, data model, or scope added |
 | 4.2 Draft | 2026-08-09 | Synchronized Camera terminology with the confirmed Image Import architecture; retained Reuse Before Reinvent and existing development principles |
 | 4.1 Draft | 2026-08-08 | Added Reuse Before Reinvent as a Core Development Principle |
 | 4.0 Draft | 2026-08-08 | Synchronized Development Guidelines with MVP 2.1 and Product Specification 3.1 |
 
+---
+
 ### Core Modules
 
 正式納入：
 
-- Video
-- Navigation
-- Save
-- Background Processing
-- Brand Loading Animation
+* Video
+* Navigation
+* Save
+* Background Processing
+* Brand Loading Animation
 
 ---
 
@@ -1518,14 +1731,14 @@ main branch
 
 確認：
 
-- Folder 為 Book Library 正式分類功能
-- Folder 支援 Create
-- Folder 支援 Rename
-- Folder 支援 Delete
-- Folder 支援 Move
-- Folder 支援 Reorder
-- Folder 支援 Nested Folder
-- Folder 支援 Drag & Drop Sorting
+* Folder 為 Book Library 正式分類功能
+* Folder 支援 Create
+* Folder 支援 Rename
+* Folder 支援 Delete
+* Folder 支援 Move
+* Folder 支援 Reorder
+* Folder 支援 Nested Folder
+* Folder 支援 Drag & Drop Sorting
 
 確認：
 
@@ -1541,15 +1754,15 @@ Book 也可以放入 Folder。
 
 重新確認：
 
-- Search Icon 固定於畫面右上方
-- Search Icon 不隱藏
-- 點擊 Search Icon 展開 Floating Search Toolbar
-- Close 後 Search Icon 仍保留
-- Home、Back 屬於 Navigation
-- Home、Back 不是 Search 功能
-- Search Scope 包含 All、Folder、Book、Lesson、Page、Text、Image、PDF、Hotspot、Dictionary
-- 搜尋結果可導向實際相關內容
-- 不記錄 Toolbar 上次位置
+* Search Icon 固定於畫面右上方
+* Search Icon 不隱藏
+* 點擊 Search Icon 展開 Floating Search Toolbar
+* Close 後 Search Icon 仍保留
+* Home、Back 屬於 Navigation
+* Home、Back 不是 Search 功能
+* Search Scope 包含 All、Folder、Book、Lesson、Page、Text、Image、PDF、Hotspot、Dictionary
+* 搜尋結果可導向實際相關內容
+* 不記錄 Toolbar 上次位置
 
 ---
 
@@ -1557,11 +1770,11 @@ Book 也可以放入 Folder。
 
 確認：
 
-- Background Processing
-- Non-blocking UI
-- Image Optimization
-- Image Compression
-- Large File Handling
+* Background Processing
+* Non-blocking UI
+* Image Optimization
+* Image Compression
+* Large File Handling
 
 為共同開發要求。
 
@@ -1571,13 +1784,13 @@ Book 也可以放入 Folder。
 
 確認：
 
-- 顯示於畫面中央
-- 約佔畫面 15%
-- 採持續動作動畫
-- 工作完成後自動消失
-- 不使用傳統 Loading Bar
-- 可使用品牌動物角色
-- 可依工作內容、節日或版本更新替換
+* 顯示於畫面中央
+* 約佔畫面 15%
+* 採持續動作動畫
+* 工作完成後自動消失
+* 不使用傳統 Loading Bar
+* 可使用品牌動物角色
+* 可依工作內容、節日或版本更新替換
 
 ---
 
@@ -1587,11 +1800,11 @@ Exercise 不屬於 MagicBook 3.0 MVP。
 
 Development Guidelines 不建立：
 
-- Exercise Module
-- Exercise CRUD
-- Exercise Popup
-- Exercise Rendering
-- Exercise User Flow
+* Exercise Module
+* Exercise CRUD
+* Exercise Popup
+* Exercise Rendering
+* Exercise User Flow
 
 MagicBook 3.0 定位為：
 
@@ -1633,12 +1846,12 @@ Database Design、API Design 等技術文件，
 
 確認：
 
-- 優先使用 Operating System（作業系統）既有能力
-- 優先使用 Browser（瀏覽器）既有能力
-- 優先使用 HTML / CSS / JavaScript 原生能力
-- 優先使用成熟 Open Source Library（開源函式庫）
-- 優先使用成熟 Third-party Tool / Service（第三方工具／服務）
-- 以上皆無法滿足需求時，才評估 Custom Development（自行開發）
+* 優先使用 Operating System（作業系統）既有能力
+* 優先使用 Browser（瀏覽器）既有能力
+* 優先使用 HTML / CSS / JavaScript 原生能力
+* 優先使用成熟 Open Source Library（開源函式庫）
+* 優先使用成熟 Third-party Tool / Service（第三方工具／服務）
+* 以上皆無法滿足需求時，才評估 Custom Development（自行開發）
 
 Camera（相機）案例確認：
 
@@ -1649,3 +1862,35 @@ MagicBook 不建立自己的 Camera System（相機系統）。
 MagicBook 負責 Image Import（圖片匯入）。
 
 此原則適用於所有新功能，不限於 Camera。
+
+---
+
+### Use Existing Human Understanding First
+
+新增：
+
+**Use Existing Human Understanding First（優先利用使用者既有理解）**
+
+正式成為 MagicBook 3.0 Core Development Principles（核心開發原則）。
+
+確認：
+
+* 優先利用使用者既有的生活經驗、操作習慣與心理模型
+* 優先使用使用者已熟悉的符號與操作模式
+* 新功能開發前先確認使用者能否在沒有說明的情況下合理猜到下一步
+* UI 應提供清楚的下一步操作線索，不讓使用者在畫面中搜尋可能的操作位置
+* UX 應降低使用者猜測、尋找與重新學習的成本
+* Functional Correctness（功能正確）不等同於 Usability（可用性）
+* 技術複雜度應藏在系統內部，不應轉嫁成使用者的學習成本
+
+「借力使力」正式定義為兩個層面：
+
+**技術層面：** Reuse Before Reinvent（先利用，再重新發明）
+
+**人機互動層面：** Use Existing Human Understanding First（優先利用使用者既有理解）
+
+最終原則：
+
+> **介面背後的技術可以很複雜，但介面前面的理解應該很簡單。**
+
+> **借用人已經會的，而不是要求人重新學會。**
