@@ -1,4 +1,4 @@
-# MagicBook 3.0 Product Specification
+# MagicBook 3.0 Product Specification - Version 3.4
 
 Version: 3.4
 
