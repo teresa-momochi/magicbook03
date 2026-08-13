@@ -1,4 +1,4 @@
-# MagicBook 3.0 Roadmap
+# MagicBook 3.0 Roadmap - version 1.1
 
 Version: 1.1
 
