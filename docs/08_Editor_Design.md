@@ -1,4 +1,4 @@
-# MagicBook 3.0 Editor Design
+# MagicBook 3.0 Editor Design - Version: 1.3
 
 Version: 1.3
 
