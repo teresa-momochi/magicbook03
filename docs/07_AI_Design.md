@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-14
 
 ---
 
@@ -1269,6 +1269,8 @@ AI Architecture 發生正式變更時，必須同步更新：
 ---
 
 # 36. Change Log
+
+> **Version Tracking Note（2026-08-14 補註）：** Gate 0 Audit 發現，10_Change_Log.md（主變更紀錄文件）先前對本文件 Version 1.3 的記載為「新增 Workspace Isolation」，與本文件下方 Version 1.3 的實際內容（移除 Workspace）方向相反。經逐份核對，本文件（07_AI_Design.md）自身的 Change Log 僅存在一筆 Version 1.3 紀錄，且該紀錄內容與目前正文完全一致，為唯一且正確的版本歷史。10_Change_Log.md 的記載屬於外部主文件的過期記錄，已於 10_Change_Log.md v1.1 一併修正。本文件 Version 保持 1.3，不另行變更版本號。
 
 ## Version 1.3
 

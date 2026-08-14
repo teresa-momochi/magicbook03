@@ -1,6 +1,6 @@
-# MagicBook 3.0 Roadmap - version 1.1
+# MagicBook 3.0 Roadmap - version 1.2
 
-Version: 1.1
+Version: 1.2
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-14
 
 
 # Table of Contents
@@ -261,7 +261,7 @@ Phase 8 — Optimization（最佳化）
 完成：
 
 - Authentication（身分驗證）
-- Workspace（工作空間）
+- User Account（使用者帳號）
 - Database（資料庫）
 - Book Library（教材庫）
 
@@ -277,20 +277,23 @@ Phase 8 — Optimization（最佳化）
 
 支援：
 
-- Personal Workspace（個人工作空間）
-- Organization Workspace（組織工作空間）
+- User Account（使用者帳號）作為登入與資料歸屬的唯一單位
+
+Personal（個人）／Group（團體）為 Billing Plan（計費方案），不是不同的登入或帳號架構。
 
 
-## 3.4 Workspace
+## 3.4 User Account
 
 建立：
 
-- Personal Workspace
-- Organization Workspace
-- Workspace Identity（Workspace 身分）
+- User Account（使用者帳號）
+- User ID
+- Access Status（使用權狀態）
 - Basic Permission（基本權限）
 
-Workspace 為系統資料歸屬的重要層級。
+User Account 為系統資料歸屬的核心層級，取代舊版 Workspace 架構。
+
+Personal / Group 屬於 Billing System（計費系統）管理的 Billing Plan，不在此建立獨立的資料實體。
 
 
 ## 3.5 Database
@@ -298,7 +301,7 @@ Workspace 為系統資料歸屬的重要層級。
 建立：
 
 - Core Data Model（核心資料模型）
-- Workspace Relationship（Workspace 關聯）
+- User Account Relationship（User Account 資料關聯）
 - Basic Data Persistence（基本資料持久化）
 
 Database Design（資料庫設計）依實際開發需求建立。
@@ -324,7 +327,7 @@ Folder 功能於 Phase 2 完成。
 本階段交付：
 
 - Authentication Module
-- Workspace Module
+- User Account Module
 - Database Foundation
 - Book Library Foundation
 
@@ -335,7 +338,7 @@ Folder 功能於 Phase 2 完成。
 
 1. 登入 MagicBook。
 2. 維持 Session。
-3. 進入正確 Workspace。
+3. 進入正確 User Account。
 4. 開啟 Book Library。
 5. 建立基本 Book。
 6. 正確儲存資料。
@@ -350,7 +353,7 @@ Folder 功能於 Phase 2 完成。
 
 教材基本架構：
 
-Workspace
+User Account
 
 ↓
 
@@ -1306,7 +1309,7 @@ Loading Animation：
 - Data Integrity
 - Query Performance
 - Relationship Integrity
-- Workspace Data Isolation
+- User Account Data Isolation
 
 Database Optimization 不得自行改變已確認資料架構。
 
@@ -1731,6 +1734,40 @@ Roadmap 必須永遠反映：
 
 
 # 15. Change Log
+
+
+## Version 1.2
+
+### Account / Billing Architecture Synchronization
+
+本版本同步 01_Product_Specification v3.4、02_MVP_Development v3.0、05_Database_Design v2.0、06_API_Design v2.0、09_UI_Design v2.0、11_MVP_Task_List v2.3 已正式確認的 Account／Billing 架構調整。
+
+本版本僅同步已確認的跨文件規格，不新增產品功能、不新增資料模型、不擴大 MVP Scope。
+
+正式移除：
+
+- Workspace 作為系統資料根層級
+- Personal Workspace / Organization Workspace
+- Workspace Identity / Workspace Relationship / Workspace Data Isolation
+
+正式改為：
+
+- User Account（使用者帳號）為系統資料歸屬核心層級
+- 核心教材階層：User Account → Book Library → Folder → Book → Lesson → Page
+- Personal（個人）／Group（團體）為 Billing Plan（計費方案），非不同的 Account 架構、非不同的資料架構
+
+本次修正影響：
+
+- §3.2 Phase 1 Scope
+- §3.3 Authentication
+- §3.4（原 Workspace 節，改為 User Account 節）
+- §3.5 Database
+- §3.7 Deliverables
+- §3.8 Completion Criteria
+- §4.1 Phase 2 教材基本架構圖
+- §10.4 Database Optimization 檢查項目
+
+歷史版本（Version 1.0）中原有的 Workspace 相關內容為歷史紀錄，予以保留，不代表現行架構。
 
 
 ## Version 1.1

@@ -1,11 +1,11 @@
 # MagicBook 3.0 Change Log
 
-Version: 1.0
+Version: 1.1
 Status: Active
 Document Owner: Teresa Su
 Product Manager: ChatGPT
 Technical Lead: 阿德
-Last Update: 2026-08-09
+Last Update: 2026-08-14
 
 ---
 
@@ -100,9 +100,107 @@ Product Specification（產品規格）
 
 ---
 
-# 3. Confirmed Document Updates
+# 3. Architecture Transition — Workspace-based → User Account-based（2026-08-14 新增）
 
-## 3.1 07_AI_Design.md
+## 3.0 Purpose
+
+本節記錄 MagicBook 3.0 一次重大架構轉換，並補齊本文件先前未記錄的變更。
+
+## 3.0.1 Transition Summary
+
+```text
+舊架構
+Workspace-based Architecture
+
+        ↓
+
+新架構
+User Account-based Architecture
+```
+
+正式確認：
+
+- Workspace 不再作為目前產品資料根層級（不再有 Personal Workspace / Organization Workspace / Workspace Identity / Workspace Membership / Workspace Role / Workspace Data Ownership）。
+- User Account（使用者帳號）成為使用者資料歸屬核心層級。
+- 核心教材階層改為：User Account → Book Library → Folder → Book → Lesson → Page。
+
+同步確認：
+
+```text
+Personal / Group
+        ↓
+Billing Plan
+```
+
+- Personal（個人）／Group（團體）為 Billing System（計費系統）管理的 Billing Plan（計費方案），不是不同的 User Account 類型，也不是不同的資料架構。
+
+同步確認 Billing 與 Supabase 的責任邊界：
+
+```text
+User Email
+    ↓
+Billing
+    ↓
+Payment
+    ↓
+Access Activation
+    ↓
+Supabase
+    ↓
+User Access
+```
+
+- Billing System 負責付款、續約、到期、團體邀請、團體人數、價格、付款週期等商業邏輯。
+- Supabase 負責 User Account、Authentication、Session、User ID、個人教材資料、Access Status。
+- Billing 與 Supabase Access 保持責任分離，透過 Webhook 同步 Access Status。
+
+同步確認 Content Ownership：
+
+- 教材內容所有權（Content Ownership）與 MagicBook Tool / Service 使用權（Tool / Service Access）保持清楚區分。
+
+## 3.0.2 Document Sync Status
+
+本次架構轉換已於下列文件正式確認並定案（本次 Gate 2 之前即已完成）：
+
+| 文件 | 版本 | 狀態 |
+|---|---|---|
+| 00_Brand_Philosophy.md | 1.0 | 已同步 |
+| 01_Product_Specification.md | 3.4 | 已同步（基準文件） |
+| 02_MVP_Development.md | 3.0 | 已同步 |
+| 04_Development_Guidelines.md | 4.6 | 已同步 |
+| 05_Database_Design.md | 2.0 | 已同步 |
+| 06_API_Design.md | 2.0 | 已同步 |
+| 09_UI_Design.md | 2.0 | 已同步 |
+| 11_MVP_Task_List.md | 2.3 | 已同步 |
+
+本次 Gate 2 另完成以下文件的同步（詳見下方 §4）：
+
+| 文件 | 舊版本 | 新版本 | 狀態 |
+|---|---|---|---|
+| 03_Roadmap.md | 1.1 | 1.2 | 已同步 |
+| 08_Editor_Design.md | 1.3 | 1.4 | 已同步 |
+| 07_AI_Design.md | 1.3 | 1.3（不變，內容原已同步） | 已確認 |
+| 10_Change_Log.md（本文件） | 1.0 | 1.1 | 本次更新 |
+
+## 3.0.3 Version Tracking Correction — 07_AI_Design.md
+
+Gate 0 Audit 發現，本文件下方 §3.1（歷史紀錄，Version 1.0 時期撰寫）記載 07_AI_Design.md v1.3 的主要變更為「明確定義 Workspace Isolation」，與 07_AI_Design.md 自身 Change Log（§36 Version 1.3）記載的「移除 Workspace 作為 AI 資料歸屬與權限邊界的舊架構」方向相反。
+
+經核對 07_AI_Design.md 全文，該文件自身的 Change Log 僅存在一筆 Version 1.3 紀錄，且與目前正文內容一致（已完成 Workspace 移除）。因此判定：
+
+> 07_AI_Design.md 的內容本身正確、無需修改；本文件（10_Change_Log.md）§3.1 的舊記載為過期資訊，非現行事實。
+
+依「保留歷史、不刪除」原則，§3.1 原文不予刪除，但標記為歷史記錄（非現行事實），並以本節內容為準。
+
+---
+
+# 4. Confirmed Document Updates
+
+## 4.0 歷史記錄說明
+
+以下 §4.1、§4.2、§4.3 為 Version 1.0 時期的原始記錄，予以保留。§4.1 所述「明確定義 Workspace Isolation」一項，經 §3.0.3 確認為過期記載，現行事實請參照 §3。
+
+## 4.1 07_AI_Design.md（歷史記錄）
 
 Version: 1.3
 
@@ -126,7 +224,7 @@ Last Update: 2026-08-09
 
 ---
 
-## 3.2 08_Editor_Design.md
+## 4.2 08_Editor_Design.md（歷史記錄）
 
 Version: 1.3
 
@@ -147,7 +245,7 @@ Last Update: 2026-08-09
 
 ---
 
-## 3.3 11_MVP_Task_List.md
+## 4.3 11_MVP_Task_List.md
 
 Version: 2.3
 
@@ -170,32 +268,42 @@ Last Update: 2026-08-09
 
 ---
 
-# 4. Current Development Status
+# 5. Current Development Status
 
-目前已確認：
+目前已確認之正式文件版本基準：
 
+- 00_Brand_Philosophy.md → Version 1.0
+- 01_Product_Specification.md → Version 3.4
+- 02_MVP_Development.md → Version 3.0
+- 03_Roadmap.md → Version 1.2
+- 04_Development_Guidelines.md → Version 4.6
+- 05_Database_Design.md → Version 2.0
+- 06_API_Design.md → Version 2.0
 - 07_AI_Design.md → Version 1.3
-- 08_Editor_Design.md → Version 1.3
+- 08_Editor_Design.md → Version 1.4
+- 09_UI_Design.md → Version 2.0
+- 10_Change_Log.md → Version 1.1
 - 11_MVP_Task_List.md → Version 2.3
-- 10_Change_Log.md → Version 1.0
+
+全部文件現行架構已一致採用 User Account-based Architecture，Workspace 僅存在於歷史 Change Log 紀錄中，不代表現行產品架構。
 
 ---
 
-# 5. Change Log Rules
+# 6. Change Log Rules
 
-## 5.1 Version Update
+## 6.1 Version Update
 
 文件發生正式內容變更時，必須更新 Version（版本）。
 
 ---
 
-## 5.2 Last Update
+## 6.2 Last Update
 
 正式更新文件時，必須更新 Last Update（最後更新日期）。
 
 ---
 
-## 5.3 Commit Message
+## 6.3 Commit Message
 
 GitHub Commit（GitHub 提交）應清楚描述此次變更。
 
@@ -203,3 +311,8 @@ GitHub Commit（GitHub 提交）應清楚描述此次變更。
 
 ```text
 Update AI Design to v1.3
+```
+
+---
+
+# END OF DOCUMENT

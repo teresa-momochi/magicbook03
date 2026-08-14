@@ -1,6 +1,6 @@
-# MagicBook 3.0 Editor Design - Version: 1.3
+# MagicBook 3.0 Editor Design - Version: 1.4
 
-Version: 1.3
+Version: 1.4
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-14
 
 ---
 
@@ -37,7 +37,7 @@ Last Update: 2026-08-09
 18. Background Processing
 19. Loading and Processing States
 20. Performance
-21. Security and Workspace Isolation
+21. Security and User Account Isolation
 22. Development Boundaries
 23. Reuse Before Reinvent
 24. Testing and Validation
@@ -226,7 +226,11 @@ Editor 必須遵循系統共同原則：
 
 MagicBook 的教材結構：
 
-Workspace（工作空間）
+User Account（使用者帳號）
+↓
+Book Library（教材庫）
+↓
+Folder（資料夾）
 ↓
 Book（教材）
 ↓
@@ -235,6 +239,8 @@ Lesson（課次）
 Page（頁面）
 ↓
 Content（內容）
+
+Editor 只負責 Book／Lesson／Page／Content 範圍內的編輯行為；Book Library 與 Folder 的管理行為（建立、搬移、刪除等）依 01_Product_Specification 與 05_Database_Design 為準，不在本文件重複定義。
 
 Page 內：
 
@@ -963,7 +969,7 @@ Processing Job（處理工作）至少包含：
 - Job Status（工作狀態）
 - Source Resource（來源資源）
 - Processing Type（處理類型）
-- Workspace Context（工作空間上下文）
+- User Account Context（使用者帳戶上下文）
 
 正式資料結構依既有 Database / API Design。
 
@@ -1063,11 +1069,13 @@ Cache 不得取代正式資料來源。
 
 ---
 
-# 21. Security and Workspace Isolation
+# 21. Security and User Account Isolation
 
-## 21.1 Workspace Isolation
+## 21.1 User Account Isolation
 
-Editor 只能操作目前 User Account（使用者帳戶）被授權的 Workspace（工作空間）資料。
+Editor 只能操作目前登入 User Account（使用者帳戶）自己所擁有的教材資料（Book Library → Folder → Book → Lesson → Page）。
+
+User Data Isolation（使用者資料隔離）取代舊版 Workspace Isolation，作為 Editor 現行的資料隔離邊界。
 
 ---
 
@@ -1075,34 +1083,32 @@ Editor 只能操作目前 User Account（使用者帳戶）被授權的 Workspac
 
 Editor 權限依：
 
-Workspace
-+
 User Permission（使用者權限）
 +
 API Authorization（API 授權）
 
-執行。
+執行，以已驗證的 User Account Identity 與 Resource Ownership（資源所有權）為基礎，對齊 06_API_Design 的 API Authorization 規則。
 
 ---
 
-## 21.3 No Cross Workspace
+## 21.3 No Cross Account Access
 
 Editor 不得：
 
-- 讀取其他 Workspace
-- 修改其他 Workspace
-- 建立跨 Workspace Hotspot
-- 使用其他 Workspace 的 AI Processing Data
+- 讀取其他 User Account 的教材資料
+- 修改其他 User Account 的教材資料
+- 建立跨 User Account 的 Hotspot
+- 使用其他 User Account 的 AI Processing Data
 
 ---
 
 ## 21.4 User Account Boundary
 
-User Account 不代表可以直接取得所有 Workspace 資料。
+User Account 不代表可以直接取得所有教材資料——僅代表可以取得**該 User Account 自己擁有**的教材資料。
 
 所有資料存取必須經過：
 
-> User Permission + Workspace Authorization + API Authorization
+> User Permission + API Authorization
 
 ---
 
@@ -1208,7 +1214,7 @@ Custom Development
 - AI Result Integration（AI 結果整合）
 - Save Behavior
 - Delete Behavior
-- Workspace Isolation
+- User Account Isolation
 - Caching Behavior
 - Background Processing Behavior
 
@@ -1265,14 +1271,14 @@ Custom Development
 
 ---
 
-## 24.6 Workspace Testing
+## 24.6 User Account Isolation Testing
 
 確認：
 
-- Workspace A 無法讀取 Workspace B
-- Workspace A 無法修改 Workspace B
-- AI Processing Data 不跨 Workspace
-- Hotspot 不跨 Workspace
+- User Account A 無法讀取 User Account B 的教材資料
+- User Account A 無法修改 User Account B 的教材資料
+- AI Processing Data 不跨 User Account
+- Hotspot 不跨 User Account
 - API Authorization 正常運作
 
 ---
@@ -1320,7 +1326,7 @@ Custom Development
 - [ ] Original Teaching Material 不被 AI Processing 直接覆蓋
 - [ ] Processing Image 不形成第二份正式教材
 - [ ] OCR 不自動覆蓋 Text Area
-- [ ] Workspace Isolation 正常
+- [ ] User Account Isolation 正常
 - [ ] User Permission 正常
 - [ ] API Authorization 正常
 
@@ -1351,7 +1357,7 @@ Custom Development
 - HTML Overlay
 - Hotspot
 - AI Integration
-- Workspace Isolation
+- User Account Isolation
 
 必須先進行 PM Review。
 
@@ -1415,6 +1421,35 @@ Editor Design 更新後，必須檢查：
 ---
 
 # 27. Change Log
+
+## Version 1.4
+
+Status: Draft
+
+Last Update: 2026-08-14
+
+本版本同步 01_Product_Specification v3.4、02_MVP_Development v3.0、05_Database_Design v2.0、06_API_Design v2.0、09_UI_Design v2.0、11_MVP_Task_List v2.3 已正式確認的 Account／Billing 架構調整。
+
+本版本僅同步已確認的跨文件規格，不新增產品功能、不新增資料模型、不擴大 Editor Scope。
+
+正式移除：
+
+- Workspace 作為教材資料歸屬層級
+- Workspace Isolation 作為安全／權限架構
+
+正式改為：
+
+- §3.1 Content Structure：教材結構改為 User Account → Book Library → Folder → Book → Lesson → Page
+- §18.3 Processing Job：Workspace Context 改為 User Account Context
+- §21 章名改為「Security and User Account Isolation」；21.1–21.4 改以 User Account Isolation（User Permission + API Authorization）表達，原有的資料隔離／安全要求本身予以保留，僅替換基礎架構用詞
+- §24.6 章名改為「User Account Isolation Testing」，測試項目改為驗證 User Account 之間的資料隔離
+- §25.4、§26.1 相關檢查項目同步更新為 User Account Isolation
+
+本次修正不影響 Editor 既有功能範圍、不新增 API、不新增 Database Schema。
+
+Version 1.2／1.3 之 Workspace Isolation 相關內容為歷史紀錄，予以保留，不代表現行架構。
+
+---
 
 ## Version 1.3
 
