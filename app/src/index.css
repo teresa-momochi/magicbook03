@@ -1,0 +1,11 @@
+/* MagicBook 3.0 — Global Base Styles
+   Task 1 範圍：只提供最基本的 CSS Reset，不包含任何畫面功能樣式。 */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
