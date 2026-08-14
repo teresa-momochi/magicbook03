@@ -1,4 +1,4 @@
-# MagicBook 3.0 MVP Task List - Version: 2.3
+# MagicBook 3.0 MVP Task List -- Version: 2.3
 
 Version: 2.3
 
