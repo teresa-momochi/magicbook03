@@ -1,4 +1,4 @@
-# MagicBook 3.0 Brand Philosophy
+# MagicBook 3.0 Brand Philosophy - Version: 1.0
 
 Version: 1.0
 
