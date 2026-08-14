@@ -1,4 +1,4 @@
-# MagicBook 3.0 AI Design - Version: 1.3
+# MagicBook 3.0 AI Design -- Version: 1.3
 
 Version: 1.3
 
