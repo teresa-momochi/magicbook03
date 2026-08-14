@@ -1,6 +1,6 @@
-# MagicBook 3.0 Development Guidelines — Version 4.5
+# MagicBook 3.0 Development Guidelines — Version 4.6
 
-Version: 4.5
+Version: 4.6
 
 Status: Draft
 
@@ -1363,6 +1363,47 @@ Folder 僅負責分類與管理。
 
 ---
 
+## 7.9 Storage Lifecycle Management
+
+MagicBook 應考慮教材圖片與其他使用者檔案長期累積所造成的 Storage（儲存空間）管理問題。
+
+老師可能會持續匯入、下載或產生圖片，但其中部分檔案在使用一段時間後可能不再使用。
+
+因此，儲存空間管理不得只在容量即將用滿時才處理，而應建立完整的 Storage Lifecycle（儲存生命週期）管理原則。
+
+### Storage Principles
+
+* 系統應能辨識長期未使用的檔案。
+* 系統可在適當時機提醒使用者整理長期未使用的檔案。
+* 使用者應能查看即將被整理的檔案，再自行決定是否刪除。
+* 不得因檔案長期未使用而直接自動刪除教材或使用者資產。
+* 刪除操作應具備可恢復機制（Recovery / Trash），避免誤刪造成教材遺失。
+* 暫存資料（Temporary Data）、Cache（快取）與使用者教材資產應分開管理，不得混為同一類資料。
+* 儲存空間使用量與容量狀態應可被使用者理解。
+* 若產品未來採容量型方案，容量規則應由正式商業規格定義，不得在本開發規範中寫死價格或未確認的容量數值。
+
+### User Experience Principle
+
+Storage Management（儲存管理）不應要求老師理解技術性的 Storage、Cache 或 File Lifecycle 概念。
+
+使用者看到的應是容易理解的訊息，例如：
+
+> 「有一些圖片已經很久沒有使用，可以整理。」
+
+而不是要求使用者自行判斷技術資料。
+
+儲存空間管理應遵循：
+
+> **系統負責發現與整理建議，使用者負責最後的刪除決定。**
+
+### Automatic Deletion Rule
+
+MagicBook 不得僅因檔案長期未使用、儲存空間接近上限或方案到期，而直接自動刪除仍屬於使用者資產的教材檔案。
+
+任何永久刪除規則皆須先經正式產品規格確認。
+
+---
+
 # 8. Feature Development Guidelines
 
 ## 8.1 Development Principles
@@ -1505,6 +1546,27 @@ Home、Back 等系統導覽功能屬於 Navigation。
 保持向下相容（Backward Compatibility）。
 
 未經確認的新功能不得直接加入 MVP。
+
+---
+
+## 8.9 Storage Management Integration
+
+任何涉及圖片、PDF、教材資產或其他使用者檔案的新增功能，都必須考慮 Storage Lifecycle Management（儲存生命週期管理）。
+
+開發前應確認：
+
+1. 此資料是否屬於使用者資產？
+2. 此資料是否為暫存資料或 Cache？
+3. 使用者是否能在未來找到並重新使用此資料？
+4. 長期未使用時，系統是否需要提供整理提醒？
+5. 刪除後是否需要 Recovery / Trash（恢復／垃圾桶）機制？
+6. 是否會影響使用者的 Storage Capacity（儲存容量）？
+
+不得因新增功能而無限制累積不必要的檔案。
+
+儲存管理功能本身也必須遵循 Use Existing Human Understanding First（優先利用使用者既有理解）：
+
+> **不要讓老師自己管理垃圾；讓系統幫老師發現可能不再需要的資料，再由老師決定。**
 
 ---
 
@@ -1706,6 +1768,7 @@ main branch
 | Version | Date | Description |
 | ------- | ---- | ----------- |
 
+| 4.6 Draft | 2026-08-14 | Added Storage Lifecycle Management（儲存生命週期管理） principles for long-term unused files, user-controlled cleanup, recovery, and separation of user assets from temporary data and cache |
 | 4.5 Draft | 2026-08-14 | Added Use Existing Human Understanding First（優先利用使用者既有理解） as a Core Development Principle; integrated the 借力使力 principle, Mental Model, UI/UX next-step guidance, and reduced learning-cost requirements |
 | 4.4 Draft | 2026-08-09 | Synchronized User Account, Billing, Access Status, Trial, 90-day retention, and Webhook boundaries with Product Specification 3.4 and MVP Development 3.0; removed Workspace as the core data root |
 | 4.3 Draft | 2026-08-09 | Synchronized the confirmed Reading Mode → Editor Mode single Edit Button entry; no new feature, data model, or scope added |
