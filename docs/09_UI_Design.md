@@ -1,4 +1,4 @@
-# MagicBook 3.0 UI Design
+# MagicBook 3.0 UI Design - Version: 2.0
 
 Version: 2.0
 
