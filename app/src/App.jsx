@@ -1,32 +1,60 @@
 // MagicBook 3.0 — App Root
 //
-// Task 1 範圍：只驗證專案骨架、共用 Layout、Supabase Authentication 基礎連接是否正常運作。
-// 不包含 Home 畫面內容（Task 3）、Book Library（Task 4）等功能。
+// Task 2 範圍：Email Verification / User Account / Login / Logout /
+// Session / Access Status / Trial Used。
+//
+// 不包含 Home 完整頁面、Book Library、Book Editor（依 Task 2 指令九，
+// 屬於後續 Task）。已登入且 Active 時，只顯示最基本的登入後狀態確認畫面。
 
 import { AuthProvider, useAuth } from './modules/auth/AuthContext'
+import LoginForm from './modules/auth/LoginForm'
+import AccessGate from './modules/auth/AccessGate'
+import { signOut } from './modules/auth/authService'
 import Layout from './shared/layout/Layout'
 import './shared/layout/layout.css'
 
-function ConnectionStatus() {
-  const { session, loading } = useAuth()
-
+function AuthenticatedPlaceholder({ userAccount }) {
   return (
     <div>
       <h1>MagicBook 3.0</h1>
-      <p>Project Setup（Task 1）基礎骨架</p>
-      <p>
-        Supabase Auth 狀態：
-        {loading ? ' 檢查中…' : session ? ' 已登入' : ' 未登入（尚未建立登入畫面，屬 Task 2/3 範圍）'}
-      </p>
+      <p>已登入：{userAccount?.email}</p>
+      <p>Access Status：{userAccount?.access_status}</p>
+      <p>Trial Used：{userAccount?.trial_used ? '是' : '否'}</p>
+      <p>Home / Book Library 尚未建立，屬於後續 Task 範圍。</p>
+      <button type="button" onClick={() => signOut()}>
+        登出
+      </button>
     </div>
   )
+}
+
+function AppContent() {
+  const { session, userAccount, loading, accountLoading } = useAuth()
+
+  if (loading) {
+    return <p>檢查登入狀態中…</p>
+  }
+
+  if (!session) {
+    return <LoginForm />
+  }
+
+  if (accountLoading || !userAccount) {
+    return <p>載入使用者資料中…</p>
+  }
+
+  if (userAccount.access_status === 'Inactive') {
+    return <AccessGate />
+  }
+
+  return <AuthenticatedPlaceholder userAccount={userAccount} />
 }
 
 function App() {
   return (
     <AuthProvider>
       <Layout>
-        <ConnectionStatus />
+        <AppContent />
       </Layout>
     </AuthProvider>
   )
