@@ -14,6 +14,41 @@
   max-width: min(92vw, 760px);
 }
 
+/* Narrow-screen override: shared Layout (shared/layout/layout.css, Task 1)
+   already applies its own outer padding which we don't touch here.
+   On small viewports this file's own padding is reduced so the onboarding
+   scene can use the width Layout leaves available, instead of stacking a
+   second layer of margin on top of it. Desktop proportions above are
+   unchanged. */
+@media (max-width: 480px) {
+  .mb-onboarding-screen {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .mb-onboarding-screen--book {
+    max-width: 100%;
+  }
+
+  .mb-magic-sky {
+    padding: 20px 10px;
+    border-radius: 16px;
+  }
+
+  .mb-magic-sky--book {
+    padding: 22px 8px 16px;
+  }
+
+  .mb-book {
+    padding: 6px;
+    border-radius: 14px;
+  }
+
+  .mb-book-page {
+    padding: 16px 8px;
+  }
+}
+
 .mb-onboarding-title {
   margin: 0 0 12px;
   font-size: 22px;
