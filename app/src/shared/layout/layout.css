@@ -1,5 +1,5 @@
 /* MagicBook 3.0 — 共用 Layout 基礎樣式
-   Task 1 範圍：只提供最基本外框樣式，不包含任何畫面功能樣式。 */
+   置中排版、基本字級，讓 Task 2 的最小 UI 不會看起來像空白頁。 */
 
 .mb-app-shell {
   min-height: 100vh;
@@ -11,4 +11,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
 }
