@@ -12,11 +12,12 @@ import AccessGate from './modules/auth/AccessGate'
 import { signOut } from './modules/auth/authService'
 import Layout from './shared/layout/Layout'
 import './shared/layout/layout.css'
+import './modules/auth/auth.css'
 
 function AuthenticatedPlaceholder({ userAccount }) {
   return (
-    <div>
-      <h1>MagicBook 3.0</h1>
+    <div className="mb-access-gate">
+      <h2>MagicBook 3.0</h2>
       <p>已登入：{userAccount?.email}</p>
       <p>Access Status：{userAccount?.access_status}</p>
       <p>Trial Used：{userAccount?.trial_used ? '是' : '否'}</p>
