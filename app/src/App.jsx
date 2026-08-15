@@ -1,33 +1,20 @@
 // MagicBook 3.0 — App Root
 //
 // Task 2 範圍：Email Verification / User Account / Login / Logout /
-// Session / Access Status / Trial Used。
+// Session / Access Status / Trial Used（不在本次 Task 3 變動）。
 //
-// 不包含 Home 完整頁面、Book Library、Book Editor（依 Task 2 指令九，
-// 屬於後續 Task）。已登入且 Active 時，只顯示最基本的登入後狀態確認畫面。
+// Task 3 範圍：登入且 Active 後，進入入口體驗流程（OnboardingFlow）：
+// InstallPrompt → WelcomeScene → MagicBookIntro → 體驗 / 購買方案。
+// Book Library、Book Editor、Billing 仍屬於後續 Task。
 
 import { AuthProvider, useAuth } from './modules/auth/AuthContext'
 import LoginForm from './modules/auth/LoginForm'
 import AccessGate from './modules/auth/AccessGate'
-import { signOut } from './modules/auth/authService'
+import OnboardingFlow from './modules/onboarding/OnboardingFlow'
 import Layout from './shared/layout/Layout'
 import './shared/layout/layout.css'
 import './modules/auth/auth.css'
-
-function AuthenticatedPlaceholder({ userAccount }) {
-  return (
-    <div className="mb-access-gate">
-      <h2>MagicBook 3.0</h2>
-      <p>已登入：{userAccount?.email}</p>
-      <p>Access Status：{userAccount?.access_status}</p>
-      <p>Trial Used：{userAccount?.trial_used ? '是' : '否'}</p>
-      <p>Home / Book Library 尚未建立，屬於後續 Task 範圍。</p>
-      <button type="button" onClick={() => signOut()}>
-        登出
-      </button>
-    </div>
-  )
-}
+import './modules/onboarding/onboarding.css'
 
 function AppContent() {
   const { session, userAccount, loading, accountLoading } = useAuth()
@@ -48,7 +35,7 @@ function AppContent() {
     return <AccessGate />
   }
 
-  return <AuthenticatedPlaceholder userAccount={userAccount} />
+  return <OnboardingFlow userAccount={userAccount} />
 }
 
 function App() {
