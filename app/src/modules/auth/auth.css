@@ -1,0 +1,89 @@
+/* MagicBook 3.0 — Auth UI 基礎樣式（LoginForm / AccessGate 共用）
+   Task 2 範圍：只做最基本的排版與字級，不建立完整設計系統。 */
+
+.mb-login,
+.mb-access-gate {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px;
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.mb-login h2,
+.mb-access-gate h2 {
+  margin: 0 0 24px;
+  font-size: 22px;
+}
+
+.mb-login form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.mb-login label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+.mb-login input {
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.mb-login input:focus {
+  outline: none;
+  border-color: #6b4fbb;
+  box-shadow: 0 0 0 2px rgba(107, 79, 187, 0.15);
+}
+
+.mb-login button,
+.mb-access-gate button {
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mb-login button[type="submit"] {
+  background: #6b4fbb;
+  color: #fff;
+}
+
+.mb-login button[type="submit"]:disabled {
+  background: #b7a9de;
+  cursor: not-allowed;
+}
+
+.mb-login button[type="button"] {
+  background: transparent;
+  color: #6b4fbb;
+}
+
+.mb-access-gate button {
+  background: #6b4fbb;
+  color: #fff;
+  margin-top: 16px;
+}
+
+.mb-login p[role="alert"] {
+  margin: 4px 0 0;
+  color: #c0392b;
+  font-size: 14px;
+  text-align: left;
+}
+
+.mb-login p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
