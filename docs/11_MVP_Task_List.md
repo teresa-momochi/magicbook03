@@ -42,13 +42,13 @@ Last Update: 2026-08-09
 
 完成專案初始化。
 
-- [ ] 建立 React + Vite 專案
-- [ ] 建立 GitHub 專案
-- [ ] 建立基本資料夾結構
-- [ ] 建立共用 Layout
-- [ ] 建立 Supabase Project
-- [ ] 完成 Supabase Authentication（登入）
-- [ ] 建立 GitHub Pages 部署
+   - [x] 建立 React + Vite 專案
+   - [x] 建立 GitHub 專案
+   - [x] 建立基本資料夾結構
+   - [x] 建立共用 Layout
+   - [x] 建立 Supabase Project
+   - [x] 完成 Supabase Authentication（登入）
+   - [x] 建立 GitHub Pages 部署
 
 ---
 
@@ -56,14 +56,14 @@ Last Update: 2026-08-09
 
 完成使用者帳號與登入基礎。
 
-- [ ] Email Verification（Email 驗證）
-- [ ] 建立 User Account（使用者帳號）
-- [ ] User ID
-- [ ] Login
-- [ ] Logout
-- [ ] Session Management（工作階段管理）
-- [ ] Access Status（使用權狀態）
-- [ ] Trial Used（試用狀態）
+   - [x] Email Verification（Email 驗證）
+   - [x] 建立 User Account（使用者帳號）
+   - [x] User ID
+   - [x] Login
+   - [x] Logout
+   - [x] Session Management（工作階段管理）
+   - [x] Access Status（使用權狀態）
+   - [x] Trial Used（試用狀態）
 
 規則：
 
@@ -76,24 +76,33 @@ Last Update: 2026-08-09
 
 # Task 3 — Home
 
-完成首頁。
+   完成首頁（入口體驗）。
 
-- [ ] Login
-- [ ] MagicBook 首頁
-- [ ] 免費試用入口
-- [ ] 購買產品入口
-- [ ] Start Editing Button
-- [ ] 進入 Book Editor
+   - [x] Login
+   - [x] InstallPrompt（裝置加入引導）
+   - [x] WelcomeScene（歡迎畫面，含魔法棒微動畫）
+   - [x] MagicBookIntro（MagicBook 開書入口）
+   - [x] 「體驗」入口
+   - [x] 「購買方案」入口
+   - [x] PlanSelection（方案選擇頁骨架）
+   - [x] BookLibraryPlaceholder（Book Library 佔位畫面）
+   - [x] OnboardingFlow（入口體驗導覽狀態機）
+   - [x] App.jsx 導覽串接
 
-首次使用流程：
+   首次使用流程：
 
-加入主畫面／桌面／書籤
-↓
-Email Verification
-↓
-User Account
-↓
-Home
+   Email Verification
+   ↓
+   User Account
+   ↓
+   InstallPrompt（加入主畫面／桌面／書籤，可完成或略過）
+   ↓
+   WelcomeScene（魔法棒微動畫）
+   ↓
+   MagicBookIntro（MagicBook 開書入口）
+   ↓
+   「體驗」→ BookLibraryPlaceholder（Book Library 將於 Task 4 開放）
+   「購買方案」→ PlanSelection（方案選擇頁骨架，價格與付款屬於後續 Billing Task）
 
 ---
 
@@ -560,9 +569,9 @@ GitHub `main` 上最新正式文件為開發依據。
 
 | Task | Status |
 |---|---|
-| Project Setup | ⬜ |
-| User Account / Authentication | ⬜ |
-| Home | ⬜ |
+| Project Setup | ✅ |
+| User Account / Authentication | ✅ |
+| Home | ✅ |
 | Book Library | ⬜ |
 | Book Editor | ⬜ |
 | Image Area | ⬜ |
