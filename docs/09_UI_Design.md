@@ -1,6 +1,6 @@
-# MagicBook 3.0 UI Design - Version: 2.0
+# MagicBook 3.0 UI Design - Version: 2.1
 
-Version: 2.0
+Version: 2.1
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-16
 
 ---
 
@@ -505,8 +505,7 @@ UI 不顯示 Billing 的內部處理細節。
 
 ## 5.1 Purpose
 
-Book Library（教材庫）為教材管理入口。
-
+Book Library（教材庫，使用者介面顯示為「我的魔法書」）為教材管理入口。
 主要 UI 責任：
 
 - Book Discovery（教材尋找）
@@ -529,14 +528,80 @@ Book 不一定需要位於 Folder。
 
 ## 5.3 Book Actions
 
-Book Library 應支援目前已確認的 Book 操作：
-
-- Create Book（建立教材）
+- Create Book（建立教材，使用者介面顯示為「創作魔法書」）
 - Rename Book（重新命名教材）
 - Duplicate Book（複製教材）
 - Delete Book（刪除教材）
-- Open Book（開啟教材）
+- Search Book（搜尋教材）
+- Recently Used（最近使用）
+- 打開魔法書（Open Book）：依 5.6 提供「閱讀」／「編輯」入口
 - Move Book（移動教材）
+
+---
+## 5.4 Top Navigation
+
+Book Library 畫面頂部固定四項：
+
+- 我的魔法書
+- Storage Usage Bar（容量血量條，見 5.7）
+- 創作魔法書
+- Search Icon
+
+Desktop：四項同一列橫排，Search Icon 位於最右側，符合既有「Search Icon 固定顯示於畫面右上方」規則。
+
+Mobile：四項改為四排直排（我的魔法書 / Storage Usage Bar / 創作魔法書 / Search Icon）。
+
+「創作魔法書」為固定入口：不論使用者目前擁有 0 本或多本教材，皆可隨時點擊建立新教材。
+
+---
+
+## 5.5 Entry Flow — 尚未建立教材
+
+我的魔法書
+↓
+尚未建立魔法書（提示文字）
+↓
+創作魔法書（快捷入口，與頂部固定入口動作相同）
+↓
+選擇先編輯圖片／文字
+↓
+進入新教材 Editor
+
+新教材尚無內容，僅提供編輯，不提供閱讀。
+
+---
+
+## 5.6 Entry Flow — 已有教材
+
+我的魔法書
+↓
+顯示已建立之教材
+↓
+選擇一本教材
+↓
+打開魔法書
+↓
+提供「閱讀」／「編輯」兩個入口
+
+- 閱讀 → Reading Mode
+- 編輯 → 直接進入 Editor Mode（修改既有教材）
+
+Reading Mode 內原有的 Edit Button（由閱讀進入編輯）予以保留，兩條入口並存。
+
+---
+
+## 5.7 Storage Usage Bar
+
+- 類型：Storage Usage Bar（容量血量條）
+- 外觀：遊戲式水平長條，不使用愛心作為容量表示
+- 用途：顯示使用者目前儲存空間使用狀態
+- 初始狀態：使用者進入 MagicBook 後即可看見
+- 互動：點擊後顯示詳細容量資訊
+- 詳細資訊包含：已使用、剩餘、空間整理提示、未來額外儲存空間入口
+
+UI 不得寫死容量數字。基本容量與價格尚未定案，待 Beta 期間收集實際使用與營運成本資料後再行決定。
+
+Storage Usage Bar 與 §26 Loading UI 的 Brand Loading Animation 為不同機制：前者是容量狀態顯示元件，後者是系統等待時的載入動畫，兩者不互相取代。
 
 ---
 
@@ -620,22 +685,28 @@ Page
 
 ---
 
-## 7.3 Open Book
+## 7.3 打開魔法書（Open Book）
 
-使用者開啟 Book 後進入其教材內容。
+使用者「打開魔法書」後，提供「閱讀」／「編輯」兩個入口，依 5.6 Entry Flow — 已有教材：
 
-Reading Flow（閱讀流程）：
-
-Book Library
+Book Library（我的魔法書）
 
 ↓
 
-Open Book
+選擇一本教材
 
 ↓
 
-Reading Mode
+打開魔法書
 
+↓
+
+- 閱讀 → Reading Mode
+- 編輯 → Editor Mode（直接修改）
+
+Reading Mode 內原有的 Edit Button（由閱讀進入編輯）予以保留，作為既有教材的第二條編輯入口。
+
+新建立之教材（尚無內容）依 5.5 Entry Flow — 尚未建立教材，一律先進入 Editor，不提供「閱讀」。
 ---
 
 # 8. Lesson UI
@@ -1024,7 +1095,7 @@ Reading Mode 不提供教材編輯能力。
 
 Reading Mode：
 
-Open Book
+打開魔法書（選擇「閱讀」）
 
 ↓
 
@@ -1054,14 +1125,11 @@ Continue Reading
 
 ## 16.3 Edit Button
 
-Reading Mode 已確認存在：
+Reading Mode 提供 Edit Button（編輯按鈕），予以保留。
 
-單一 Edit Button（編輯按鈕）。
+使用者可以由 Reading Mode 進入 Editor Mode（編輯模式）。
 
-使用者可以由 Reading Mode 進入：
-
-Editor Mode（編輯模式）。
-
+依 5.6 Entry Flow — 已有教材，Book Library 另提供「編輯」直接入口（不經過 Reading Mode）；Edit Button 為既有教材的第二條編輯入口，兩者並存，不互相取代。
 ---
 
 ## 16.4 Same Material
@@ -2066,6 +2134,24 @@ Date: 2026-08-09
 - 不建立第二份教材資料
 
 本文件僅整理既有已確認規格之 UI 表現與操作邊界。
+
+---
+
+## Version 2.1
+
+Date: 2026-08-16
+
+同步 01_Product_Specification v3.5、02_MVP_Development v3.1、08_Editor_Design v1.5 已正式確認的 Book Library Entry Flow 決策。
+
+新增 §5.4 Top Navigation：Book Library（我的魔法書）頂部固定四項（我的魔法書／Storage Usage Bar／創作魔法書／Search），Desktop 橫排、Mobile 四排；「創作魔法書」為固定入口。
+
+新增 §5.5／§5.6：分開定義「尚未建立教材」與「已有教材」兩種進入情境；已有教材時「打開魔法書」提供「閱讀」／「編輯」兩個入口，Reading Mode 原有 Edit Button 予以保留、兩者並存。
+
+新增 §5.7 Storage Usage Bar：遊戲式長條血量棒，不使用愛心，不寫死容量數字；並註明與 §26 Loading UI 的 Brand Loading Animation 為不同機制。
+
+修正 §7.3、§16.2、§16.3：移除「Open Book 直接對應 Reading Mode」與「單一 Edit Button」之描述，改為與上述已確認的雙入口（閱讀／編輯）一致的用詞。
+
+本版本不新增產品功能、不新增資料模型、不新增 API、不新增 Database Schema。Storage Capacity 與 Storage Pricing 尚未定案，不得寫死。
 
 ---
 
