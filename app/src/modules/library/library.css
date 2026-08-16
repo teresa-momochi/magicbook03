@@ -1,0 +1,375 @@
+/* MagicBook 3.0 — Task 4 Book Library UI 基礎樣式
+   延續 onboarding.css 既有配色（#6b4fbb 品牌紫）。 */
+
+.mb-library-screen {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ---------- Top Navigation（09_UI_Design.md §5.4） ---------- */
+
+.mb-library-topnav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background: #f8f4ff;
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .mb-library-topnav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.mb-library-topnav-home,
+.mb-library-topnav-create {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b4fbb;
+  background: #fff;
+  border: 1px solid #d8cff0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mb-library-topnav-create {
+  color: #fff;
+  background: #6b4fbb;
+  border-color: #6b4fbb;
+}
+
+/* ---------- Storage Usage Bar（09_UI_Design.md §5.7，UI 骨架） ---------- */
+
+.mb-storage-bar {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mb-storage-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #e6ddf7;
+  overflow: hidden;
+}
+
+.mb-storage-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd682, #ff9f4a);
+  border-radius: 999px;
+}
+
+.mb-storage-bar-label {
+  font-size: 11px;
+  color: #8a7fb0;
+}
+
+/* ---------- Search ---------- */
+
+.mb-search-icon {
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.mb-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mb-search-bar-scope {
+  display: flex;
+  gap: 4px;
+}
+
+.mb-search-scope-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid #d8cff0;
+  border-radius: 999px;
+  background: #fff;
+  color: #6b4fbb;
+  cursor: pointer;
+}
+
+.mb-search-scope-btn--active {
+  background: #6b4fbb;
+  color: #fff;
+}
+
+.mb-search-input {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #d8cff0;
+  border-radius: 8px;
+  min-width: 160px;
+}
+
+.mb-search-status {
+  font-size: 12px;
+  color: #8a7fb0;
+}
+
+.mb-search-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8a7fb0;
+}
+
+/* ---------- Body Layout ---------- */
+
+.mb-library-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .mb-library-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mb-library-main-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #3d2a6d;
+}
+
+/* ---------- Folder Panel ---------- */
+
+.mb-folder-panel {
+  background: #fdfaff;
+  border: 1px solid #eee3ff;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.mb-folder-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.mb-folder-panel-header h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #3d2a6d;
+}
+
+.mb-folder-panel-add {
+  font-size: 12px;
+  background: none;
+  border: none;
+  color: #6b4fbb;
+  cursor: pointer;
+}
+
+.mb-folder-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mb-folder-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border-radius: 8px;
+  cursor: grab;
+}
+
+.mb-folder-item--active {
+  background: #eee3ff;
+}
+
+.mb-folder-item-name {
+  flex: 1;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #3d2a6d;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.mb-folder-item-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.mb-folder-item-actions button {
+  font-size: 12px;
+  background: none;
+  border: none;
+  color: #8a7fb0;
+  cursor: pointer;
+}
+
+/* ---------- Book Grid / Card ---------- */
+
+.mb-book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.mb-book-card {
+  border: 1px solid #eee3ff;
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mb-book-card--highlight {
+  border-color: #ffb347;
+  box-shadow: 0 0 0 3px rgba(255, 179, 71, 0.35);
+}
+
+.mb-book-card-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.mb-book-card-icon {
+  font-size: 32px;
+}
+
+.mb-book-card-title {
+  font-size: 13px;
+  color: #3d2a6d;
+  text-align: center;
+  word-break: break-word;
+}
+
+.mb-book-card-actions {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mb-book-card-action {
+  font-size: 11px;
+  padding: 3px 6px;
+  background: #f8f4ff;
+  border: none;
+  border-radius: 6px;
+  color: #6b4fbb;
+  cursor: pointer;
+}
+
+.mb-book-card-action--danger {
+  color: #c0392b;
+}
+
+/* ---------- Empty Library ---------- */
+
+.mb-library-empty {
+  text-align: center;
+  padding: 40px 16px;
+}
+
+.mb-library-empty-icon {
+  font-size: 40px;
+  margin: 0 0 8px;
+}
+
+.mb-library-empty-title {
+  margin: 0 0 6px;
+  color: #3d2a6d;
+}
+
+.mb-library-empty-text {
+  margin: 0 0 16px;
+  color: #555;
+  font-size: 14px;
+}
+
+/* ---------- Folder Picker List ---------- */
+
+.mb-folder-picker-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mb-folder-picker-item label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* ---------- Modal ---------- */
+
+.mb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 42, 109, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.mb-modal {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.mb-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.mb-modal-title {
+  margin: 0;
+  font-size: 16px;
+  color: #3d2a6d;
+}
+
+.mb-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8a7fb0;
+  font-size: 14px;
+}
