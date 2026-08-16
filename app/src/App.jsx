@@ -5,7 +5,10 @@
 //
 // Task 3 範圍：登入且 Active 後，進入入口體驗流程（OnboardingFlow）：
 // InstallPrompt → WelcomeScene → MagicBookIntro → 體驗 / 購買方案。
-// Book Library、Book Editor、Billing 仍屬於後續 Task。
+//
+// Task 4 範圍：「體驗」導向正式 Book Library（modules/library），
+// Book Editor 實際內容／Billing 仍屬於後續 Task（Editor/Reading Mode
+// 目前為 Placeholder，見 modules/editor、modules/reading）。
 
 import { AuthProvider, useAuth } from './modules/auth/AuthContext'
 import LoginForm from './modules/auth/LoginForm'
@@ -15,6 +18,7 @@ import Layout from './shared/layout/Layout'
 import './shared/layout/layout.css'
 import './modules/auth/auth.css'
 import './modules/onboarding/onboarding.css'
+import './modules/library/library.css'
 
 function AppContent() {
   const { session, userAccount, loading, accountLoading } = useAuth()
