@@ -1,6 +1,6 @@
-# MagicBook 3.0 MVP Task List -- Version: 2.3
+# MagicBook 3.0 MVP Task List -- Version: 2.4
 
-Version: 2.3
+Version: 2.4
 
 Status: In Progress
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-16
 
 ---
 
@@ -108,7 +108,7 @@ Last Update: 2026-08-09
 
 # Task 4 — Book Library
 
-完成教材庫。
+完成教材庫（使用者介面顯示為「我的魔法書」）。
 
 資料層級：
 
@@ -126,9 +126,10 @@ Page
 
 完成：
 
+- [ ] Top Navigation（我的魔法書／Storage Usage Bar／創作魔法書／Search；Desktop 橫排、Mobile 四排）
+- [ ] Storage Usage Bar（UI 骨架，不接真實容量計算，不顯示 0 GB 或任何寫死數字）
 - [ ] Book List
-- [ ] Create Book
-- [ ] Edit Book
+- [ ] Create Book（創作魔法書，固定入口，不論是否已有教材皆可使用）
 - [ ] Rename Book
 - [ ] Duplicate Book
 - [ ] Move Book
@@ -143,9 +144,23 @@ Page
 - [ ] Reorder Folder
 - [ ] Nested Folder
 - [ ] Drag & Drop Sorting
-- [ ] Open Book（Book Editor）
-- [ ] Open Reading（Reading Mode）
+- [ ] 尚未建立教材時的提示畫面（「尚未建立魔法書」+ 創作魔法書快捷入口）
+- [ ] 新書 Editor Entry（選擇先編輯圖片／文字）
+- [ ] 打開魔法書（既有教材，提供「閱讀」／「編輯」兩個入口）
 
+Placeholder（依 Task 3 BookLibraryPlaceholder 相同做法，導覽先接通、內容留給後續 Task）：
+
+- [ ] 新書「圖片」「文字」選擇後 → Editor Placeholder（「編輯功能將於下一階段開放」）
+- [ ] 既有教材「編輯」→ Editor Placeholder
+- [ ] 既有教材「閱讀」→ Reading Mode Placeholder（「閱讀功能將於下一階段開放」）
+
+不要提前實作：
+
+- [ ] Book Editor 實際內容（Task 5）
+- [ ] Reading Mode 實際內容（Task 13）
+- [ ] Storage 真實容量計算 / 容量上限判斷
+- [ ] Storage Pricing / Additional Storage 加購
+- [ ] 資料夾作為文字輸入來源的具體格式（未定義，不自行實作）
 不要加入：
 
 - [ ] Workspace
@@ -593,6 +608,9 @@ GitHub `main` 上最新正式文件為開發依據。
 
 | Version | Date | Description |
 |---|---|---|
+
+| 2.4 | 2026-08-16 | 同步 01 Product Specification v3.5、02 MVP Development v3.1、08 Editor Design v1.5、09 UI Design v2.1：Task 4 改為 Top Navigation（我的魔法書／Storage Usage Bar／創作魔法書／Search）、Storage Usage Bar UI 骨架（不接真實容量、不寫死數字）、新書 Editor Entry（圖片／文字選擇）與既有教材「閱讀／編輯」雙入口；新書與既有教材編輯導向之 Editor／Reading Mode 内容一律先接 Placeholder，不提前實作 Task 5／Task 13。原「Open Book（Book Editor）」「Open Reading（Reading Mode）」用詞移除。本次同時補記 Task 1／2／3 已完成之 Checkbox 同步（先前未列入本表版本記錄）。 |
+
 | 2.3 | 2026-08-09 | Final Cross-Document Consistency Check 修正：補齊 Folder CRUD、Move / Reorder / Nested Folder / Drag & Drop Sorting，並將已確認的團體邀請互斥、換團與 User Account 不變規則正式列入 Billing Task。僅同步既有規格，不新增產品功能。 |
 | 2.2 | 2026-08-09 | 依 02_MVP_Development v3.0 進行第二次 Cross-Document Consistency Check，補齊已確認的 Lesson / Page、HTML Overlay、Hotspot、Popup、Context Toolbar、Dictionary、AI、Audio、Video、Navigation、Global Search、圖片最佳化／壓縮／背景處理／大檔提示等 MVP 任務；並補齊團體邀請互斥與換團規則。僅同步既有規格，不新增產品功能。 |
 | 2.1 | 2026-08-09 | Cross-Document Consistency Check 後補齊已確認的 Rename / Duplicate / Move Book、Trial → Purchase 保留 Trial Content、團體邀請互斥與換團規則；不新增產品功能。 |
