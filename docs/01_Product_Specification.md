@@ -1,6 +1,6 @@
-# MagicBook 3.0 Product Specification - Version 3.4
+# MagicBook 3.0 Product Specification - Version 3.5
 
-Version: 3.4
+Version: 3.5
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-16
 
 ---
 
@@ -994,7 +994,7 @@ Trial Content
 
 # 7. Book Library Architecture
 
-Book Library 為教材管理中心。
+Book Library（使用者介面顯示為「我的魔法書」）為教材管理中心。
 
 提供：
 
@@ -1002,12 +1002,13 @@ Book Library 為教材管理中心。
 - Folder
 - Recently Used
 - Search
-- Create Book
+- Create Book（使用者介面顯示為「創作魔法書」）
 - Rename Book
 - Duplicate Book
 - Delete Book
-- Open Book
-- Open Reading
+- 打開魔法書（Open Book）
+- 閱讀（Reading）
+- 編輯（Editing）
 
 Folder 支援：
 
@@ -1030,6 +1031,86 @@ Search Icon 固定顯示於畫面右上方。
 
 關閉搜尋後，
 Search Icon 仍保留於畫面右上方。
+
+## 7.1 Top Navigation
+
+Book Library 畫面頂部固定提供：
+
+- 我的魔法書（回到／顯示教材庫）
+- Storage Usage Bar（容量血量條，見 7.3）
+- 創作魔法書（建立新教材，即 Create Book）
+- Search（見上方 Search Icon 規則）
+
+四項固定存在，不因使用者是否已有教材而改變。
+
+「創作魔法書」為**固定入口**：不論使用者目前擁有 0 本、1 本或多本教材，皆可隨時點擊建立新教材，不是僅在教材庫為空時才出現的功能。
+
+## 7.2 Entry Flow — 尚未建立教材
+
+使用者進入「我的魔法書」，若尚未建立任何教材：
+
+我的魔法書
+↓
+尚未建立魔法書
+↓
+創作魔法書（快捷入口，動作與頂部「創作魔法書」相同）
+↓
+選擇先編輯圖片／文字
+↓
+進入新教材編輯（Editor）
+
+新教材因尚未有內容，一律先進入編輯，不提供「閱讀」。
+
+## 7.3 Entry Flow — 已有教材
+
+使用者進入「我的魔法書」，若已有教材：
+
+我的魔法書
+↓
+顯示已建立之教材
+↓
+選擇一本教材
+↓
+打開魔法書
+↓
+提供「閱讀」／「編輯」兩個入口
+
+- 閱讀 → 進入 Reading Mode
+- 編輯 → 直接進入 Editor（修改既有教材）
+
+Reading Mode 內原有的 Edit Button（由閱讀進入編輯）予以保留，作為「閱讀中途想修改」的另一條入口，不因本節新增的「編輯」直接入口而移除。
+
+## 7.4 Storage Usage Bar
+
+MagicBook 提供 Storage Usage Bar（容量血量條）：
+
+- 使用者開始使用 MagicBook 後即可看到
+- 視覺採用遊戲式長條血量棒，不採用愛心形式
+- 目的不是限制使用者，而是讓使用者隨時知道自己的儲存空間狀態
+- 點擊後可查看目前已使用容量與剩餘容量
+- 可提供空間管理提示，例如整理長久未使用的教材
+- 未來可提供額外儲存空間（Additional Storage）的加購入口
+
+**基本 Storage Capacity（儲存容量）尚未定案。**
+
+**Storage Pricing（儲存空間價格）尚未定案。**
+
+**不得在 Application Code、Database Schema 或正式產品規格中寫死任何容量數字或價格。**
+
+### Storage Capacity Decision
+
+MagicBook 的基本儲存容量目前不定案。
+
+Beta Test 期間將收集：
+
+- 使用者實際 Storage Usage
+- 使用者容量分布
+- 高使用量情境
+- 實際 Storage Cost、Data Transfer Cost 及其他相關營運成本
+
+Beta 結束後，再依實際資料評估 Basic Storage Capacity、Storage Limit、Additional Storage、Storage Pricing。
+
+因此 Beta 階段不得將任何容量或價格視為正式商業規則。
 
 ---
 
@@ -1295,6 +1376,27 @@ MagicBook 提供共用系統服務：
 ---
 
 # 14. Change Log
+
+## Version 3.5
+
+### Book Library Entry Flow / Storage Usage Bar
+
+正式確認 Book Library（使用者介面顯示為「我的魔法書」）頂部固定導覽（我的魔法書／Storage Usage Bar／創作魔法書／Search），並將「創作魔法書」確立為固定入口——不論使用者是否已有教材，皆可隨時使用。
+
+正式分開定義兩種進入情境：
+
+- 尚未建立教材：我的魔法書 → 尚未建立魔法書 → 創作魔法書 → 選擇圖片／文字 → 進入 Editor（新教材無內容，僅提供編輯）
+- 已有教材：我的魔法書 → 選擇教材 → 打開魔法書 → 提供「閱讀」／「編輯」兩個入口，分別進入 Reading Mode 與 Editor
+
+Reading Mode 原有的 Edit Button（閱讀中進入編輯）予以保留，作為既有教材的第二條編輯入口，不因本次新增的「編輯」直接入口而移除。
+
+原本較模糊的「Open Book」「Open Reading」用詞，正式替換為使用者實際看到的「打開魔法書」「閱讀」「編輯」。
+
+新增 Storage Usage Bar（容量血量條）作為正式產品機制：視覺採遊戲式長條血量棒（不使用愛心），使用者可隨時查看已使用／剩餘容量。基本容量與價格皆尚未定案，不得寫死於程式碼、Database Schema 或正式規格中；實際數字待 Beta 期間收集真實使用與營運成本資料後再行決定。
+
+本版本不變更 Folder、Lesson、Page 既有規則，不新增 Workspace、Group Entity 或任何團體協作資料模型。
+
+---
 
 ## Version 3.4
 
