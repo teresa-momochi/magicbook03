@@ -1,5 +1,5 @@
-# MagicBook 3.0 MVP Development - Version 3.0
-Version: 3.0
+# MagicBook 3.0 MVP Development - Version 3.1
+Version: 3.1
 
 Status: Draft
 
@@ -9,7 +9,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-09
+Last Update: 2026-08-16
 
 
 # Table of Contents
@@ -603,12 +603,12 @@ Supabase 不建立：
 
 完成：
 
-- Create Book
+- Create Book（使用者介面顯示為「創作魔法書」，固定入口，不論使用者是否已有教材皆可使用）
 - Rename Book
 - Delete Book
 - Duplicate Book
 - Search Book
-- Recently Used
+-  Storage Usage Bar（UI 骨架，不接真實容量計算，不顯示 0 GB 或任何寫死數字）
 
 支援：
 
@@ -621,6 +621,11 @@ Supabase 不建立：
 使用者可選擇是否使用 Folder 分類教材。
 
 Book 可以直接存在於 Book Library 根目錄，也可以放入 Folder。
+
+進入教材編輯／閱讀的流程（見 §7.4）：
+
+- 尚未建立教材：創作魔法書 → 選擇圖片／文字 → Editor
+- 已有教材：打開魔法書 → 閱讀／編輯 兩個入口
 
 
 ## 5.4 Lesson
@@ -864,12 +869,12 @@ Reading Mode 與 Editor Mode 共用同一份教材資料。
 - Video
 - Navigation
 
-Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
+Reading Mode 提供 Edit Button（編輯按鈕）作為由閱讀進入 Editor Mode 的入口，予以保留。
 
 Edit Button：
 
 - 位於 Reading Mode
-- 作為 Editor Mode 的單一進入入口
+- 作為由閱讀進入 Editor Mode 的入口之一（另有 Book Library「編輯」直接入口，見 §7.3/§7.4，兩者並存）
 - 使用者可由 Reading Mode 進入既有 Editor Mode
 - 不建立另一套 Editor 流程或資料模型
 
@@ -1324,30 +1329,33 @@ Home
 
 ## 7.2 Home Flow
 
-Home 提供：
+依 Task 3 已確認之入口體驗（見 11_MVP_Task_List.md Task 3），Home 提供：
 
-- 🆓 免費試用一次
-- ✨ 購買產品
-- Create Book
-- Open Book Library
-- Recently Used Books
-- Settings
-
-使用者可：
-
-Home
+Email Verification
 
 ↓
 
-Create Book
-
-或
+User Account
 
 ↓
 
-Book Library
+InstallPrompt（裝置加入引導，可完成或略過）
+
+↓
+
+WelcomeScene（歡迎畫面，含魔法棒微動畫）
+
+↓
+
+MagicBookIntro（MagicBook 開書入口）
+
+↓
+
+- 「體驗」→ 我的魔法書（Book Library）
+- 「購買方案」→ PlanSelection（方案選擇頁骨架，價格與付款屬於後續 Billing Task）
 
 使用權為 Inactive 時，不得進入 MagicBook 使用流程。
+
 ## 7.3 Book Editing Flow
 
 Home
@@ -1446,21 +1454,43 @@ Image Area 匯入教材後，可直接手動建立 Hotspot。
 
 ## 7.4 Book Library Flow
 
-Book Library 為教材管理中心。
+Book Library（使用者介面顯示為「我的魔法書」）為教材管理中心。
 
 提供：
 
 - Search Book
-- Create Book
-- Open Book
-- Open Reading
+- Create Book（使用者介面顯示為「創作魔法書」）
+- 打開魔法書（Open Book）
+- 閱讀（Reading）
+- 編輯（Editing）
 - Rename Book
 - Duplicate Book
 - Delete Book
 - Recently Used
 - Folder Management
+- Storage Usage Bar
 
-操作流程：
+操作流程 — 尚未建立教材：
+
+我的魔法書
+
+↓
+
+尚未建立魔法書
+
+↓
+
+創作魔法書（頂部固定入口的快捷版本）
+
+↓
+
+選擇先編輯圖片／文字
+
+↓
+
+進入新教材 Editor
+
+操作流程 — 已有教材：
 
 Book Library
 
@@ -1474,10 +1504,18 @@ Select Result
 
 ↓
 
+打開魔法書
+
+↓
+
+提供：
+
+- 閱讀 → Reading Mode
+- 編輯 → Editor（直接修改既有教材）
+
 可執行：
 
-- Open Book
-- Open Reading
+- 打開魔法書（閱讀／編輯）
 - Rename Book
 - Duplicate Book
 - Delete Book
@@ -1490,7 +1528,7 @@ Book Library
 
 ↓
 
-Open Reading
+打開魔法書（選擇「閱讀」）
 
 ↓
 
@@ -1568,7 +1606,7 @@ Reading Mode 不可修改教材內容。
 - Video
 - Navigation
 
-Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
+Reading Mode 提供 Edit Button（編輯按鈕）作為由閱讀進入 Editor Mode 的入口，予以保留；另有 Book Library「編輯」直接入口（見 §7.3/§7.4），兩者並存。
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
@@ -1698,23 +1736,30 @@ MagicBook 使用 User Account 登入。
 不支援安裝時，可使用書籤作為替代方式。
 ## 8.2 Home
 
-Home 為產品入口畫面。
+Home 為產品入口畫面，依 Task 3 已確認之入口體驗（見 11_MVP_Task_List.md Task 3）：
 
-提供：
-
-- 🆓 免費試用一次
-- ✨ 購買產品
-- Create Book
-- Open Book Library
-- Recently Used Books
-- Settings
+- InstallPrompt（裝置加入引導）
+- WelcomeScene（歡迎畫面，含魔法棒微動畫）
+- MagicBookIntro（MagicBook 開書入口）
+- 「體驗」入口
+- 「購買方案」入口
 
 Home 不負責教材管理。
 
-教材管理由 Book Library 負責。
+教材管理由 Book Library（我的魔法書）負責。
+
 ## 8.3 Book Library
 
-Book Library 為教材管理中心。
+Book Library（使用者介面顯示為「我的魔法書」）為教材管理中心。
+
+畫面頂部固定四項（Top Navigation）：
+
+- 我的魔法書
+- Storage Usage Bar（容量血量條，UI 骨架，不接真實容量計算，不顯示 0 GB 或任何寫死數字）
+- 創作魔法書（固定入口，不論是否已有教材皆可使用）
+- Search Icon
+
+Desktop 為同一列橫排；Mobile 為四排直排。
 
 提供：
 
@@ -1722,13 +1767,12 @@ Book Library 為教材管理中心。
 - Folder
 - Recently Used
 - Search
-- Create Book
+- Create Book（創作魔法書）
 - Rename Book
 - Duplicate Book
 - Delete Book
-- Open Book
-- Open Reading
-
+- 打開魔法書（閱讀／編輯）
+  
 Folder 支援：
 
 - Create Folder
@@ -1921,9 +1965,11 @@ Context Toolbar：
 
 Reading Mode 與 Editor Mode 共用同一份教材資料。
 
-Reading Mode 已確認提供單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口。
+Reading Mode 提供 Edit Button（編輯按鈕）作為由閱讀進入 Editor Mode 的入口，予以保留。
 
 Edit Button 不建立另一套 Editor 架構或資料模型，只負責進入既有 Editor Mode。
+
+依 01_Product_Specification.md §7.3 Entry Flow — 已有教材，Book Library 另提供「編輯」直接入口（不經過 Reading Mode）；兩條入口並存，Edit Button 不因此移除。
 
 閱讀模式隱藏：
 
@@ -2261,8 +2307,8 @@ Search Toolbar 採 Floating Toolbar。
 - Audio
 - Video
 - Navigation
-- Reading Mode → Editor Mode 的單一 Edit Button 入口
-
+- Reading Mode → Editor Mode 的 Edit Button 入口（Book Library「編輯」直接入口另行並存，見 §7.3/§7.4）
+  
 Edit Button 僅負責進入既有 Editor Mode，不建立另一套 Editor 流程或資料模型。
 
 Reading Mode 不修改教材。
@@ -2566,8 +2612,8 @@ Provider 必須可替換。
 - Audio
 - Video
 - Navigation
-- 單一 Edit Button（編輯按鈕）作為進入 Editor Mode 的入口
-
+- Edit Button（編輯按鈕）作為由閱讀進入 Editor Mode 的入口（Book Library「編輯」直接入口另行並存，見 §7.3/§7.4）
+  
 Edit Button 不得建立另一套 Editor 流程或資料模型。
 
 Reading Mode 不得修改教材。
@@ -3512,6 +3558,19 @@ Technical Evidence（技術證據）。
 
 再同步更新相關設計文件。
 
+## Version 3.1
+
+### Book Library Entry Flow / Storage Usage Bar
+
+同步 01_Product_Specification.md v3.5：Book Library 頂部固定四項導覽（我的魔法書／Storage Usage Bar／創作魔法書／Search），「創作魔法書」為固定入口。
+
+正式分開定義並改寫 §7.4 Book Library Flow：尚未建立教材時「創作魔法書 → 選擇圖片／文字 → Editor」；已有教材時「打開魔法書 → 閱讀／編輯」。§8.3 Book Library 畫面規格同步更新。
+
+§8.13 Reading Mode 移除「Edit Button 為進入 Editor Mode 的單一入口」用詞，改為說明 Edit Button 與 Book Library 的「編輯」直接入口並存，Edit Button 予以保留不移除。
+
+新增 Storage Usage Bar UI 骨架需求：不接真實容量計算，不顯示 0 GB 或任何寫死數字，實際容量與價格待 Beta 資料確認。
+
+本版本不變更 05_Database_Design、06_API_Design，不新增 Database Schema 或 API 契約。
 
 ## Version 3.0
 ### Account / Billing Architecture Synchronization
