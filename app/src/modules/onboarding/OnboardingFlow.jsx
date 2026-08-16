@@ -5,14 +5,14 @@
 //
 // 這裡只管理「目前顯示哪一個畫面」的前端導覽狀態，不寫入 Supabase，
 // 不做 Trial 消耗、不做 Billing / Payment。
-// 「體驗」導向 Book Library Placeholder；Task 4 完成後直接替換即可。
+// 「體驗」導向 Book Library（Task 4 起為正式功能，取代原本的 Placeholder）。
 
 import { useState } from 'react'
 import InstallPrompt from './InstallPrompt'
 import WelcomeScene from './WelcomeScene'
 import MagicBookIntro from './MagicBookIntro'
 import PlanSelection from './PlanSelection'
-import BookLibraryPlaceholder from '../library/BookLibraryPlaceholder'
+import BookLibraryScreen from '../library/BookLibraryScreen'
 import { signOut } from '../auth/authService'
 
 const STEPS = {
@@ -40,7 +40,7 @@ function OnboardingFlow({ userAccount }) {
           />
         )
       case STEPS.LIBRARY:
-        return <BookLibraryPlaceholder onBack={() => setStep(STEPS.INTRO)} />
+        return <BookLibraryScreen onBack={() => setStep(STEPS.INTRO)} />
       case STEPS.PLANS:
         return <PlanSelection onBack={() => setStep(STEPS.INTRO)} />
       default:
