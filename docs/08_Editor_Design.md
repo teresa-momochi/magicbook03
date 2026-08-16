@@ -1,6 +1,6 @@
-# MagicBook 3.0 Editor Design - Version: 1.4
+# MagicBook 3.0 Editor Design - Version: 1.5
 
-Version: 1.4
+Version: 1.5
 
 Status: Draft
 
@@ -10,7 +10,7 @@ Product Manager: ChatGPT
 
 Technical Lead: 阿德
 
-Last Update: 2026-08-14
+Last Update: 2026-08-16
 
 ---
 
@@ -366,13 +366,15 @@ Reading Mode 不建立第二份正式教材。
 
 ---
 
-## 5.4 Edit Entry
+依 01_Product_Specification.md §7.1–§7.3（Book Library Entry Flow）已確認，進入 Editor Mode 目前有以下入口，並存不互相取代：
 
-Reading Mode 已確認：
+1. **新教材建立**：Book Library（「我的魔法書」）頂部固定的「創作魔法書」（或空教材庫時的快捷入口）→ 選擇先編輯圖片／文字 → 直接進入 Editor Mode（新教材尚無內容，僅提供編輯，不提供閱讀）。
+2. **既有教材直接編輯**：Book Library → 選擇教材 → 打開魔法書 → 「編輯」入口 → 直接進入 Editor Mode。
+3. **由閱讀進入編輯**：Reading Mode 提供 Edit Button（編輯按鈕），使用者可由 Reading Mode 進入 Editor Mode。此為原有規則，予以保留，不因入口 1、2 新增而移除。
 
-> 提供單一 Edit Button（編輯按鈕）作為編輯入口。
+三條入口最終皆進入同一個 Editor Mode，共用同一份教材資料（見 §5.3 Same Material），不建立第二套 Editor 架構。
 
-使用者可以由 Reading Mode 進入 Editor Mode。
+Book Library 本身的入口導覽（Top Navigation、教材列表、Create Book 等）依 01_Product_Specification.md 與 02_MVP_Development.md 為準，不在本文件重複定義。
 
 ---
 
@@ -1421,6 +1423,19 @@ Editor Design 更新後，必須檢查：
 ---
 
 # 27. Change Log
+
+## Version 1.5
+
+Status: Draft
+
+Last Update: 2026-08-16
+
+同步 01_Product_Specification v3.5、02_MVP_Development v3.1 已正式確認的 Book Library Entry Flow 決策。
+
+§5.4 Edit Entry 修正：移除「Reading Mode 的 Edit Button 為進入 Editor Mode 的單一入口」之描述，改為記錄目前已確認、並存的三條入口——新教材建立（創作魔法書 → 選擇圖片／文字）、既有教材直接編輯（打開魔法書 → 編輯）、由閱讀進入編輯（Reading Mode Edit Button，原有規則保留）。三條入口共用同一份教材資料，不建立第二套 Editor 架構，不新增 Database Schema 或 API 契約。
+
+本版本不變更 Editor Scope（§2）、Content Structure（§3）、Data Responsibility（§4）或 Page／Image Area／Text Area 既有規則。
+
 
 ## Version 1.4
 
